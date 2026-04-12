@@ -394,11 +394,11 @@ document.addEventListener('click', e => {
 
 async function init() {
   try {
-    const proxy = 'https://allorigins.win/get?disableCache=true&url=' + encodeURIComponent(CSV_URL);
+    const proxy = 'https://corsproxy.io/?' + encodeURIComponent(CSV_URL);
     const res = await fetch(proxy);
     if (!res.ok) throw new Error('fetch failed');
-    const json = await res.json();
-    entries = parseCSV(json.contents);
+    const text = await res.text();
+    entries = parseCSV(text);
     if (entries.length) buildField(entries);
   } catch (e) {
     console.error(e);

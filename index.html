@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>το μανταρίνι</title>
+<style>
+:root{--bg:#fff;--text:#000;--accent:#f28c28;--border:#000;--muted:#777;}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;overflow-x:hidden;padding-bottom:0;}
+.page{max-width:1120px;margin:0 auto;padding:14px 12px 0;}
+.title{margin:0 0 20px 0;font-size:1.08rem;font-weight:normal;letter-spacing:.01em;}
+.field{position:relative;}
+
+/* Lines — monospace so char width is exact, no estimation needed */
+.line{display:block;white-space:pre;overflow:hidden;line-height:1.62;font-size:14px;color:#595959;font-family:'Courier New',Courier,monospace;}
+.line+.line{margin-top:.5rem;}
+
+/* Triggers — Georgia over the monospace field */
+.trigger{display:inline;cursor:pointer;color:#111;font-family:Georgia,"Times New Roman",serif;font-size:1.1em;line-height:1.2;background:none;border:none;padding:0;font-weight:500;}
+.trigger:hover{color:var(--accent);}
+.trigger.active{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
+
+/* Panel */
+.panel-wrap{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(110px,15vh,150px);width:min(1020px, calc(100vw - 20px));z-index:20;}
+.panel-wrap.open{display:block;}
+.panel-shell{background:#fff;border:1px solid var(--border);overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;max-height:min(72vh, calc(100vh - 220px));}
+.panel-inner{padding:16px 16px 18px;position:relative;}
+.panel-type{margin:0 0 6px 0;color:var(--muted);font-size:.82rem;}
+.panel-title{margin:0 0 8px 0;font-size:1rem;font-weight:normal;padding-right:44px;}
+.panel-text{margin:0 0 10px 0;line-height:1.55;font-size:.96rem;}
+.panel-links{margin:6px 0 0 0;font-size:.95rem;}
+.panel-links a{color:var(--accent);}
+.close-btn{position:absolute;top:10px;right:12px;color:var(--text);cursor:pointer;background:none;border:none;font:inherit;font-size:1rem;}
+.close-btn:hover{color:var(--accent);}
+.panel-shell::-webkit-scrollbar{width:12px}
+.panel-shell::-webkit-scrollbar-track{background:#fff;border-left:1px solid var(--border)}
+.panel-shell::-webkit-scrollbar-thumb{background:var(--border);}
+
+/* Image in panel */
+.panel-img{width:100%;height:auto;border:1px solid #000;display:block;margin-top:10px;}
+
+/* Loading / error state */
+.field-msg{color:var(--muted);font-size:.9rem;padding:20px 0;}
+
+@media (max-width:700px){
+  .page{padding:12px 10px 16px;}
+  .title{font-size:1rem;}
+  .line{font-size:11px;line-height:1.55;}
+  .trigger{font-size:1.15em;}
+  .panel-wrap{width:calc(100vw - 10px);bottom:clamp(84px,11vh,120px);}
+  .panel-shell{max-height:min(75vh, calc(100vh - 180px));}
+  .panel-inner{padding:14px 12px 16px;}
+}
+</style>
+</head>
+<body>
+<main class="page">
+  <h1 class="title">το μανταρίνι (((◌)))</h1>
+  <section class="field" id="field"></section>
+</main>
+
+<div class="panel-wrap" id="panel-wrap">
+  <div class="panel-shell" id="panel-shell">
+    <div class="panel-inner">
+      <button class="close-btn" id="close-btn" aria-label="κλείσιμο">κλείσιμο</button>
+      <div id="panel-body"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ────────────────────────────────────────────────────────────────
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_L3BRTS15mXDYMn01jC63svihZjidfiwFuZYA1D50_1wBMcWu1th38yZgvMgzEVtDchLmAHNpVSle/pub?output=csv';
+
+// Symbol pool — single chars only, so cursor tracking stays exact
+const SYMBOLS = ['\\','/','{','}','[',']','|','<','>','+','-','~','*','?',':',';',',','.','^','_','`','"',"'",'=','#','%','&'];
+// Multi-char decorative clusters injected whole, tracked by actual length
+const CLUSTERS = ['[[]]','{::}','`^`','{_}','=-=','|-|','<//>', '/\\', '<_>'];
+
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let entries = [];        // parsed from CSV
+let driftInterval = null;
+let driftPaused = false;
+let activeId = null;
+
+// ─── CSV PARSE ─────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  if (lines.length < 2) return [];
+  const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
+  const results = [];
+  for (let i = 1; i < lines.length; i++) {
+    const vals = parseCSVRow(lines[i]);
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = (vals[idx] || '').trim(); });
+    // only include published entries with a label
+    if (obj.label && (!obj.publish || obj.publish.toLowerCase() !== 'false')) {
+      results.push(obj);
+    }
+  }
+  return results;
+}
+
+function parseCSVRow(row) {
+  const cells = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < row.length; i++) {
+    const c = row[i];
+    if (c === '"') {
+      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      cells.push(cur); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  cells.push(cur);
+  return cells;
+}
+
+// Measure actual monospace char width at runtime using a hidden test element
+let _charWidthCache = null;
+function getCharWidth(isMobile) {
+  if (_charWidthCache) return _charWidthCache;
+  const el = document.createElement('span');
+  el.style.cssText = `position:absolute;visibility:hidden;font-family:'Courier New',Courier,monospace;font-size:${isMobile?'11px':'14px'};white-space:pre;`;
+  el.textContent = 'x'.repeat(100);
+  document.body.appendChild(el);
+  const w = el.getBoundingClientRect().width / 100;
+  document.body.removeChild(el);
+  _charWidthCache = w > 0 ? w : (isMobile ? 6.6 : 8.4);
+  return _charWidthCache;
+}
+
+function getLineLen() {
+  const page = document.querySelector('.page');
+  const pageW = page ? page.clientWidth : 0;
+  const w = (pageW > 100 ? pageW : window.innerWidth) - 24;
+  const isMobile = window.innerWidth <= 700;
+  const charWidth = getCharWidth(isMobile);
+  return Math.floor(w / charWidth);
+}
+
+function randomSymbol(rng) {
+  return SYMBOLS[Math.floor(rng() * SYMBOLS.length)];
+}
+function randomCluster(rng) {
+  return CLUSTERS[Math.floor(rng() * CLUSTERS.length)];
+}
+
+// seeded RNG so layout is stable per session
+function makeRng(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 1664525 + 1013904223) & 0xffffffff;
+    return (s >>> 0) / 0xffffffff;
+  };
+}
+
+function getNumLines() {
+  // fill viewport height + extra so scroll has content all the way down
+  // line height: 14px * 1.62 + 0.5rem gap ≈ 30px per line desktop
+  const isMobile = window.innerWidth <= 700;
+  const lineH = isMobile ? (11 * 1.55 + 8) : (14 * 1.62 + 8);
+  const targetH = window.innerHeight * 2.2; // enough to scroll through comfortably
+  return Math.max(40, Math.ceil(targetH / lineH));
+}
+
+function buildField(entries) {
+  const LINE_LEN = 200;
+  const NUM_LINES = 50;
+  const rng = makeRng(42);
+  const positions = entries.length > 0 ? assignPositions(entries.length, NUM_LINES, rng, LINE_LEN) : [];
+
+  const field = document.getElementById('field');
+  if (!field) return;
+  field.innerHTML = '';
+
+  for (let li = 0; li < NUM_LINES; li++) {
+    const lineDiv = document.createElement('div');
+    lineDiv.className = 'line';
+
+    const entriesOnLine = positions.filter(p => p.line === li);
+    entriesOnLine.sort((a, b) => a.col - b.col);
+
+    let content = '';
+    let cursorPos = 0;
+
+    for (const ep of entriesOnLine) {
+      const entry = entries[ep.entryIdx];
+      const label = wrapLabel(entry);
+      const insertAt = Math.min(ep.col, LINE_LEN - label.length - 2);
+      while (cursorPos < insertAt) {
+        const remaining = insertAt - cursorPos;
+        if (remaining >= 4 && rng() < 0.07) {
+          const cl = randomCluster(rng);
+          if (cursorPos + cl.length <= insertAt) { content += cl; cursorPos += cl.length; continue; }
+        }
+        if (remaining > 2 && rng() < 0.10) { content += ' '; cursorPos += 1; continue; }
+        content += randomSymbol(rng);
+        cursorPos += 1;
+      }
+      content += `\x00${ep.entryIdx}\x00`;
+      cursorPos += label.length;
+    }
+
+    while (cursorPos < LINE_LEN) {
+      const remaining = LINE_LEN - cursorPos;
+      if (remaining >= 4 && rng() < 0.07) {
+        const cl = randomCluster(rng);
+        if (cursorPos + cl.length <= LINE_LEN) { content += cl; cursorPos += cl.length; continue; }
+      }
+      if (remaining > 2 && rng() < 0.10) { content += ' '; cursorPos += 1; continue; }
+      content += randomSymbol(rng);
+      cursorPos += 1;
+    }
+
+    buildLineDOM(lineDiv, content, entries);
+    field.appendChild(lineDiv);
+  }
+}
+
+function buildLineDOM(lineDiv, content, entries) {
+  const parts = content.split('\x00');
+  for (let i = 0; i < parts.length; i++) {
+    if (i % 2 === 0) {
+      // text
+      if (parts[i]) lineDiv.appendChild(document.createTextNode(parts[i]));
+    } else {
+      // entry index
+      const idx = parseInt(parts[i], 10);
+      const entry = entries[idx];
+      const btn = document.createElement('button');
+      btn.className = 'trigger';
+      btn.textContent = wrapLabel(entry);
+      btn.dataset.id = idx;
+      btn.addEventListener('click', () => openPanel(idx));
+      lineDiv.appendChild(btn);
+    }
+  }
+}
+
+function assignPositions(count, numLines, rng, lineLen) {
+  // Shuffle line indices for vertical spread
+  const allLines = Array.from({length: numLines}, (_, i) => i);
+  for (let i = allLines.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1));
+    [allLines[i], allLines[j]] = [allLines[j], allLines[i]];
+  }
+
+  // 5 horizontal bands cycling so all parts of the line get coverage
+  const numBands = 5;
+  const bandW = Math.floor(lineLen / numBands);
+
+  return Array.from({length: count}, (_, i) => {
+    const line = allLines[i % numLines];
+    const band = (i * 2 + Math.floor(rng() * 2)) % numBands;
+    const bandStart = band * bandW;
+    const bandEnd = (band === numBands - 1) ? lineLen - 15 : bandStart + bandW - 5;
+    const col = bandStart + Math.floor(rng() * Math.max(1, bandEnd - bandStart));
+    return { line, col, entryIdx: i };
+  });
+}
+
+// ─── LABEL WRAPPING ─────────────────────────────────────────────────────────
+// Wraps label in parentheses based on content length
+// < 100 chars  → (label)
+// 100–300      → ((label))
+// 300–600      → (((label)))
+// 600+         → ((((label))))
+function wrapLabel(entry) {
+  const raw = entry.label || '';
+  // if already wrapped (has parens), use as-is
+  if (raw.startsWith('(')) return raw;
+  const len = (entry.content || '').length;
+  if (len < 100)  return `(${raw})`;
+  if (len < 300)  return `((${raw}))`;
+  if (len < 600)  return `(((${raw})))`;
+  return `((((${raw}))))`;
+}
+function startDrift() {
+  if (driftInterval) clearInterval(driftInterval);
+  driftInterval = setInterval(() => {
+    if (driftPaused) return;
+    const lines = document.querySelectorAll('.line');
+    if (!lines.length) return;
+    // shift 1–3 random lines slightly
+    const count = 1 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < count; i++) {
+      const line = lines[Math.floor(Math.random() * lines.length)];
+      // find text nodes and nudge one character
+      const textNodes = [];
+      line.childNodes.forEach(n => { if (n.nodeType === 3 && n.textContent.trim()) textNodes.push(n); });
+      if (!textNodes.length) continue;
+      const tn = textNodes[Math.floor(Math.random() * textNodes.length)];
+      const t = tn.textContent;
+      if (t.length < 3) continue;
+      const pos = 1 + Math.floor(Math.random() * (t.length - 2));
+      const sym = SYMBOLS[Math.floor(Math.random() * (SYMBOLS.length - 5))]; // short symbols only
+      tn.textContent = t.slice(0, pos) + sym[0] + t.slice(pos + 1);
+    }
+  }, 7000 + Math.random() * 4000);
+}
+
+// ─── PANEL ─────────────────────────────────────────────────────────────────
+function openPanel(idx) {
+  const entry = entries[idx];
+  if (!entry) return;
+
+  // deactivate previous
+  document.querySelectorAll('.trigger.active').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll(`.trigger[data-id="${idx}"]`).forEach(t => t.classList.add('active'));
+
+  activeId = idx;
+  driftPaused = true;
+
+  const body = document.getElementById('panel-body');
+  body.innerHTML = '';
+
+  // type
+  if (entry.type) {
+    const pt = document.createElement('p');
+    pt.className = 'panel-type';
+    pt.textContent = entry.type;
+    body.appendChild(pt);
+  }
+
+  // content (support basic line breaks)
+  if (entry.content) {
+    const div = document.createElement('div');
+    div.className = 'panel-text';
+    div.innerHTML = entry.content.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+    body.appendChild(div);
+  }
+
+  // image
+  if (entry.image) {
+    const img = document.createElement('img');
+    img.src = entry.image;
+    img.alt = entry.title || '';
+    img.className = 'panel-img';
+    body.appendChild(img);
+  }
+
+  // links
+  if (entry.link) {
+    const p = document.createElement('p');
+    p.className = 'panel-links';
+    const a = document.createElement('a');
+    a.href = entry.link;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.textContent = entry.linklabel || entry.title || entry.link;
+    p.appendChild(a);
+    body.appendChild(p);
+  }
+
+  const shell = document.getElementById('panel-shell');
+  shell.scrollTop = 0;
+
+  const wrap = document.getElementById('panel-wrap');
+  wrap.classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panel-wrap').classList.remove('open');
+  document.querySelectorAll('.trigger.active').forEach(t => t.classList.remove('active'));
+  activeId = null;
+  driftPaused = false;
+}
+
+// ─── INIT ───────────────────────────────────────────────────────────────────
+document.getElementById('close-btn').addEventListener('click', closePanel);
+
+// rebuild field on resize (debounced)
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    _charWidthCache = null;
+    buildField(entries);
+  }, 250);
+});
+
+// close on outside click
+document.addEventListener('click', e => {
+  const wrap = document.getElementById('panel-wrap');
+  if (activeId !== null && !wrap.contains(e.target) && !e.target.classList.contains('trigger')) {
+    closePanel();
+  }
+});
+
+async function init() {
+  try {
+    const proxy = 'https://allorigins.win/get?disableCache=true&url=' + encodeURIComponent(CSV_URL);
+    const res = await fetch(proxy);
+    if (!res.ok) throw new Error('fetch failed');
+    const json = await res.json();
+    entries = parseCSV(json.contents);
+    if (entries.length) buildField(entries);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+// build field immediately with symbols
+buildField([]);
+startDrift();
+// fetch entries in background
+init();
+
+</script>
+</body>
+</html>

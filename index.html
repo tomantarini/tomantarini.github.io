@@ -9,15 +9,15 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;overflow-x:hidden;padding-bottom:0;}
 .page{max-width:1120px;margin:0 auto;padding:14px 12px 0;}
-.title{margin:0 0 20px 0;font-size:1.08rem;font-weight:normal;letter-spacing:.01em;}
+.title{margin:0 0 20px 0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;}
 .field{position:relative;}
 
 /* Lines */
-.line{display:block;white-space:normal;word-break:break-all;overflow:hidden;line-height:1.62;font-size:14px;color:#595959;font-family:'Courier New',Courier,monospace;width:100%;}
-.line+.line{margin-top:.5rem;}
+.line{display:block;white-space:pre;overflow:hidden;line-height:1.62;font-size:17px;color:#595959;font-family:'Courier New',Courier,monospace;width:100%;}
+.line+.line{margin-top:.6rem;}
 
 /* Triggers — Georgia over the monospace field */
-.trigger{display:inline;cursor:pointer;color:#111;font-family:Georgia,"Times New Roman",serif;font-size:1.1em;line-height:1.2;background:none;border:none;padding:0;font-weight:500;white-space:normal;}
+.trigger{display:inline;cursor:pointer;color:#111;font-family:Georgia,"Times New Roman",serif;font-size:1.15em;line-height:1.2;background:none;border:none;padding:0;font-weight:500;white-space:pre;}
 .trigger:hover{color:var(--accent);}
 .trigger.active{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
 
@@ -28,7 +28,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .panel-inner{padding:16px 16px 18px;position:relative;}
 .panel-close-bar{display:flex;justify-content:flex-end;padding:6px 10px;position:sticky;top:0;background:#fff;z-index:5;border-bottom:1px solid #eee;}
 .panel-type{margin:0 0 6px 0;color:var(--muted);font-size:.82rem;}
-.panel-text{margin:0 0 10px 0;line-height:1.7;font-size:.96rem;white-space:pre-wrap;word-break:break-word;}
+.panel-text{margin:0 0 10px 0;line-height:1.75;font-size:1.05rem;white-space:pre-wrap;word-break:break-word;}
 .panel-links{margin:6px 0 0 0;font-size:.95rem;}
 .panel-links a{color:var(--accent);text-decoration:underline;}
 .close-btn{background:none;border:none;font:inherit;font-size:.9rem;color:var(--muted);cursor:pointer;padding:0;}
@@ -47,8 +47,8 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 @media (max-width:700px){
   .page{padding:12px 10px 0;}
   .title{font-size:1rem;}
-  .line{font-size:11px;line-height:1.55;}
-  .trigger{font-size:1.15em;}
+  .line{font-size:13px;line-height:1.55;white-space:pre;}
+  .trigger{font-size:1.2em;}
   .panel-wrap{width:calc(100vw - 12px);bottom:clamp(40px,8vh,80px);}
   .panel-shell{max-height:min(78vh, calc(100vh - 120px));}
   .panel-inner{padding:12px 12px 14px;}
@@ -148,7 +148,7 @@ function getLineLen() {
   const page = document.querySelector('.page');
   const w = page ? page.clientWidth - 24 : window.innerWidth - 24;
   const isMobile = window.innerWidth <= 700;
-  const charW = isMobile ? 6.6 : 8.4; // Courier New char width approx
+  const charW = isMobile ? 7.8 : 10.2; // Courier New at 13px / 17px
   return Math.max(40, Math.floor(w / charW));
 }
 

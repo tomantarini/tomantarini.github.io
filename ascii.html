@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>μανταρίνι — ascii</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:    #ffffff;
+  --ink:   #1c1510;
+  --faint: #d0c8be;
+  --mid:   #8a7a6a;
+  --mark:  #2a1a0a;
+}
+
+html, body {
+  min-height: 100%;
+  background: #ffffff;
+  color: var(--ink);
+  font-family: 'Courier Prime', monospace;
+}
+
+#shell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ── CONTROLS ── */
+#controls {
+  background: #ffffff;
+  border-bottom: 1px solid var(--faint);
+  padding: 0.9rem 1rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ctrl-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.hdr-left { display: flex; flex-direction: column; gap: 0.1rem; }
+
+.site-title {
+  font-family: 'IM Fell English', serif;
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+.site-sub {
+  font-size: 0.52rem;
+  color: var(--mid);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.hdr-right { display: flex; gap: 0.35rem; align-items: center; }
+
+#btn-gen {
+  background: var(--ink);
+  color: #ffffff;
+  border: none;
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+  min-height: 42px;
+  transition: background 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+#btn-gen:active { background: var(--mark); }
+
+#settings-toggle {
+  background: none;
+  border: 1px solid var(--faint);
+  color: var(--mid);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.65rem;
+  cursor: pointer;
+  min-height: 42px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#settings-panel {
+  display: none;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+#settings-panel.open { display: flex; }
+
+.s-lbl {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 0.6rem;
+  color: var(--mid);
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.pill {
+  background: none;
+  border: 1px solid var(--faint);
+  color: var(--mid);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  padding: 0.28rem 0.55rem;
+  cursor: pointer;
+  min-height: 30px;
+  transition: all 0.1s;
+  -webkit-tap-highlight-color: transparent;
+}
+.pill.on { border-color: var(--ink); background: var(--ink); color: #ffffff; }
+.pill:not(.on):active { border-color: var(--mid); color: var(--ink); }
+
+.sl-row { display: flex; align-items: center; gap: 0.5rem; }
+.sl-lbl { font-size: 0.57rem; color: var(--mid); min-width: 5.5rem; letter-spacing: 0.05em; }
+input[type=range] {
+  flex: 1; accent-color: var(--ink); cursor: pointer;
+  height: 2px; min-width: 60px;
+}
+.sl-val { font-size: 0.62rem; color: var(--ink); min-width: 1.5rem; text-align: right; }
+
+.util-row { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.btn-sm {
+  background: none;
+  border: 1px solid var(--faint);
+  color: var(--mid);
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.57rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.32rem 0.6rem;
+  cursor: pointer;
+  min-height: 30px;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.1s;
+}
+.btn-sm:active { border-color: var(--ink); color: var(--ink); }
+
+/* ── STAGE ── */
+#stage {
+  flex: 1;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.8rem 0.4rem 2rem;
+  overflow-x: hidden;
+}
+
+#art-meta {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0 0.3rem 0.4rem;
+}
+.meta-lbl {
+  font-family: 'IM Fell English', serif;
+  font-style: italic;
+  font-size: 0.6rem;
+  color: var(--mid);
+}
+.meta-seed {
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.52rem;
+  color: var(--faint);
+  letter-spacing: 0.07em;
+}
+
+#art-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  justify-content: center;
+}
+
+#art {
+  font-family: 'Courier Prime', 'Courier New', monospace;
+  line-height: 1.18;
+  white-space: pre;
+  color: var(--ink);
+  background: #ffffff;
+  letter-spacing: 0.01em;
+  display: inline-block;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+#art.visible { opacity: 1; }
+
+#algo-name {
+  margin-top: 0.6rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.5rem;
+  color: var(--faint);
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 0.5rem;
+}
+
+/* ── DESKTOP ── */
+@media (min-width: 680px) {
+  #shell { flex-direction: row; height: 100vh; overflow: hidden; }
+
+  #controls {
+    width: 230px;
+    min-width: 230px;
+    flex-direction: column;
+    border-bottom: none;
+    border-right: 1px solid var(--faint);
+    padding: 1.5rem 1.1rem 1.2rem;
+    height: 100vh;
+    overflow-y: auto;
+    gap: 0;
+  }
+  #controls::-webkit-scrollbar { width: 3px; }
+  #controls::-webkit-scrollbar-thumb { background: var(--faint); }
+
+  .ctrl-top {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 1.2rem;
+    gap: 0.2rem;
+  }
+  .hdr-right { width: 100%; flex-direction: column; margin-top: 1rem; }
+  #btn-gen { width: 100%; }
+  #settings-toggle { display: none; }
+  #settings-panel { display: flex !important; }
+
+  .s-lbl { margin-top: 1rem; }
+  .s-lbl:first-child { margin-top: 0; }
+
+  #stage {
+    flex: 1;
+    height: 100vh;
+    overflow: auto;
+    padding: 1.4rem 1rem 2rem;
+    justify-content: center;
+  }
+  #art-meta { max-width: 95vw; }
+  #algo-name { text-align: left; }
+}
+.return-link {
+  position: fixed;
+  top: 0.85rem;
+  right: 1rem;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.85rem;
+  color: var(--mid);
+  text-decoration: none;
+  z-index: 100;
+  letter-spacing: 0.01em;
+  transition: color 0.15s;
+}
+.return-link:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+<div id="shell">
+
+  <a href="index.html" class="return-link">(((◌)))</a>
+
+  <div id="controls">
+    <div class="ctrl-top">
+      <div class="hdr-left">
+        <div class="site-title">μανταρίνι</div>
+        <div class="site-sub">ascii generator</div>
+      </div>
+      <div class="hdr-right">
+        <button id="btn-gen">generate</button>
+        <button id="settings-toggle">settings ↓</button>
+      </div>
+    </div>
+
+    <div id="settings-panel">
+
+      <div>
+        <span class="s-lbl">algorithm</span>
+        <div class="pills" id="algo-pills">
+          <button class="pill on" data-v="perlin">flow field</button>
+          <button class="pill" data-v="julia">julia set</button>
+          <button class="pill" data-v="reaction">reaction</button>
+          <button class="pill" data-v="voronoi">voronoi</button>
+          <button class="pill" data-v="wave">waves</button>
+          <button class="pill" data-v="rorschach">rorschach</button>
+          <button class="pill" data-v="lsystem">l-system</button>
+          <button class="pill" data-v="cellular">automata</button>
+          <button class="pill" data-v="random">↺ random</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="s-lbl">charset</span>
+        <div class="pills" id="cs-pills">
+          <button class="pill on" data-v="density">density</button>
+          <button class="pill" data-v="sparse">sparse</button>
+          <button class="pill" data-v="symbol">symbol</button>
+          <button class="pill" data-v="alpha">alpha</button>
+          <button class="pill" data-v="binary">binary</button>
+          <button class="pill" data-v="punct">punct</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="s-lbl">size</span>
+        <div class="pills" id="size-pills">
+          <button class="pill" data-v="xs">XS</button>
+          <button class="pill" data-v="sm">S</button>
+          <button class="pill on" data-v="md">M</button>
+          <button class="pill" data-v="lg">L</button>
+        </div>
+      </div>
+
+      <div>
+        <div class="sl-row"><span class="sl-lbl">complexity</span><input type="range" id="sl-cx" min="1" max="10" value="6"><span class="sl-val" id="v-cx">6</span></div>
+        <div class="sl-row" style="margin-top:0.45rem"><span class="sl-lbl">density</span><input type="range" id="sl-dn" min="1" max="10" value="5"><span class="sl-val" id="v-dn">5</span></div>
+        <div class="sl-row" style="margin-top:0.45rem"><span class="sl-lbl">symmetry</span><input type="range" id="sl-sy" min="0" max="4" value="0"><span class="sl-val" id="v-sy">0</span></div>
+      </div>
+
+      <div class="util-row">
+        <button class="btn-sm" id="btn-copy">copy</button>
+        <button class="btn-sm" id="btn-save">save .txt</button>
+        <button class="btn-sm" id="btn-invert">invert</button>
+        <button class="btn-sm" id="btn-pin">pin seed</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="stage">
+    <div id="art-meta">
+      <span class="meta-lbl" id="art-label">generation 0</span>
+      <span class="meta-seed" id="seed-disp">seed —</span>
+    </div>
+    <div id="art-scroll">
+      <pre id="art"></pre>
+    </div>
+    <div id="algo-name">—</div>
+  </div>
+
+</div>
+<script>
+const CS={
+  density:' .`-\',:;!i>lt1fi?rjTIv7J=+L3s5CAe*2SEzPGy4gm6VUb8ko0HOdXnWqp9BRQ#KF%MD@&$',
+  sparse: '  .  `-  ,  :  ;  !  |  +  #  @',
+  symbol: ' .-_~^*+=<>[]{}()|/\\!?#%@&$',
+  alpha:  ' abcdefghijklmnopqrstuvwxyz',
+  binary: '  0  1  0  0  1  1  0  1  ',
+  punct:  ' .,;:!?-_=+*/\\|()[]{}^~`"\'<>',
+};
+
+const SZ={
+  xs:{w:38,h:20,fs:12}, sm:{w:60,h:32,fs:10},
+  md:{w:90,h:46,fs:9},  lg:{w:125,h:62,fs:8},
+};
+
+const LABELS={
+  perlin:'perlin flow field / warped octaves',
+  julia:'julia set iteration',
+  reaction:'gray-scott reaction-diffusion',
+  voronoi:'voronoi distance field',
+  wave:'interference wave superposition',
+  rorschach:'bilateral rorschach fold',
+  lsystem:'lindenmayer system / turtle',
+  cellular:'extended cellular automata',
+};
+
+const st={algo:'perlin',charset:'density',size:'md',cx:6,dn:5,sy:0,
+          seed:0,pinned:false,gen:0,inv:false,art:''};
+
+function rng32(seed){
+  let s=seed>>>0;
+  return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+}
+
+function perlinFactory(rng){
+  const P=Array.from({length:256},(_,i)=>i);
+  for(let i=255;i>0;i--){const j=Math.floor(rng()*(i+1));[P[i],P[j]]=[P[j],P[i]];}
+  const PP=[...P,...P];
+  const f=t=>t*t*t*(t*(t*6-15)+10);
+  const lp=(a,b,t)=>a+t*(b-a);
+  const gr=(h,x,y)=>{const H=h&3;return(H&1?-x:x)+(H&2?-y:y);};
+  return(x,y)=>{
+    const X=Math.floor(x)&255,Y=Math.floor(y)&255;
+    x-=Math.floor(x);y-=Math.floor(y);
+    const u=f(x),v=f(y),A=PP[X]+Y,B=PP[X+1]+Y;
+    return lp(lp(gr(PP[A],x,y),gr(PP[B],x-1,y),u),lp(gr(PP[A+1],x,y-1),gr(PP[B+1],x-1,y-1),u),v);
+  };
+}
+
+const ALGOS={
+  perlin(W,H,rng,cx){
+    const n=perlinFactory(rng),ox=rng()*100,oy=rng()*100,cx2=rng()*3+1,cy2=rng()*3+1;
+    const oct=Math.floor(cx/2)+1,fr=0.02+rng()*0.04,f=[];
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      let v=0,a=1,fq=fr,t=0;
+      for(let o=0;o<oct;o++){v+=n((x+ox)*fq*cx2,(y+oy)*fq*cy2)*a;t+=a;a*=.5;fq*=2;}
+      v/=t;
+      const wx=n(x*fr*.5+ox+40,y*fr*.5+oy)*2,wy=n(x*fr*.5+ox,y*fr*.5+oy+40)*2;
+      v+=n((x+wx)*fr*2+ox*1.3,(y+wy)*fr*2+oy*1.3)*.3;
+      f.push((v+1)/2);
+    }
+    return f;
+  },
+  julia(W,H,rng,cx){
+    const ps=[[-0.7,0.27],[-0.4,0.6],[0.285,0.01],[-0.835,-0.232],[-0.7269,0.1889],[0.45,0.1428],[-0.54,0.54],[0.355,0.355]];
+    const p=ps[Math.floor(rng()*ps.length)];
+    const cR=p[0]+(rng()-.5)*.05,cI=p[1]+(rng()-.5)*.05,mx=20+cx*5,zm=1.2+rng()*.6;
+    const oX=(rng()-.5)*.3,oY=(rng()-.5)*.3,f=[];
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      let zr=(x/W-.5)*3.5/zm+oX,zi=(y/H-.5)*2/zm+oY,i=0;
+      while(i<mx&&zr*zr+zi*zi<4){const t=zr*zr-zi*zi+cR;zi=2*zr*zi+cI;zr=t;i++;}
+      f.push(i/mx);
+    }
+    return f;
+  },
+  reaction(W,H,rng,cx){
+    const feed=0.037+rng()*.02,kill=0.060+rng()*.02,steps=30+cx*5;
+    let A=new Float32Array(W*H).fill(1),B=new Float32Array(W*H).fill(0);
+    for(let s=0;s<5+Math.floor(rng()*10);s++){
+      const bx=Math.floor(rng()*W),by=Math.floor(rng()*H),r=2+Math.floor(rng()*4);
+      for(let dy=-r;dy<=r;dy++)for(let dx=-r;dx<=r;dx++){
+        const nx=(bx+dx+W)%W,ny=(by+dy+H)%H;B[ny*W+nx]=.5+rng()*.5;A[ny*W+nx]=.25;
+      }
+    }
+    const nA=new Float32Array(W*H),nB=new Float32Array(W*H);
+    for(let st=0;st<steps;st++){
+      for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+        const i=y*W+x,l=y*W+(x-1+W)%W,r=y*W+(x+1)%W,u=((y-1+H)%H)*W+x,d=((y+1)%H)*W+x;
+        const la=A[l]+A[r]+A[u]+A[d]-4*A[i],lb=B[l]+B[r]+B[u]+B[d]-4*B[i],ab=A[i]*B[i]*B[i];
+        nA[i]=Math.max(0,Math.min(1,A[i]+la*.2-ab+feed*(1-A[i])));
+        nB[i]=Math.max(0,Math.min(1,B[i]+lb*.2+ab-(kill+feed)*B[i]));
+      }
+      A.set(nA);B.set(nB);
+    }
+    return Array.from(B);
+  },
+  voronoi(W,H,rng,cx){
+    const n=5+Math.floor(cx*2+rng()*10),pts=Array.from({length:n},()=>({x:rng()*W,y:rng()*H}));
+    const mD=Math.sqrt(W*W+H*H)/3,f=[];
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      let d1=Infinity,d2=Infinity;
+      for(const p of pts){const d=Math.sqrt((x-p.x)**2+(y-p.y)**2);if(d<d1){d2=d1;d1=d;}else if(d<d2)d2=d;}
+      f.push(Math.min(1,(d2-d1)/mD*2+d1/mD*.3));
+    }
+    const mx=Math.max(...f);return f.map(v=>v/mx);
+  },
+  wave(W,H,rng,cx){
+    const wc=3+Math.floor(cx/2),ps=Array.from({length:wc},()=>({
+      fx:(rng()-.5)*.3,fy:(rng()-.5)*.3,ph:rng()*Math.PI*2,
+      amp:.3+rng()*.7,cx:W*(.2+rng()*.6),cy:H*(.2+rng()*.6),
+    })),f=[];
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      let v=0;
+      for(const w of ps){const dx=x-w.cx,dy=y-w.cy;v+=w.amp*Math.sin(dx*w.fx+dy*w.fy+w.ph+Math.sqrt(dx*dx+dy*dy)*.08);}
+      f.push((v/wc+1)/2);
+    }
+    return f;
+  },
+  rorschach(W,H,rng,cx){
+    const hw=Math.ceil(W/2),n=perlinFactory(rng),fr=.05+rng()*.05,ox=rng()*50,oy=rng()*50;
+    const oct=2+Math.floor(cx/3),f=new Array(W*H);
+    for(let y=0;y<H;y++)for(let x=0;x<hw;x++){
+      let v=0,a=1,fq=fr,t=0;
+      for(let o=0;o<oct;o++){v+=n(x*fq+ox,y*fq+oy)*a;t+=a;a*=.5;fq*=2;}
+      const val=(v/t+1)/2;f[y*W+x]=val;f[y*W+(W-1-x)]=val;
+    }
+    return f;
+  },
+  lsystem(W,H,rng,cx){
+    const fld=new Float32Array(W*H);
+    const sys=[
+      {ax:'X',rules:{'X':'F+[+X]-[-X]FX','F':'FF'},ang:25},
+      {ax:'F',rules:{'F':'F[+F]F[-F]F'},ang:26},
+      {ax:'X',rules:{'X':'F[+X][-X]FX','F':'FF'},ang:20},
+    ][Math.floor(rng()*3)];
+    let s=sys.ax;
+    for(let i=0;i<3+Math.floor(cx/4);i++){let ns='';for(const c of s)ns+=(sys.rules[c]||c);s=ns;if(s.length>50000)break;}
+    const ang=sys.ang*(1+(rng()-.5)*.3)*Math.PI/180;
+    let x=W/2,y=H*.9,a=-Math.PI/2,step=H*.035;const stk=[];
+    for(const c of s){
+      if(c==='F'){
+        const nx=x+Math.cos(a)*step,ny=y+Math.sin(a)*step,st2=Math.ceil(step);
+        for(let k=0;k<=st2;k++){const lx=Math.round(x+k*(nx-x)/st2),ly=Math.round(y+k*(ny-y)/st2);if(lx>=0&&lx<W&&ly>=0&&ly<H)fld[ly*W+lx]+=1;}
+        x=nx;y=ny;
+      }else if(c==='+')a+=ang;else if(c==='-')a-=ang;
+      else if(c==='[')stk.push({x,y,a});else if(c===']'){const t=stk.pop();x=t.x;y=t.y;a=t.a;}
+    }
+    const mx=Math.max(...fld);return mx>0?Array.from(fld).map(v=>Math.min(1,v/mx*2)):Array(W*H).fill(0);
+  },
+  cellular(W,H,rng,cx){
+    const rules=[{b:[3],s:[2,3]},{b:[3,6],s:[2,3]},{b:[3,6,8],s:[2,4,6]},{b:[2,5,6],s:[5,6,7,8]},{b:[3,7],s:[2,3,7,8]}];
+    const r=rules[Math.floor(rng()*rules.length)];
+    let g=Array.from({length:H},()=>Array.from({length:W},()=>rng()<.35?1:0));
+    for(let s=0;s<10+cx*3;s++){
+      g=g.map((row,y)=>row.map((_,x)=>{
+        let n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;n+=g[(y+dy+H)%H][(x+dx+W)%W];}
+        return g[y][x]?r.s.includes(n)?1:0:r.b.includes(n)?1:0;
+      }));
+    }
+    return g.flat().map(v=>v?1:0);
+  },
+};
+
+const AKEYS=Object.keys(ALGOS);
+
+function symmetry(field,W,H,sym){
+  if(!sym)return field;
+  const out=[...field];
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const i=y*W+x,v=field[i];
+    if(sym>=1)out[y*W+(W-1-x)]=Math.max(out[y*W+(W-1-x)],v);
+    if(sym>=2)out[(H-1-y)*W+x]=Math.max(out[(H-1-y)*W+x],v);
+    if(sym>=3)out[(H-1-y)*W+(W-1-x)]=Math.max(out[(H-1-y)*W+(W-1-x)],v);
+    if(sym>=4){const rx=H-1-y,ry=x;if(rx<W&&ry<H)out[ry*W+rx]=Math.max(out[ry*W+rx],v);}
+  }
+  return out;
+}
+
+function toAscii(field,W,H,csKey,dn,inv){
+  const cs=CS[csKey],sorted=[...field].sort((a,b)=>a-b),n=sorted.length;
+  const eq=field.map(v=>{let lo=0,hi=n-1;while(lo<hi){const m=(lo+hi)>>1;if(sorted[m]<v)lo=m+1;else hi=m;}return lo/n;});
+  const rows=[];
+  for(let y=0;y<H;y++){
+    let row='';
+    for(let x=0;x<W;x++){
+      let v=eq[y*W+x];if(inv)v=1-v;
+      v=Math.pow(v,1+(1-dn/10));
+      row+=cs[Math.min(cs.length-1,Math.floor(v*cs.length))];
+    }
+    rows.push(row);
+  }
+  return rows.join('\n');
+}
+
+function generate(){
+  if(!st.pinned)st.seed=Math.random()*999999|0;
+  st.gen++;
+  let algo=st.algo;
+  if(algo==='random')algo=AKEYS[Math.floor(Math.random()*AKEYS.length)];
+  const {w,h,fs}=SZ[st.size],rng=rng32(st.seed+st.gen*17);
+  let field;
+  try{field=ALGOS[algo](w,h,rng,st.cx,st.dn);}
+  catch(e){console.warn(e);field=ALGOS.perlin(w,h,rng,st.cx);algo='perlin';}
+  field=symmetry(field,w,h,st.sy);
+  const art=toAscii(field,w,h,st.charset,st.dn,st.inv);
+  st.art=art;
+  const el=document.getElementById('art');
+  el.style.fontSize=fs+'px';
+  el.classList.remove('visible');
+  requestAnimationFrame(()=>{el.textContent=art;requestAnimationFrame(()=>el.classList.add('visible'));});
+  document.getElementById('algo-name').textContent=LABELS[algo]||algo;
+  document.getElementById('seed-disp').textContent='seed '+st.seed;
+  document.getElementById('art-label').textContent='generation '+st.gen;
+}
+
+// ── EVENTS ──
+document.getElementById('btn-gen').addEventListener('click',generate);
+
+document.getElementById('settings-toggle').addEventListener('click',()=>{
+  const p=document.getElementById('settings-panel'),b=document.getElementById('settings-toggle');
+  p.classList.toggle('open');b.textContent=p.classList.contains('open')?'settings ↑':'settings ↓';
+});
+
+function pills(id,setter){
+  document.getElementById(id).addEventListener('click',e=>{
+    const btn=e.target.closest('.pill');if(!btn)return;
+    document.querySelectorAll('#'+id+' .pill').forEach(b=>b.classList.remove('on'));
+    btn.classList.add('on');setter(btn.dataset.v);
+  });
+}
+pills('algo-pills',v=>st.algo=v);
+pills('cs-pills',v=>st.charset=v);
+pills('size-pills',v=>st.size=v);
+
+[['sl-cx','cx','v-cx'],['sl-dn','dn','v-dn'],['sl-sy','sy','v-sy']].forEach(([id,k,vid])=>{
+  document.getElementById(id).addEventListener('input',e=>{
+    st[k]=parseInt(e.target.value);document.getElementById(vid).textContent=e.target.value;
+  });
+});
+
+document.getElementById('btn-copy').addEventListener('click',()=>{
+  navigator.clipboard.writeText(st.art).then(()=>{
+    const b=document.getElementById('btn-copy');b.textContent='copied';setTimeout(()=>b.textContent='copy',1500);
+  });
+});
+document.getElementById('btn-save').addEventListener('click',()=>{
+  const b=new Blob([st.art],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mantarini-'+st.seed+'-'+st.gen+'.txt';a.click();
+});
+document.getElementById('btn-invert').addEventListener('click',()=>{
+  st.inv=!st.inv;document.getElementById('btn-invert').textContent=st.inv?'normal':'invert';generate();
+});
+document.getElementById('btn-pin').addEventListener('click',()=>{
+  st.pinned=!st.pinned;
+  const b=document.getElementById('btn-pin');
+  b.textContent=st.pinned?'unpin':'pin seed';
+  b.style.borderColor=st.pinned?'var(--ink)':'var(--faint)';
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='INPUT')generate();});
+
+generate();
+</script>
+</body>
+</html>

@@ -78,7 +78,8 @@ const SYMBOLS = ['\\','/','{','}','[',']','|','<','>','+','-','~','*','?',':',';
 const CLUSTERS = ['[[]]','{::}','`^`','{_}','=-=','|-|','<//>', '/\\', '<_>'];
 
 // ─── STATE ─────────────────────────────────────────────────────────────────
-let entries = [];        // parsed from CSV
+let entries = [];
+let ordered = []; // reversed entries — newest first
 let driftInterval = null;
 let driftPaused = false;
 let activeId = null;
@@ -143,12 +144,12 @@ function getLineLen() {
   return Math.max(40, Math.floor(w / charW));
 }
 
-function buildField(entries) {
+function buildField(e) {
+  entries = e;
+  ordered = [...e].reverse(); // newest first (index 0 = most recent)
   const LINE_LEN = getLineLen();
   const NUM_LINES = Math.max(40, Math.ceil((window.innerHeight * 2.2) / 30));
   const rng = makeRng(42);
-  // reverse so newest entries (last in sheet) appear first
-  const ordered = [...entries].reverse();
   const positions = ordered.length > 0 ? assignPositions(ordered.length, NUM_LINES, rng, LINE_LEN) : [];
 
   const field = document.getElementById('field');
@@ -194,21 +195,19 @@ function buildField(entries) {
       cursorPos += 1;
     }
 
-    buildLineDOM(lineDiv, content, ordered);
+    buildLineDOM(lineDiv, content);
     field.appendChild(lineDiv);
   }
 }
 
-function buildLineDOM(lineDiv, content, entries) {
+function buildLineDOM(lineDiv, content) {
   const parts = content.split('\x00');
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
-      // text
       if (parts[i]) lineDiv.appendChild(document.createTextNode(parts[i]));
     } else {
-      // entry index
       const idx = parseInt(parts[i], 10);
-      const entry = entries[idx];
+      const entry = ordered[idx];
       const btn = document.createElement('button');
       btn.className = 'trigger';
       btn.textContent = wrapLabel(entry);
@@ -224,13 +223,12 @@ function assignPositions(count, numLines, rng, lineLen) {
   const bandW = Math.floor(lineLen / numBands);
 
   return Array.from({length: count}, (_, i) => {
-    // i=0 is newest (after reverse). oldest (high i) → top, newest (low i) → bottom
-    const progress = count > 1 ? i / (count - 1) : 0; // 0=newest, 1=oldest
-    const lineZone = Math.floor((1 - progress) * (numLines - 1)); // flip: newest → bottom
-    const spread = Math.ceil(numLines * 0.12);
-    const lineMin = Math.max(0, lineZone - spread);
-    const lineMax = Math.min(numLines - 1, lineZone + spread);
-    const line = lineMin + Math.floor(rng() * (lineMax - lineMin + 1));
+    // i=0 is newest → top of page (low line numbers)
+    // i=count-1 is oldest → bottom (high line numbers)
+    const progress = count > 1 ? i / (count - 1) : 0;
+    const lineZone = Math.floor(progress * (numLines - 1));
+    const spread = Math.ceil(numLines * 0.10);
+    const line = Math.min(numLines - 1, Math.max(0, lineZone + Math.floor((rng() - 0.5) * spread)));
 
     const band = (i * 2 + Math.floor(rng() * 2)) % numBands;
     const bandStart = band * bandW;
@@ -282,10 +280,9 @@ function startDrift() {
 
 // ─── PANEL ─────────────────────────────────────────────────────────────────
 function openPanel(idx) {
-  const entry = entries[idx];
+  const entry = ordered[idx];
   if (!entry) return;
 
-  // deactivate previous
   document.querySelectorAll('.trigger.active').forEach(t => t.classList.remove('active'));
   document.querySelectorAll(`.trigger[data-id="${idx}"]`).forEach(t => t.classList.add('active'));
 
@@ -295,15 +292,6 @@ function openPanel(idx) {
   const body = document.getElementById('panel-body');
   body.innerHTML = '';
 
-  // type
-  if (entry.type) {
-    const pt = document.createElement('p');
-    pt.className = 'panel-type';
-    pt.textContent = entry.type;
-    body.appendChild(pt);
-  }
-
-  // content (support basic line breaks)
   if (entry.content) {
     const div = document.createElement('div');
     div.className = 'panel-text';
@@ -311,16 +299,14 @@ function openPanel(idx) {
     body.appendChild(div);
   }
 
-  // image
   if (entry.image) {
     const img = document.createElement('img');
     img.src = entry.image;
-    img.alt = entry.title || '';
+    img.alt = entry.label || '';
     img.className = 'panel-img';
     body.appendChild(img);
   }
 
-  // links
   if (entry.link) {
     const p = document.createElement('p');
     p.className = 'panel-links';
@@ -328,16 +314,14 @@ function openPanel(idx) {
     a.href = entry.link;
     a.target = '_blank';
     a.rel = 'noopener noreferrer';
-    a.textContent = entry.linklabel || entry.title || entry.link;
+    a.textContent = entry.linklabel || entry.link;
     p.appendChild(a);
     body.appendChild(p);
   }
 
   const shell = document.getElementById('panel-shell');
   shell.scrollTop = 0;
-
-  const wrap = document.getElementById('panel-wrap');
-  wrap.classList.add('open');
+  document.getElementById('panel-wrap').classList.add('open');
 }
 
 function closePanel() {

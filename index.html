@@ -72,11 +72,13 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 // ─── CONFIG ────────────────────────────────────────────────────────────────
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_L3BRTS15mXDYMn01jC63svihZjidfiwFuZYA1D50_1wBMcWu1th38yZgvMgzEVtDchLmAHNpVSle/pub?output=csv';
 
+// Symbol pool — single chars only, so cursor tracking stays exact
 const SYMBOLS = ['\\','/','{','}','[',']','|','<','>','+','-','~','*','?',':',';',',','.','^','_','`','"',"'",'=','#','%','&'];
+// Multi-char decorative clusters injected whole, tracked by actual length
 const CLUSTERS = ['[[]]','{::}','`^`','{_}','=-=','|-|','<//>', '/\\', '<_>'];
 
 // ─── STATE ─────────────────────────────────────────────────────────────────
-let entries = [];
+let entries = [];        // parsed from CSV
 let driftInterval = null;
 let driftPaused = false;
 let activeId = null;
@@ -91,6 +93,7 @@ function parseCSV(text) {
     const vals = parseCSVRow(lines[i]);
     const obj = {};
     headers.forEach((h, idx) => { obj[h] = (vals[idx] || '').trim(); });
+    // only include published entries with a label
     if (obj.label && (!obj.publish || obj.publish.toLowerCase() !== 'false')) {
       results.push(obj);
     }
@@ -123,6 +126,7 @@ function randomCluster(rng) {
   return CLUSTERS[Math.floor(rng() * CLUSTERS.length)];
 }
 
+// seeded RNG so layout is stable per session
 function makeRng(seed) {
   let s = seed;
   return function() {
@@ -135,7 +139,7 @@ function getLineLen() {
   const page = document.querySelector('.page');
   const w = page ? page.clientWidth - 24 : window.innerWidth - 24;
   const isMobile = window.innerWidth <= 700;
-  const charW = isMobile ? 6.6 : 8.4;
+  const charW = isMobile ? 6.6 : 8.4; // Courier New char width approx
   return Math.max(40, Math.floor(w / charW));
 }
 
@@ -144,6 +148,7 @@ function buildField(data) {
   const NUM_LINES = Math.max(40, Math.ceil((window.innerHeight * 2.2) / 30));
   const rng = makeRng(42);
   
+  // Data passed in is already correctly ordered (newest first)
   const ordered = data; 
   const positions = ordered.length > 0 ? assignPositions(ordered.length, NUM_LINES, rng, LINE_LEN) : [];
 
@@ -199,8 +204,10 @@ function buildLineDOM(lineDiv, content, orderedList) {
   const parts = content.split('\x00');
   for (let i = 0; i < parts.length; i++) {
     if (i % 2 === 0) {
+      // text
       if (parts[i]) lineDiv.appendChild(document.createTextNode(parts[i]));
     } else {
+      // entry index
       const idx = parseInt(parts[i], 10);
       const entry = orderedList[idx];
       const btn = document.createElement('button');
@@ -278,7 +285,12 @@ function openPanel(idx) {
   const body = document.getElementById('panel-body');
   body.innerHTML = '';
 
-  // Type removed from display as requested
+  if (entry.type) {
+    const pt = document.createElement('p');
+    pt.className = 'panel-type';
+    pt.textContent = entry.type;
+    body.appendChild(pt);
+  }
 
   if (entry.content) {
     const div = document.createElement('div');
@@ -342,6 +354,7 @@ async function init() {
     const res = await fetch(proxy);
     if (!res.ok) throw new Error('fetch failed');
     const text = await res.text();
+    // Reverse here so global state matches visual order
     entries = parseCSV(text).reverse(); 
     if (entries.length) buildField(entries);
   } catch (e) {

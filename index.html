@@ -22,19 +22,20 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .trigger.active{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
 
 /* Panel */
-.panel-wrap{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(110px,15vh,150px);width:min(1020px, calc(100vw - 20px));z-index:20;}
+.panel-wrap{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(60px,10vh,120px);width:min(1020px, calc(100vw - 20px));z-index:20;}
 .panel-wrap.open{display:block;}
-.panel-shell{background:#fff;border:1px solid var(--border);overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;max-height:min(72vh, calc(100vh - 220px));}
+.panel-shell{background:#fff;border:1px solid var(--border);overflow-y:scroll;overflow-x:hidden;max-height:min(72vh, calc(100vh - 160px));-webkit-overflow-scrolling:touch;}
 .panel-inner{padding:16px 16px 18px;position:relative;}
 .panel-type{margin:0 0 6px 0;color:var(--muted);font-size:.82rem;}
-.panel-text{margin:0 0 10px 0;line-height:1.55;font-size:.96rem;}
+.panel-text{margin:0 0 10px 0;line-height:1.7;font-size:.96rem;white-space:pre-wrap;word-break:break-word;}
 .panel-links{margin:6px 0 0 0;font-size:.95rem;}
 .panel-links a{color:var(--accent);}
-.close-btn{position:absolute;top:10px;right:12px;color:var(--text);cursor:pointer;background:none;border:none;font:inherit;font-size:1rem;}
+.close-btn{position:absolute;top:10px;right:12px;color:var(--text);cursor:pointer;background:none;border:none;font:inherit;font-size:1rem;padding:4px 8px;min-width:44px;min-height:44px;display:flex;align-items:center;justify-content:flex-end;}
 .close-btn:hover{color:var(--accent);}
-.panel-shell::-webkit-scrollbar{width:12px}
-.panel-shell::-webkit-scrollbar-track{background:#fff;border-left:1px solid var(--border)}
-.panel-shell::-webkit-scrollbar-thumb{background:var(--border);}
+.panel-shell::-webkit-scrollbar{width:6px;}
+.panel-shell::-webkit-scrollbar-track{background:#f0f0f0;}
+.panel-shell::-webkit-scrollbar-thumb{background:#999;border-radius:3px;}
+.panel-shell::-webkit-scrollbar-thumb:hover{background:#555;}
 
 /* Image in panel */
 .panel-img{width:100%;height:auto;border:1px solid #000;display:block;margin-top:10px;}
@@ -47,9 +48,10 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
   .title{font-size:1rem;}
   .line{font-size:11px;line-height:1.55;}
   .trigger{font-size:1.15em;}
-  .panel-wrap{width:calc(100vw - 10px);bottom:clamp(84px,11vh,120px);}
-  .panel-shell{max-height:min(75vh, calc(100vh - 180px));}
-  .panel-inner{padding:14px 12px 16px;}
+  .panel-wrap{width:calc(100vw - 12px);bottom:clamp(40px,8vh,80px);}
+  .panel-shell{max-height:min(78vh, calc(100vh - 120px));}
+  .panel-inner{padding:12px 12px 14px;}
+  .panel-text{font-size:.92rem;}
 }
 </style>
 </head>
@@ -86,38 +88,41 @@ let activeId = null;
 
 // ─── CSV PARSE ─────────────────────────────────────────────────────────────
 function parseCSV(text) {
-  const lines = text.trim().split('\n');
-  if (lines.length < 2) return [];
-  const headers = parseCSVRow(lines[0]).map(h => h.trim().toLowerCase());
+  // Parse entire CSV character by character so quoted newlines are handled
+  const rows = [];
+  let cur = '', inQ = false, row = [];
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (c === '"') {
+      if (inQ && text[i+1] === '"') { cur += '"'; i++; }
+      else inQ = !inQ;
+    } else if (c === ',' && !inQ) {
+      row.push(cur); cur = '';
+    } else if ((c === '\n' || c === '\r') && !inQ) {
+      if (c === '\r' && text[i+1] === '\n') i++; // skip \r\n
+      row.push(cur); cur = '';
+      if (row.some(v => v.trim())) rows.push(row);
+      row = [];
+    } else {
+      cur += c;
+    }
+  }
+  row.push(cur);
+  if (row.some(v => v.trim())) rows.push(row);
+
+  if (rows.length < 2) return [];
+  const headers = rows[0].map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
   const results = [];
-  for (let i = 1; i < lines.length; i++) {
-    const vals = parseCSVRow(lines[i]);
+  for (let i = 1; i < rows.length; i++) {
     const obj = {};
-    headers.forEach((h, idx) => { obj[h] = (vals[idx] || '').trim(); });
-    // only include published entries with a label
+    headers.forEach((h, idx) => { obj[h] = (rows[i][idx] || '').trim(); });
+    // 'linklabel' handles both 'linklabel' and 'link label'
+    if (!obj.linklabel && obj['link label']) obj.linklabel = obj['link label'];
     if (obj.label && (!obj.publish || obj.publish.toLowerCase() !== 'false')) {
       results.push(obj);
     }
   }
   return results;
-}
-
-function parseCSVRow(row) {
-  const cells = [];
-  let cur = '', inQ = false;
-  for (let i = 0; i < row.length; i++) {
-    const c = row[i];
-    if (c === '"') {
-      if (inQ && row[i+1] === '"') { cur += '"'; i++; }
-      else inQ = !inQ;
-    } else if (c === ',' && !inQ) {
-      cells.push(cur); cur = '';
-    } else {
-      cur += c;
-    }
-  }
-  cells.push(cur);
-  return cells;
 }
 
 function randomSymbol(rng) {
@@ -295,7 +300,8 @@ function openPanel(idx) {
   if (entry.content) {
     const div = document.createElement('div');
     div.className = 'panel-text';
-    div.innerHTML = entry.content.replace(/\\n/g, '<br>').replace(/\n/g, '<br>');
+    // use textContent so actual newlines render via white-space:pre-wrap
+    div.textContent = entry.content.replace(/\\n/g, '\n');
     body.appendChild(div);
   }
 

@@ -7,290 +7,141 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&family=Courier+Prime:ital,wght@0,400;0,700;1,400&display=swap');
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 
-:root {
-  --bg:    #ffffff;
-  --ink:   #1c1510;
-  --faint: #d0c8be;
-  --mid:   #8a7a6a;
-  --mark:  #2a1a0a;
+:root{
+  --bg:#ffffff;--ink:#1c1510;--faint:#d0c8be;--mid:#8a7a6a;--mark:#2a1a0a;
 }
 
-html, body {
-  min-height: 100%;
-  background: #ffffff;
-  color: var(--ink);
-  font-family: 'Courier Prime', monospace;
+html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Courier Prime',monospace;}
+
+#shell{display:flex;flex-direction:column;min-height:100vh;}
+
+/* CONTROLS */
+#controls{background:#ffffff;border-bottom:1px solid var(--faint);padding:0.6rem 1rem 0.6rem;display:flex;flex-direction:column;gap:0.6rem;}
+
+/* mobile: single row — title left, buttons right */
+.ctrl-top{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:0.5rem;}
+.ctrl-title-block{display:flex;flex-direction:column;gap:0;flex-shrink:1;min-width:0;}
+.ctrl-buttons{display:flex;gap:0.3rem;align-items:stretch;flex-shrink:0;}
+/* TITLE — exact match to index.html */
+.title{margin:0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;}
+.title a{color:inherit;text-decoration:none;cursor:pointer;font-family:Georgia,"Times New Roman",serif;font-size:inherit;font-weight:inherit;font-style:normal;}
+.title a:hover{color:var(--mid);}
+.site-sub{font-size:0.5rem;color:var(--mid);letter-spacing:0.15em;text-transform:uppercase;font-family:'Courier Prime',monospace;margin-top:0.15rem;display:block;}
+
+#btn-gen{background:var(--ink);color:#fff;border:none;font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;padding:0.45rem 0.9rem;cursor:pointer;letter-spacing:0.03em;min-height:38px;transition:background 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+#btn-gen:active{background:var(--mark);}
+
+#btn-rand-all{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:1rem;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;transition:all 0.1s;}
+#btn-rand-all:active{border-color:var(--ink);color:var(--ink);}
+
+#settings-toggle{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+#settings-toggle:active{border-color:var(--ink);color:var(--ink);}
+
+#settings-panel{display:none;flex-direction:column;gap:0.85rem;}
+#settings-panel.open{display:flex;}
+
+.s-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.72rem;color:var(--mid);display:block;margin-bottom:0.35rem;}
+
+.pill-wrap{display:flex;flex-wrap:wrap;gap:0.28rem;align-items:flex-start;}
+
+.pill{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.65rem;letter-spacing:0.05em;padding:0.32rem 0.6rem;cursor:pointer;min-height:34px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;}
+.pill.on{border-color:var(--ink);background:var(--ink);color:#fff;}
+.pill:not(.on):active{border-color:var(--mid);color:var(--ink);}
+
+.pill-rand{border-style:dashed;letter-spacing:0.04em;}
+.pill-rand:active,.pill-rand.flash{border-color:var(--ink);background:var(--ink);color:#fff;border-style:dashed;}
+
+.sl-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.45rem;}
+.sl-row:last-child{margin-bottom:0;}
+.sl-lbl{font-size:0.65rem;color:var(--mid);min-width:5rem;letter-spacing:0.04em;flex-shrink:0;}
+input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-width:60px;}
+.sl-val{font-size:0.7rem;color:var(--ink);min-width:1.5rem;text-align:right;}
+
+/* blend mode select */
+.blend-row{display:flex;align-items:center;gap:0.5rem;}
+.blend-sel{flex:1;background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.57rem;padding:0.25rem 0.4rem;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;}
+.blend-sel:focus{border-color:var(--mid);}
+
+/* toggle row */
+.toggle-row{display:flex;align-items:center;gap:0.5rem;cursor:pointer;}
+.toggle-box{width:14px;height:14px;border:1px solid var(--faint);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--ink);flex-shrink:0;font-family:'Courier Prime',monospace;}
+.toggle-lbl{font-size:0.57rem;color:var(--mid);letter-spacing:0.05em;}
+
+.util-row{display:flex;flex-wrap:wrap;gap:0.3rem;}
+.btn-sm{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.38rem 0.7rem;cursor:pointer;min-height:34px;-webkit-tap-highlight-color:transparent;transition:all 0.1s;}
+.btn-sm:active{border-color:var(--ink);color:var(--ink);}
+
+#btn-glossary{display:block;width:100%;background:none;border:none;border-top:1px solid var(--faint);color:var(--faint);font-family:'IM Fell English',serif;font-style:italic;font-size:0.8rem;letter-spacing:0.05em;padding:0.65rem 0 0.1rem;cursor:pointer;text-align:left;margin-top:0.6rem;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
+#btn-glossary:hover{color:var(--mid);}
+
+#glossary-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2rem 1.5rem 4rem;}
+#glossary-overlay.open{display:block;}
+#glossary-inner{max-width:560px;margin:0 auto;}
+#glossary-close{background:none;border:none;font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);cursor:pointer;padding:0;margin-bottom:2rem;display:block;}
+#glossary-close:hover{color:var(--ink);}
+.g-title{font-family:'IM Fell English',serif;font-size:1.2rem;font-weight:normal;margin-bottom:1.6rem;color:var(--ink);}
+.g-section{margin-bottom:1.8rem;}
+.g-section-head{font-family:'Courier Prime',monospace;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);margin-bottom:0.8rem;padding-bottom:0.3rem;border-bottom:1px solid var(--faint);}
+.g-entry{margin-bottom:0.9rem;}
+.g-term{font-family:'Courier Prime',monospace;font-size:0.7rem;letter-spacing:0.08em;color:var(--ink);display:inline;}
+.g-def{font-family:'IM Fell English',serif;font-style:italic;font-size:0.88rem;color:var(--mid);line-height:1.7;display:block;margin-top:0.2rem;}
+
+/* STAGE */
+#stage{flex:1;background:#ffffff;display:flex;flex-direction:column;align-items:center;padding:0.8rem 0.4rem 3rem;overflow-x:hidden;}
+
+#art-meta{width:100%;display:flex;justify-content:space-between;align-items:baseline;padding:0 0.3rem 0.4rem;}
+.meta-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.6rem;color:var(--mid);}
+.meta-seed{font-family:'Courier Prime',monospace;font-size:0.52rem;color:var(--faint);letter-spacing:0.07em;}
+
+#art-scroll{width:100%;overflow:hidden;display:flex;justify-content:center;}
+
+#art{font-family:'Courier Prime','Courier New',monospace;line-height:1.18;white-space:pre;color:var(--ink);background:#ffffff;letter-spacing:0.01em;display:inline-block;opacity:0;transition:opacity 0.5s ease;}
+#art.visible{opacity:1;}
+
+#algo-name{margin-top:0.65rem;font-family:'Courier Prime',monospace;font-size:0.5rem;color:var(--faint);letter-spacing:0.13em;text-transform:uppercase;text-align:center;padding:0 0.5rem;}
+
+#theory-note{margin-top:1.8rem;max-width:520px;width:100%;padding:0 0.5rem;font-family:'IM Fell English',serif;font-style:italic;font-size:0.92rem;color:var(--mid);line-height:1.85;text-align:center;letter-spacing:0.01em;}
+#theory-note a{color:var(--mid);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--faint);}
+#theory-note a:hover{color:var(--ink);}
+
+/* DESKTOP */
+@media(max-width:700px){
+  .title{font-size:1rem;}
 }
-
-#shell {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+@media(min-width:680px){
+  #shell{flex-direction:row;height:100vh;overflow:hidden;}
+  #controls{width:250px;min-width:250px;flex-direction:column;border-bottom:none;border-right:1px solid var(--faint);padding:1.5rem 1.2rem 1.2rem;height:100vh;overflow-y:auto;gap:0;}
+  #controls::-webkit-scrollbar{width:3px;}
+  #controls::-webkit-scrollbar-thumb{background:var(--faint);}
+  .ctrl-top{flex-direction:column;align-items:flex-start;margin-bottom:1.2rem;gap:0.5rem;}
+  .ctrl-buttons{flex-direction:column;width:100%;}
+  #btn-gen{width:100%;flex:none;min-height:44px;font-size:0.95rem;padding:0.55rem 1.1rem;}
+  #btn-rand-all{width:100%;min-height:44px;padding:0.4rem 0.7rem;}
+  #settings-toggle{display:none;}
+  #settings-panel{display:flex !important;}
+  .s-lbl{margin-top:1.1rem;}
+  .s-lbl:first-child{margin-top:0;}
+  #stage{flex:1;height:100vh;overflow:auto;padding:1.4rem 1rem 2rem;justify-content:center;}
+  #art-meta{max-width:95vw;}
+  #algo-name{text-align:left;}
+  #theory-note{text-align:left;}
 }
-
-/* ── CONTROLS ── */
-#controls {
-  background: #ffffff;
-  border-bottom: 1px solid var(--faint);
-  padding: 0.9rem 1rem 0.7rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.ctrl-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.6rem;
-}
-
-.hdr-left { display: flex; flex-direction: column; gap: 0.1rem; }
-
-.site-title {
-  font-family: 'IM Fell English', serif;
-  font-size: 1.05rem;
-  letter-spacing: 0.02em;
-  line-height: 1;
-}
-
-.site-sub {
-  font-size: 0.52rem;
-  color: var(--mid);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-}
-
-.hdr-right { display: flex; gap: 0.35rem; align-items: center; }
-
-#btn-gen {
-  background: var(--ink);
-  color: #ffffff;
-  border: none;
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 0.95rem;
-  padding: 0.55rem 1.1rem;
-  cursor: pointer;
-  letter-spacing: 0.03em;
-  min-height: 42px;
-  transition: background 0.1s;
-  -webkit-tap-highlight-color: transparent;
-}
-#btn-gen:active { background: var(--mark); }
-
-#settings-toggle {
-  background: none;
-  border: 1px solid var(--faint);
-  color: var(--mid);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.4rem 0.65rem;
-  cursor: pointer;
-  min-height: 42px;
-  -webkit-tap-highlight-color: transparent;
-}
-
-#settings-panel {
-  display: none;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-#settings-panel.open { display: flex; }
-
-.s-lbl {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 0.6rem;
-  color: var(--mid);
-  display: block;
-  margin-bottom: 0.3rem;
-}
-
-.pills {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem;
-}
-
-.pill {
-  background: none;
-  border: 1px solid var(--faint);
-  color: var(--mid);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.58rem;
-  letter-spacing: 0.06em;
-  padding: 0.28rem 0.55rem;
-  cursor: pointer;
-  min-height: 30px;
-  transition: all 0.1s;
-  -webkit-tap-highlight-color: transparent;
-}
-.pill.on { border-color: var(--ink); background: var(--ink); color: #ffffff; }
-.pill:not(.on):active { border-color: var(--mid); color: var(--ink); }
-
-.sl-row { display: flex; align-items: center; gap: 0.5rem; }
-.sl-lbl { font-size: 0.57rem; color: var(--mid); min-width: 5.5rem; letter-spacing: 0.05em; }
-input[type=range] {
-  flex: 1; accent-color: var(--ink); cursor: pointer;
-  height: 2px; min-width: 60px;
-}
-.sl-val { font-size: 0.62rem; color: var(--ink); min-width: 1.5rem; text-align: right; }
-
-.util-row { display: flex; flex-wrap: wrap; gap: 0.3rem; }
-.btn-sm {
-  background: none;
-  border: 1px solid var(--faint);
-  color: var(--mid);
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.57rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.32rem 0.6rem;
-  cursor: pointer;
-  min-height: 30px;
-  -webkit-tap-highlight-color: transparent;
-  transition: all 0.1s;
-}
-.btn-sm:active { border-color: var(--ink); color: var(--ink); }
-
-/* ── STAGE ── */
-#stage {
-  flex: 1;
-  background: #ffffff;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 0.8rem 0.4rem 2rem;
-  overflow-x: hidden;
-}
-
-#art-meta {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  padding: 0 0.3rem 0.4rem;
-}
-.meta-lbl {
-  font-family: 'IM Fell English', serif;
-  font-style: italic;
-  font-size: 0.6rem;
-  color: var(--mid);
-}
-.meta-seed {
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.52rem;
-  color: var(--faint);
-  letter-spacing: 0.07em;
-}
-
-#art-scroll {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  display: flex;
-  justify-content: center;
-}
-
-#art {
-  font-family: 'Courier Prime', 'Courier New', monospace;
-  line-height: 1.18;
-  white-space: pre;
-  color: var(--ink);
-  background: #ffffff;
-  letter-spacing: 0.01em;
-  display: inline-block;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-#art.visible { opacity: 1; }
-
-#algo-name {
-  margin-top: 0.6rem;
-  font-family: 'Courier Prime', monospace;
-  font-size: 0.5rem;
-  color: var(--faint);
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 0 0.5rem;
-}
-
-/* ── DESKTOP ── */
-@media (min-width: 680px) {
-  #shell { flex-direction: row; height: 100vh; overflow: hidden; }
-
-  #controls {
-    width: 230px;
-    min-width: 230px;
-    flex-direction: column;
-    border-bottom: none;
-    border-right: 1px solid var(--faint);
-    padding: 1.5rem 1.1rem 1.2rem;
-    height: 100vh;
-    overflow-y: auto;
-    gap: 0;
-  }
-  #controls::-webkit-scrollbar { width: 3px; }
-  #controls::-webkit-scrollbar-thumb { background: var(--faint); }
-
-  .ctrl-top {
-    flex-direction: column;
-    align-items: flex-start;
-    margin-bottom: 1.2rem;
-    gap: 0.2rem;
-  }
-  .hdr-right { width: 100%; flex-direction: column; margin-top: 1rem; }
-  #btn-gen { width: 100%; }
-  #settings-toggle { display: none; }
-  #settings-panel { display: flex !important; }
-
-  .s-lbl { margin-top: 1rem; }
-  .s-lbl:first-child { margin-top: 0; }
-
-  #stage {
-    flex: 1;
-    height: 100vh;
-    overflow: auto;
-    padding: 1.4rem 1rem 2rem;
-    justify-content: center;
-  }
-  #art-meta { max-width: 95vw; }
-  #algo-name { text-align: left; }
-}
-.return-link {
-  position: fixed;
-  top: 0.85rem;
-  right: 1rem;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 0.85rem;
-  color: var(--mid);
-  text-decoration: none;
-  z-index: 100;
-  letter-spacing: 0.01em;
-  transition: color 0.15s;
-}
-.return-link:hover { color: var(--ink); }
 </style>
 </head>
 <body>
 <div id="shell">
 
-  <a href="index.html" class="return-link">(((◌)))</a>
-
   <div id="controls">
     <div class="ctrl-top">
-      <div class="hdr-left">
-        <div class="site-title">μανταρίνι</div>
-        <div class="site-sub">ascii generator</div>
+      <div class="ctrl-title-block">
+        <div class="title">το μανταρίνι <a href="index.html">(((◌)))</a></div>
+        <span class="site-sub">ascii generator</span>
       </div>
-      <div class="hdr-right">
+      <div class="ctrl-buttons">
         <button id="btn-gen">generate</button>
+        <button id="btn-rand-all" title="randomise everything">↺</button>
         <button id="settings-toggle">settings ↓</button>
       </div>
     </div>
@@ -299,8 +150,9 @@ input[type=range] {
 
       <div>
         <span class="s-lbl">algorithm</span>
-        <div class="pills" id="algo-pills">
+        <div class="pill-wrap" id="algo-pills">
           <button class="pill on" data-v="perlin">flow field</button>
+          <button class="pill" data-v="warp">domain warp</button>
           <button class="pill" data-v="julia">julia set</button>
           <button class="pill" data-v="reaction">reaction</button>
           <button class="pill" data-v="voronoi">voronoi</button>
@@ -308,44 +160,94 @@ input[type=range] {
           <button class="pill" data-v="rorschach">rorschach</button>
           <button class="pill" data-v="lsystem">l-system</button>
           <button class="pill" data-v="cellular">automata</button>
-          <button class="pill" data-v="random">↺ random</button>
+          <button class="pill" data-v="clifford">clifford</button>
+          <button class="pill" data-v="dla">dla</button>
+          <button class="pill pill-rand" id="algo-rand">↺</button>
+        </div>
+      </div>
+
+      <div>
+        <span class="s-lbl">layer (blend with)</span>
+        <div class="pill-wrap" id="layer-pills">
+          <button class="pill on" data-v="none">none</button>
+          <button class="pill" data-v="perlin">flow field</button>
+          <button class="pill" data-v="warp">domain warp</button>
+          <button class="pill" data-v="julia">julia set</button>
+          <button class="pill" data-v="reaction">reaction</button>
+          <button class="pill" data-v="voronoi">voronoi</button>
+          <button class="pill" data-v="wave">waves</button>
+          <button class="pill" data-v="clifford">clifford</button>
+          <button class="pill" data-v="dla">dla</button>
+          <button class="pill pill-rand" id="layer-rand">↺</button>
+        </div>
+        <div class="blend-row" style="margin-top:0.35rem;">
+          <span class="sl-lbl">blend mode</span>
+          <select class="blend-sel" id="blend-mode">
+            <option value="add">add</option>
+            <option value="multiply">multiply</option>
+            <option value="max">max</option>
+            <option value="min">min</option>
+            <option value="diff">difference</option>
+            <option value="screen">screen</option>
+          </select>
         </div>
       </div>
 
       <div>
         <span class="s-lbl">charset</span>
-        <div class="pills" id="cs-pills">
+        <div class="pill-wrap" id="cs-pills">
           <button class="pill on" data-v="density">density</button>
+          <button class="pill" data-v="hicon">hi-contrast</button>
+          <button class="pill" data-v="grit">grit</button>
           <button class="pill" data-v="sparse">sparse</button>
           <button class="pill" data-v="symbol">symbol</button>
           <button class="pill" data-v="alpha">alpha</button>
           <button class="pill" data-v="binary">binary</button>
           <button class="pill" data-v="punct">punct</button>
+          <button class="pill pill-rand" id="cs-rand">↺</button>
         </div>
       </div>
 
       <div>
         <span class="s-lbl">size</span>
-        <div class="pills" id="size-pills">
+        <div class="pill-wrap" id="size-pills">
           <button class="pill" data-v="xs">XS</button>
           <button class="pill" data-v="sm">S</button>
           <button class="pill on" data-v="md">M</button>
           <button class="pill" data-v="lg">L</button>
+          <button class="pill" data-v="xl">XL</button>
         </div>
       </div>
 
       <div>
         <div class="sl-row"><span class="sl-lbl">complexity</span><input type="range" id="sl-cx" min="1" max="10" value="6"><span class="sl-val" id="v-cx">6</span></div>
-        <div class="sl-row" style="margin-top:0.45rem"><span class="sl-lbl">density</span><input type="range" id="sl-dn" min="1" max="10" value="5"><span class="sl-val" id="v-dn">5</span></div>
-        <div class="sl-row" style="margin-top:0.45rem"><span class="sl-lbl">symmetry</span><input type="range" id="sl-sy" min="0" max="4" value="0"><span class="sl-val" id="v-sy">0</span></div>
+        <div class="sl-row"><span class="sl-lbl">density</span><input type="range" id="sl-dn" min="1" max="10" value="5"><span class="sl-val" id="v-dn">5</span></div>
+        <div class="sl-row"><span class="sl-lbl">contrast</span><input type="range" id="sl-ct" min="1" max="10" value="5"><span class="sl-val" id="v-ct">5</span></div>
+        <div class="sl-row"><span class="sl-lbl">symmetry</span><input type="range" id="sl-sy" min="0" max="4" value="0"><span class="sl-val" id="v-sy">0</span></div>
+        <div class="sl-row"><span class="sl-lbl">zoom</span><input type="range" id="sl-zm" min="1" max="20" value="5"><span class="sl-val" id="v-zm">5</span></div>
+        <div class="sl-row"><span class="sl-lbl">offset x</span><input type="range" id="sl-ox" min="0" max="100" value="50"><span class="sl-val" id="v-ox">50</span></div>
+        <div class="sl-row"><span class="sl-lbl">offset y</span><input type="range" id="sl-oy" min="0" max="100" value="50"><span class="sl-val" id="v-oy">50</span></div>
+      </div>
+
+      <div>
+        <label class="toggle-row" id="toggle-smear">
+          <div class="toggle-box" id="smear-box">x</div>
+          <span class="toggle-lbl">flow smear</span>
+        </label>
+        <label class="toggle-row" style="margin-top:0.4rem;" id="toggle-tile">
+          <div class="toggle-box" id="tile-box"></div>
+          <span class="toggle-lbl">tile repeat (2x2)</span>
+        </label>
       </div>
 
       <div class="util-row">
         <button class="btn-sm" id="btn-copy">copy</button>
         <button class="btn-sm" id="btn-save">save .txt</button>
+        <button class="btn-sm" id="btn-img">save .jpg</button>
         <button class="btn-sm" id="btn-invert">invert</button>
         <button class="btn-sm" id="btn-pin">pin seed</button>
       </div>
+      <button id="btn-glossary">glossary</button>
 
     </div>
   </div>
@@ -355,48 +257,112 @@ input[type=range] {
       <span class="meta-lbl" id="art-label">generation 0</span>
       <span class="meta-seed" id="seed-disp">seed —</span>
     </div>
-    <div id="art-scroll">
-      <pre id="art"></pre>
-    </div>
+    <div id="art-scroll"><pre id="art"></pre></div>
     <div id="algo-name">—</div>
+    <div id="theory-note"></div>
   </div>
 
 </div>
+
+<!-- GLOSSARY OVERLAY -->
+<div id="glossary-overlay">
+  <div id="glossary-inner">
+    <button id="glossary-close">close ×</button>
+    <p class="g-title">glossary</p>
+
+    <div class="g-section">
+      <div class="g-section-head">algorithms — what they look like</div>
+      <div class="g-entry"><span class="g-term">flow field</span><span class="g-def">smooth, drifting clouds. organic and fluid.</span></div>
+      <div class="g-entry"><span class="g-term">domain warp</span><span class="g-def">folded, twisted, geological. like wood grain or bent smoke.</span></div>
+      <div class="g-entry"><span class="g-term">julia set</span><span class="g-def">crystalline fractal edges. intricate and symmetric in unexpected ways.</span></div>
+      <div class="g-entry"><span class="g-term">reaction</span><span class="g-def">spots, stripes, or labyrinths. like animal skin or coral growth.</span></div>
+      <div class="g-entry"><span class="g-term">voronoi</span><span class="g-def">cellular regions with visible boundaries. like cracked mud or a dragonfly wing.</span></div>
+      <div class="g-entry"><span class="g-term">waves</span><span class="g-def">interference rings and ripple patterns.</span></div>
+      <div class="g-entry"><span class="g-term">rorschach</span><span class="g-def">bilaterally mirrored — any pattern becomes an inkblot.</span></div>
+      <div class="g-entry"><span class="g-term">l-system</span><span class="g-def">branching structures. ferns, trees, roots.</span></div>
+      <div class="g-entry"><span class="g-term">automata</span><span class="g-def">grid-based growth patterns. can be organic, crystalline, or chaotic depending on the random ruleset.</span></div>
+      <div class="g-entry"><span class="g-term">clifford</span><span class="g-def">wispy orbital trails. the density of millions of iterated points forms the image.</span></div>
+      <div class="g-entry"><span class="g-term">dla</span><span class="g-def">lightning bolts, snowflakes, coral. particles walk randomly and stick on contact.</span></div>
+    </div>
+
+    <div class="g-section">
+      <div class="g-section-head">layer + blend</div>
+      <div class="g-entry"><span class="g-term">layer</span><span class="g-def">generates a second field with a different algorithm and overlays it on the first. none means no overlay.</span></div>
+      <div class="g-entry"><span class="g-term">blend mode</span><span class="g-def">how the two layers combine mathematically. add and screen lighten. multiply darkens. max and min take the stronger or weaker value at each point. difference creates edges where the two differ most.</span></div>
+    </div>
+
+    <div class="g-section">
+      <div class="g-section-head">charset — what the characters do</div>
+      <div class="g-entry"><span class="g-term">density</span><span class="g-def">smooth gradient from empty to full. the most faithful rendering of the underlying field.</span></div>
+      <div class="g-entry"><span class="g-term">hi-contrast</span><span class="g-def">only five steps. very graphic, almost like a stamp or linocut.</span></div>
+      <div class="g-entry"><span class="g-term">grit</span><span class="g-def">characters picked for visual weight, not tonal order. the texture is rough regardless of the field underneath.</span></div>
+      <div class="g-entry"><span class="g-term">sparse / alpha / binary / symbol / punct</span><span class="g-def">different character pools that change the surface feel. combine with contrast and density sliders to find the right register.</span></div>
+    </div>
+
+    <div class="g-section">
+      <div class="g-section-head">sliders</div>
+      <div class="g-entry"><span class="g-term">complexity</span><span class="g-def">more iterations, more layers, more detail. higher values are slower to compute.</span></div>
+      <div class="g-entry"><span class="g-term">density</span><span class="g-def">biases the output toward sparse (mostly empty) or full (mostly filled).</span></div>
+      <div class="g-entry"><span class="g-term">contrast</span><span class="g-def">low = milky and compressed. high = stark, mostly empty or full, few mid-tones.</span></div>
+      <div class="g-entry"><span class="g-term">symmetry</span><span class="g-def">0 = none. 1 = left-right mirror. 2 = also top-bottom. 3 = all four quadrants. 4 = adds rotational fold. higher values impose mandala-like structure on any algorithm.</span></div>
+      <div class="g-entry"><span class="g-term">zoom</span><span class="g-def">zooms into the generated field. high zoom on julia set or clifford reveals very different detail.</span></div>
+      <div class="g-entry"><span class="g-term">offset x / y</span><span class="g-def">pans the view when zoomed in. lets you explore a different region of the same seed.</span></div>
+    </div>
+
+    <div class="g-section">
+      <div class="g-section-head">other controls</div>
+      <div class="g-entry"><span class="g-term">↺ (next to generate)</span><span class="g-def">randomises everything at once — algorithm, layer, charset, and all sliders — then generates.</span></div>
+      <div class="g-entry"><span class="g-term">flow smear</span><span class="g-def">shifts characters slightly along the field's gradient direction. gives the image a sense of movement. on by default.</span></div>
+      <div class="g-entry"><span class="g-term">tile repeat</span><span class="g-def">mirrors the field into a 2x2 grid. any image becomes a seamless repeating pattern.</span></div>
+      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the random seed so generate keeps the same underlying structure. useful for comparing how algorithm or charset changes transform the same form.</span></div>
+    </div>
+
+  </div>
+</div>
+
 <script>
+// ── CHARSETS ──────────────────────────────────────────────────────────
 const CS={
-  density:' .`-\',:;!i>lt1fi?rjTIv7J=+L3s5CAe*2SEzPGy4gm6VUb8ko0HOdXnWqp9BRQ#KF%MD@&$',
-  sparse: '  .  `-  ,  :  ;  !  |  +  #  @',
-  symbol: ' .-_~^*+=<>[]{}()|/\\!?#%@&$',
-  alpha:  ' abcdefghijklmnopqrstuvwxyz',
-  binary: '  0  1  0  0  1  1  0  1  ',
-  punct:  ' .,;:!?-_=+*/\\|()[]{}^~`"\'<>',
+  density: ' .`-\',:;!i>lt1fi?rjTIv7J=+L3s5CAe*2SEzPGy4gm6VUb8ko0HOdXnWqp9BRQ#KF%MD@&$',
+  hicon:   '  . : # @',           // high contrast: very few steps, extreme gaps
+  grit:    ' !?%&#*@$+/\\|^~`"\'',  // texture-weight chars, no density gradient
+  sparse:  '   .  `  -  ,  :  ;  |  +  @',
+  symbol:  ' .-_~^*+=<>[]{}()|/\\!?#%@&$',
+  alpha:   ' abcdefghijklmnopqrstuvwxyz',
+  binary:  '  0  1  0  0  1  1  0  1  ',
+  punct:   ' .,;:!?-_=+*/\\|()[]{}^~`"\'<>',
 };
+const CSKEYS=Object.keys(CS);
 
+// ── SIZES ─────────────────────────────────────────────────────────────
+// ── SIZES ─────────────────────────────────────────────────────────────
+// M is tuned so that at 9px font, 90 cols × 6.6px ≈ 594px — fills most phones
+// without horizontal scroll. Larger sizes scroll naturally on mobile.
 const SZ={
-  xs:{w:38,h:20,fs:12}, sm:{w:60,h:32,fs:10},
-  md:{w:90,h:46,fs:9},  lg:{w:125,h:62,fs:8},
+  xs:{w:45, h:28, fs:9},
+  sm:{w:62, h:38, fs:9},
+  md:{w:90, h:52, fs:9},
+  lg:{w:130,h:72, fs:8},
+  xl:{w:175,h:96, fs:7},
 };
 
-const LABELS={
-  perlin:'perlin flow field / warped octaves',
-  julia:'julia set iteration',
-  reaction:'gray-scott reaction-diffusion',
-  voronoi:'voronoi distance field',
-  wave:'interference wave superposition',
-  rorschach:'bilateral rorschach fold',
-  lsystem:'lindenmayer system / turtle',
-  cellular:'extended cellular automata',
+// ── STATE ─────────────────────────────────────────────────────────────
+const st={
+  algo:'perlin', layer:'none', blendMode:'add',
+  charset:'density', size:'md',
+  cx:6, dn:5, ct:5, sy:0, zm:5, ox:50, oy:50,
+  smear:true, tile:false,
+  seed:0, pinned:false, gen:0, inv:false, art:'',
 };
 
-const st={algo:'perlin',charset:'density',size:'md',cx:6,dn:5,sy:0,
-          seed:0,pinned:false,gen:0,inv:false,art:''};
-
+// ── RNG ───────────────────────────────────────────────────────────────
 function rng32(seed){
   let s=seed>>>0;
   return()=>{s|=0;s=s+0x6D2B79F5|0;let t=Math.imul(s^s>>>15,1|s);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
 }
 
-function perlinFactory(rng){
+// ── PERLIN ────────────────────────────────────────────────────────────
+function makePerlin(rng){
   const P=Array.from({length:256},(_,i)=>i);
   for(let i=255;i>0;i--){const j=Math.floor(rng()*(i+1));[P[i],P[j]]=[P[j],P[i]];}
   const PP=[...P,...P];
@@ -411,32 +377,73 @@ function perlinFactory(rng){
   };
 }
 
+// ── ZOOM/OFFSET helpers ───────────────────────────────────────────────
+function zoomCoord(x,W,zm,ox){
+  // zm: 1-20 maps to scale 4.0 down to 0.2
+  const scale=4.0/(zm*0.4);
+  const center=(ox/100)*W;
+  return center+(x-W/2)*scale;
+}
+function zoomCoordY(y,H,zm,oy){
+  const scale=4.0/(zm*0.4);
+  const center=(oy/100)*H;
+  return center+(y-H/2)*scale;
+}
+
+// ── ALGORITHMS ────────────────────────────────────────────────────────
 const ALGOS={
-  perlin(W,H,rng,cx){
-    const n=perlinFactory(rng),ox=rng()*100,oy=rng()*100,cx2=rng()*3+1,cy2=rng()*3+1;
+
+  perlin(W,H,rng,cx,zm,ox,oy){
+    const n=makePerlin(rng),ox2=rng()*100,oy2=rng()*100,cx2=rng()*3+1,cy2=rng()*3+1;
     const oct=Math.floor(cx/2)+1,fr=0.02+rng()*0.04,f=[];
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const sx=zoomCoord(x,W,zm,ox),sy=zoomCoordY(y,H,zm,oy);
       let v=0,a=1,fq=fr,t=0;
-      for(let o=0;o<oct;o++){v+=n((x+ox)*fq*cx2,(y+oy)*fq*cy2)*a;t+=a;a*=.5;fq*=2;}
+      for(let o=0;o<oct;o++){v+=n((sx+ox2)*fq*cx2,(sy+oy2)*fq*cy2)*a;t+=a;a*=.5;fq*=2;}
       v/=t;
-      const wx=n(x*fr*.5+ox+40,y*fr*.5+oy)*2,wy=n(x*fr*.5+ox,y*fr*.5+oy+40)*2;
-      v+=n((x+wx)*fr*2+ox*1.3,(y+wy)*fr*2+oy*1.3)*.3;
+      const wx=n(sx*fr*.5+ox2+40,sy*fr*.5+oy2)*2,wy=n(sx*fr*.5+ox2,sy*fr*.5+oy2+40)*2;
+      v+=n((sx+wx)*fr*2+ox2*1.3,(sy+wy)*fr*2+oy2*1.3)*.3;
       f.push((v+1)/2);
     }
     return f;
   },
-  julia(W,H,rng,cx){
-    const ps=[[-0.7,0.27],[-0.4,0.6],[0.285,0.01],[-0.835,-0.232],[-0.7269,0.1889],[0.45,0.1428],[-0.54,0.54],[0.355,0.355]];
-    const p=ps[Math.floor(rng()*ps.length)];
-    const cR=p[0]+(rng()-.5)*.05,cI=p[1]+(rng()-.5)*.05,mx=20+cx*5,zm=1.2+rng()*.6;
-    const oX=(rng()-.5)*.3,oY=(rng()-.5)*.3,f=[];
+
+  warp(W,H,rng,cx,zm,ox,oy){
+    // deep domain warping: warp the warp
+    const n=makePerlin(rng),ox2=rng()*80,oy2=rng()*80;
+    const fr=0.025+rng()*0.03,depth=2+Math.floor(cx/4),f=[];
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
-      let zr=(x/W-.5)*3.5/zm+oX,zi=(y/H-.5)*2/zm+oY,i=0;
-      while(i<mx&&zr*zr+zi*zi<4){const t=zr*zr-zi*zi+cR;zi=2*zr*zi+cI;zr=t;i++;}
-      f.push(i/mx);
+      let sx=zoomCoord(x,W,zm,ox)*fr,sy=zoomCoordY(y,H,zm,oy)*fr;
+      for(let d=0;d<depth;d++){
+        const wx=n(sx+ox2,sy+oy2+3.7);
+        const wy=n(sx+ox2+1.7,sy+oy2+9.2);
+        sx+=wx*1.8;sy+=wy*1.8;
+      }
+      f.push((n(sx,sy)+1)/2);
     }
     return f;
   },
+
+  julia(W,H,rng,cx,zm,ox,oy){
+    const ps=[[-0.7,0.27],[-0.4,0.6],[0.285,0.01],[-0.835,-0.232],
+              [-0.7269,0.1889],[0.45,0.1428],[-0.54,0.54],[0.355,0.355],
+              [0.37,0.1],[-0.7,0.0],[-0.1,0.651]];
+    const p=ps[Math.floor(rng()*ps.length)];
+    const cR=p[0]+(rng()-.5)*.08,cI=p[1]+(rng()-.5)*.08;
+    const maxIter=25+cx*6;
+    const f=[];
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const sx=zoomCoord(x,W,zm,ox)/W*3.5-.5;
+      const sy=zoomCoordY(y,H,zm,oy)/H*2-1;
+      let zr=sx,zi=sy,iter=0;
+      while(iter<maxIter&&zr*zr+zi*zi<4){const t=zr*zr-zi*zi+cR;zi=2*zr*zi+cI;zr=t;iter++;}
+      // smooth iteration count
+      const smooth=iter<maxIter?iter+1-Math.log(Math.log(Math.sqrt(zr*zr+zi*zi))/Math.LN2)/Math.LN2:maxIter;
+      f.push(Math.min(1,Math.max(0,smooth/maxIter)));
+    }
+    return f;
+  },
+
   reaction(W,H,rng,cx){
     const feed=0.037+rng()*.02,kill=0.060+rng()*.02,steps=30+cx*5;
     let A=new Float32Array(W*H).fill(1),B=new Float32Array(W*H).fill(0);
@@ -447,7 +454,7 @@ const ALGOS={
       }
     }
     const nA=new Float32Array(W*H),nB=new Float32Array(W*H);
-    for(let st=0;st<steps;st++){
+    for(let step=0;step<steps;step++){
       for(let y=0;y<H;y++)for(let x=0;x<W;x++){
         const i=y*W+x,l=y*W+(x-1+W)%W,r=y*W+(x+1)%W,u=((y-1+H)%H)*W+x,d=((y+1)%H)*W+x;
         const la=A[l]+A[r]+A[u]+A[d]-4*A[i],lb=B[l]+B[r]+B[u]+B[d]-4*B[i],ab=A[i]*B[i]*B[i];
@@ -458,30 +465,37 @@ const ALGOS={
     }
     return Array.from(B);
   },
-  voronoi(W,H,rng,cx){
-    const n=5+Math.floor(cx*2+rng()*10),pts=Array.from({length:n},()=>({x:rng()*W,y:rng()*H}));
+
+  voronoi(W,H,rng,cx,zm,ox,oy){
+    const n=5+Math.floor(cx*2+rng()*10);
+    const pts=Array.from({length:n},()=>({x:rng()*W,y:rng()*H}));
     const mD=Math.sqrt(W*W+H*H)/3,f=[];
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const sx=zoomCoord(x,W,zm,ox),sy=zoomCoordY(y,H,zm,oy);
       let d1=Infinity,d2=Infinity;
-      for(const p of pts){const d=Math.sqrt((x-p.x)**2+(y-p.y)**2);if(d<d1){d2=d1;d1=d;}else if(d<d2)d2=d;}
+      for(const p of pts){const d=Math.sqrt((sx-p.x)**2+(sy-p.y)**2);if(d<d1){d2=d1;d1=d;}else if(d<d2)d2=d;}
       f.push(Math.min(1,(d2-d1)/mD*2+d1/mD*.3));
     }
     const mx=Math.max(...f);return f.map(v=>v/mx);
   },
-  wave(W,H,rng,cx){
-    const wc=3+Math.floor(cx/2),ps=Array.from({length:wc},()=>({
+
+  wave(W,H,rng,cx,zm,ox,oy){
+    const wc=3+Math.floor(cx/2);
+    const ps=Array.from({length:wc},()=>({
       fx:(rng()-.5)*.3,fy:(rng()-.5)*.3,ph:rng()*Math.PI*2,
       amp:.3+rng()*.7,cx:W*(.2+rng()*.6),cy:H*(.2+rng()*.6),
     })),f=[];
     for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      const sx=zoomCoord(x,W,zm,ox),sy=zoomCoordY(y,H,zm,oy);
       let v=0;
-      for(const w of ps){const dx=x-w.cx,dy=y-w.cy;v+=w.amp*Math.sin(dx*w.fx+dy*w.fy+w.ph+Math.sqrt(dx*dx+dy*dy)*.08);}
+      for(const w of ps){const dx=sx-w.cx,dy=sy-w.cy;v+=w.amp*Math.sin(dx*w.fx+dy*w.fy+w.ph+Math.sqrt(dx*dx+dy*dy)*.08);}
       f.push((v/wc+1)/2);
     }
     return f;
   },
+
   rorschach(W,H,rng,cx){
-    const hw=Math.ceil(W/2),n=perlinFactory(rng),fr=.05+rng()*.05,ox=rng()*50,oy=rng()*50;
+    const hw=Math.ceil(W/2),n=makePerlin(rng),fr=.05+rng()*.05,ox=rng()*50,oy=rng()*50;
     const oct=2+Math.floor(cx/3),f=new Array(W*H);
     for(let y=0;y<H;y++)for(let x=0;x<hw;x++){
       let v=0,a=1,fq=fr,t=0;
@@ -490,15 +504,17 @@ const ALGOS={
     }
     return f;
   },
+
   lsystem(W,H,rng,cx){
     const fld=new Float32Array(W*H);
     const sys=[
       {ax:'X',rules:{'X':'F+[+X]-[-X]FX','F':'FF'},ang:25},
       {ax:'F',rules:{'F':'F[+F]F[-F]F'},ang:26},
       {ax:'X',rules:{'X':'F[+X][-X]FX','F':'FF'},ang:20},
-    ][Math.floor(rng()*3)];
+      {ax:'X',rules:{'X':'F[-X][+X]F[-X]','F':'FF'},ang:30},
+    ][Math.floor(rng()*4)];
     let s=sys.ax;
-    for(let i=0;i<3+Math.floor(cx/4);i++){let ns='';for(const c of s)ns+=(sys.rules[c]||c);s=ns;if(s.length>50000)break;}
+    for(let i=0;i<3+Math.floor(cx/4);i++){let ns='';for(const c of s)ns+=(sys.rules[c]||c);s=ns;if(s.length>60000)break;}
     const ang=sys.ang*(1+(rng()-.5)*.3)*Math.PI/180;
     let x=W/2,y=H*.9,a=-Math.PI/2,step=H*.035;const stk=[];
     for(const c of s){
@@ -511,11 +527,15 @@ const ALGOS={
     }
     const mx=Math.max(...fld);return mx>0?Array.from(fld).map(v=>Math.min(1,v/mx*2)):Array(W*H).fill(0);
   },
+
   cellular(W,H,rng,cx){
-    const rules=[{b:[3],s:[2,3]},{b:[3,6],s:[2,3]},{b:[3,6,8],s:[2,4,6]},{b:[2,5,6],s:[5,6,7,8]},{b:[3,7],s:[2,3,7,8]}];
+    const rules=[
+      {b:[3],s:[2,3]},{b:[3,6],s:[2,3]},{b:[3,6,8],s:[2,4,6]},
+      {b:[2,5,6],s:[5,6,7,8]},{b:[3,7],s:[2,3,7,8]},{b:[2,3,6],s:[3,4,5]},
+    ];
     const r=rules[Math.floor(rng()*rules.length)];
     let g=Array.from({length:H},()=>Array.from({length:W},()=>rng()<.35?1:0));
-    for(let s=0;s<10+cx*3;s++){
+    for(let step=0;step<10+cx*3;step++){
       g=g.map((row,y)=>row.map((_,x)=>{
         let n=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){if(!dx&&!dy)continue;n+=g[(y+dy+H)%H][(x+dx+W)%W];}
         return g[y][x]?r.s.includes(n)?1:0:r.b.includes(n)?1:0;
@@ -523,11 +543,97 @@ const ALGOS={
     }
     return g.flat().map(v=>v?1:0);
   },
+
+  clifford(W,H,rng,cx,zm,ox,oy){
+    // Clifford strange attractor: x'=sin(a*y)+c*cos(a*x), y'=sin(b*x)+d*cos(b*y)
+    const a=(rng()-.5)*4,b=(rng()-.5)*4,c=(rng()-.5)*4,d=(rng()-.5)*4;
+    const grid=new Float32Array(W*H);
+    const iters=50000+cx*15000;
+    let px=rng()*2-1,py=rng()*2-1;
+    // warm up
+    for(let i=0;i<200;i++){const tx=Math.sin(a*py)+c*Math.cos(a*px),ty=Math.sin(b*px)+d*Math.cos(b*py);px=tx;py=ty;}
+    // accumulate
+    for(let i=0;i<iters;i++){
+      const tx=Math.sin(a*py)+c*Math.cos(a*px),ty=Math.sin(b*px)+d*Math.cos(b*py);
+      px=tx;py=ty;
+      // map to grid with zoom/offset
+      const gx=Math.floor(((px+2)/4*W*(4/(zm*0.4))+zoomCoord(W/2,W,zm,ox)*(zm*0.4)/4)%W);
+      const gy=Math.floor(((py+2)/4*H*(4/(zm*0.4))+zoomCoordY(H/2,H,zm,oy)*(zm*0.4)/4)%H);
+      const cx2=Math.floor(((px+2)/4)*W);
+      const cy2=Math.floor(((py+2)/4)*H);
+      if(cx2>=0&&cx2<W&&cy2>=0&&cy2<H)grid[cy2*W+cx2]+=1;
+    }
+    const mx=Math.max(...grid);
+    return mx>0?Array.from(grid).map(v=>Math.min(1,Math.pow(v/mx,0.35))):Array(W*H).fill(0);
+  },
+
+  dla(W,H,rng,cx){
+    // Diffusion-Limited Aggregation
+    const grid=new Uint8Array(W*H);
+    // seed at center
+    const cx2=Math.floor(W/2),cy2=Math.floor(H/2);
+    grid[cy2*W+cx2]=1;
+    const nParticles=800+cx*300;
+    const maxR=Math.min(W,H)/2-2;
+    let aggR=1;
+    for(let p=0;p<nParticles;p++){
+      // spawn at random point on circle slightly beyond aggregate
+      const spawnR=Math.min(aggR+3,maxR);
+      const angle=rng()*Math.PI*2;
+      let px=Math.round(cx2+Math.cos(angle)*spawnR);
+      let py=Math.round(cy2+Math.sin(angle)*spawnR);
+      for(let step=0;step<2000;step++){
+        const dir=Math.floor(rng()*4);
+        if(dir===0)px++;else if(dir===1)px--;else if(dir===2)py++;else py--;
+        px=Math.max(1,Math.min(W-2,px));py=Math.max(1,Math.min(H-2,py));
+        // check neighbours
+        let stuck=false;
+        for(let dy=-1;dy<=1&&!stuck;dy++)for(let dx=-1;dx<=1&&!stuck;dx++){
+          if(!dx&&!dy)continue;
+          const nx=px+dx,ny=py+dy;
+          if(nx>=0&&nx<W&&ny>=0&&ny<H&&grid[ny*W+nx])stuck=true;
+        }
+        if(stuck){
+          grid[py*W+px]=1;
+          const dist=Math.sqrt((px-cx2)**2+(py-cy2)**2);
+          if(dist>aggR)aggR=dist;
+          break;
+        }
+        // kill if too far
+        if(Math.sqrt((px-cx2)**2+(py-cy2)**2)>maxR)break;
+      }
+    }
+    // blur slightly for density gradient
+    const out=new Float32Array(W*H);
+    for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+      if(!grid[y*W+x])continue;
+      for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){
+        const nx=x+dx,ny=y+dy;
+        if(nx>=0&&nx<W&&ny>=0&&ny<H)out[ny*W+nx]+=1/(1+Math.abs(dx)+Math.abs(dy));
+      }
+    }
+    const mx=Math.max(...out);
+    return mx>0?Array.from(out).map(v=>Math.min(1,v/mx)):Array(W*H).fill(0);
+  },
 };
 
 const AKEYS=Object.keys(ALGOS);
 
-function symmetry(field,W,H,sym){
+// ── BLEND MODES ───────────────────────────────────────────────────────
+function blend(a,b,mode){
+  switch(mode){
+    case 'add':      return Math.min(1,(a+b)/1.5);
+    case 'multiply': return a*b;
+    case 'max':      return Math.max(a,b);
+    case 'min':      return Math.min(a,b);
+    case 'diff':     return Math.abs(a-b);
+    case 'screen':   return 1-(1-a)*(1-b);
+    default:         return a;
+  }
+}
+
+// ── SYMMETRY ──────────────────────────────────────────────────────────
+function applySymmetry(field,W,H,sym){
   if(!sym)return field;
   const out=[...field];
   for(let y=0;y<H;y++)for(let x=0;x<W;x++){
@@ -540,15 +646,56 @@ function symmetry(field,W,H,sym){
   return out;
 }
 
-function toAscii(field,W,H,csKey,dn,inv){
-  const cs=CS[csKey],sorted=[...field].sort((a,b)=>a-b),n=sorted.length;
-  const eq=field.map(v=>{let lo=0,hi=n-1;while(lo<hi){const m=(lo+hi)>>1;if(sorted[m]<v)lo=m+1;else hi=m;}return lo/n;});
+// ── SMEAR (flow direction pass) ───────────────────────────────────────
+function applySmear(field,W,H){
+  const out=new Float32Array(W*H);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const i=y*W+x;
+    // gradient direction
+    const gx=(x<W-1?field[y*W+x+1]:field[i])-(x>0?field[y*W+x-1]:field[i]);
+    const gy=(y<H-1?field[(y+1)*W+x]:field[i])-(y>0?field[(y-1)*W+x]:field[i]);
+    // smear 1 pixel in gradient direction
+    const nx=Math.round(x+gx*2),ny=Math.round(y+gy*2);
+    const src=nx>=0&&nx<W&&ny>=0&&ny<H?field[ny*W+nx]:field[i];
+    out[i]=(field[i]*0.6+src*0.4);
+  }
+  return Array.from(out);
+}
+
+// ── TILING ────────────────────────────────────────────────────────────
+function applyTile(field,W,H){
+  const out=new Float32Array(W*H);
+  const hw=Math.floor(W/2),hh=Math.floor(H/2);
+  for(let y=0;y<H;y++)for(let x=0;x<W;x++){
+    const sx=x<hw?x:W-1-x;
+    const sy=y<hh?y:H-1-y;
+    out[y*W+x]=field[Math.min(sy,hh-1)*W+Math.min(sx,hw-1)];
+  }
+  return Array.from(out);
+}
+
+// ── FIELD → ASCII ─────────────────────────────────────────────────────
+function toAscii(field,W,H,csKey,dn,ct,inv){
+  const cs=CS[csKey];
+  // histogram equalization
+  const sorted=[...field].sort((a,b)=>a-b),n=sorted.length;
+  const eq=field.map(v=>{
+    let lo=0,hi=n-1;
+    while(lo<hi){const m=(lo+hi)>>1;if(sorted[m]<v)lo=m+1;else hi=m;}
+    return lo/n;
+  });
+  // contrast: ct 1-10 maps gamma from 2.0 to 0.5
+  const gamma=2.0-(ct-1)*(1.5/9);
+  // density bias
+  const dbias=1+(1-dn/10);
   const rows=[];
   for(let y=0;y<H;y++){
     let row='';
     for(let x=0;x<W;x++){
-      let v=eq[y*W+x];if(inv)v=1-v;
-      v=Math.pow(v,1+(1-dn/10));
+      let v=eq[y*W+x];
+      if(inv)v=1-v;
+      v=Math.pow(v,gamma);
+      v=Math.pow(v,dbias);
       row+=cs[Math.min(cs.length-1,Math.floor(v*cs.length))];
     }
     rows.push(row);
@@ -556,72 +703,321 @@ function toAscii(field,W,H,csKey,dn,inv){
   return rows.join('\n');
 }
 
+// ── SYNC SLIDERS ──────────────────────────────────────────────────────
+function syncSliders(){
+  const ids=[['sl-cx','cx','v-cx'],['sl-dn','dn','v-dn'],['sl-ct','ct','v-ct'],
+             ['sl-sy','sy','v-sy'],['sl-zm','zm','v-zm'],['sl-ox','ox','v-ox'],['sl-oy','oy','v-oy']];
+  ids.forEach(([id,k,vid])=>{
+    document.getElementById(id).value=st[k];
+    document.getElementById(vid).textContent=st[k];
+  });
+}
+
+// ── GENERATE ──────────────────────────────────────────────────────────
 function generate(){
   if(!st.pinned)st.seed=Math.random()*999999|0;
   st.gen++;
   let algo=st.algo;
-  if(algo==='random')algo=AKEYS[Math.floor(Math.random()*AKEYS.length)];
-  const {w,h,fs}=SZ[st.size],rng=rng32(st.seed+st.gen*17);
+  const rng=rng32(st.seed+st.gen*17);
+  const {w,h,fs}=SZ[st.size];
+
   let field;
-  try{field=ALGOS[algo](w,h,rng,st.cx,st.dn);}
-  catch(e){console.warn(e);field=ALGOS.perlin(w,h,rng,st.cx);algo='perlin';}
-  field=symmetry(field,w,h,st.sy);
-  const art=toAscii(field,w,h,st.charset,st.dn,st.inv);
+  try{field=ALGOS[algo](w,h,rng,st.cx,st.zm,st.ox,st.oy);}
+  catch(e){console.warn(e);field=ALGOS.perlin(w,h,rng,st.cx,st.zm,st.ox,st.oy);algo='perlin';}
+
+  if(st.layer!=='none'&&ALGOS[st.layer]){
+    const rng2=rng32(st.seed+st.gen*31);
+    let field2;
+    try{field2=ALGOS[st.layer](w,h,rng2,st.cx,st.zm,st.ox,st.oy);}
+    catch(e){field2=field;}
+    field=field.map((v,i)=>blend(v,field2[i],st.blendMode));
+  }
+
+  if(st.smear)field=applySmear(field,w,h);
+  field=applySymmetry(field,w,h,st.sy);
+  if(st.tile)field=applyTile(field,w,h);
+
+  const art=toAscii(field,w,h,st.charset,st.dn,st.ct,st.inv);
   st.art=art;
+
   const el=document.getElementById('art');
   el.style.fontSize=fs+'px';
+  el.style.transform='none';
+  el.parentElement.style.height='auto';
   el.classList.remove('visible');
-  requestAnimationFrame(()=>{el.textContent=art;requestAnimationFrame(()=>el.classList.add('visible'));});
+  requestAnimationFrame(()=>{
+    el.textContent=art;
+    requestAnimationFrame(()=>el.classList.add('visible'));
+  });
   document.getElementById('algo-name').textContent=LABELS[algo]||algo;
   document.getElementById('seed-disp').textContent='seed '+st.seed;
   document.getElementById('art-label').textContent='generation '+st.gen;
+  showTheory(algo);
 }
 
-// ── EVENTS ──
-document.getElementById('btn-gen').addEventListener('click',generate);
-
-document.getElementById('settings-toggle').addEventListener('click',()=>{
-  const p=document.getElementById('settings-panel'),b=document.getElementById('settings-toggle');
-  p.classList.toggle('open');b.textContent=p.classList.contains('open')?'settings ↑':'settings ↓';
-});
-
+// ── PILL HELPERS ──────────────────────────────────────────────────────
+function setPill(groupId,val){
+  document.querySelectorAll('#'+groupId+' .pill[data-v]').forEach(b=>{
+    b.classList.toggle('on',b.dataset.v===val);
+  });
+}
 function pills(id,setter){
   document.getElementById(id).addEventListener('click',e=>{
-    const btn=e.target.closest('.pill');if(!btn)return;
-    document.querySelectorAll('#'+id+' .pill').forEach(b=>b.classList.remove('on'));
+    const btn=e.target.closest('.pill[data-v]');if(!btn)return;
+    document.querySelectorAll('#'+id+' .pill[data-v]').forEach(b=>b.classList.remove('on'));
     btn.classList.add('on');setter(btn.dataset.v);
   });
 }
 pills('algo-pills',v=>st.algo=v);
+pills('layer-pills',v=>st.layer=v);
 pills('cs-pills',v=>st.charset=v);
 pills('size-pills',v=>st.size=v);
 
-[['sl-cx','cx','v-cx'],['sl-dn','dn','v-dn'],['sl-sy','sy','v-sy']].forEach(([id,k,vid])=>{
+document.getElementById('blend-mode').addEventListener('change',e=>st.blendMode=e.target.value);
+
+// ── RANDOM BUTTONS ────────────────────────────────────────────────────
+function flashBtn(id){const b=document.getElementById(id);b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),300);}
+
+document.getElementById('algo-rand').addEventListener('click',()=>{
+  const pick=AKEYS[Math.floor(Math.random()*AKEYS.length)];
+  st.algo=pick;setPill('algo-pills',pick);
+  st.cx=2+Math.floor(Math.random()*9);st.dn=1+Math.floor(Math.random()*10);
+  st.ct=1+Math.floor(Math.random()*10);st.sy=Math.floor(Math.random()*5);
+  syncSliders();flashBtn('algo-rand');
+});
+
+document.getElementById('cs-rand').addEventListener('click',()=>{
+  const pick=CSKEYS[Math.floor(Math.random()*CSKEYS.length)];
+  st.charset=pick;setPill('cs-pills',pick);
+  st.dn=1+Math.floor(Math.random()*10);st.ct=1+Math.floor(Math.random()*10);
+  document.getElementById('sl-dn').value=st.dn;document.getElementById('v-dn').textContent=st.dn;
+  document.getElementById('sl-ct').value=st.ct;document.getElementById('v-ct').textContent=st.ct;
+  flashBtn('cs-rand');
+});
+
+document.getElementById('btn-rand-all').addEventListener('click',()=>{
+  st.algo=AKEYS[Math.floor(Math.random()*AKEYS.length)];setPill('algo-pills',st.algo);
+  const lkeys=['none',...AKEYS.filter(k=>k!==st.algo).slice(0,4),'none','none','none'];
+  st.layer=lkeys[Math.floor(Math.random()*lkeys.length)];setPill('layer-pills',st.layer);
+  st.charset=CSKEYS[Math.floor(Math.random()*CSKEYS.length)];setPill('cs-pills',st.charset);
+  const modes=['add','multiply','max','min','diff','screen'];
+  st.blendMode=modes[Math.floor(Math.random()*modes.length)];
+  document.getElementById('blend-mode').value=st.blendMode;
+  st.cx=2+Math.floor(Math.random()*9);st.dn=1+Math.floor(Math.random()*10);
+  st.ct=1+Math.floor(Math.random()*10);st.sy=Math.floor(Math.random()*5);
+  st.zm=1+Math.floor(Math.random()*15);st.ox=20+Math.floor(Math.random()*60);st.oy=20+Math.floor(Math.random()*60);
+  syncSliders();generate();
+});
+
+// ── SLIDERS ───────────────────────────────────────────────────────────
+[['sl-cx','cx','v-cx'],['sl-dn','dn','v-dn'],['sl-ct','ct','v-ct'],
+ ['sl-sy','sy','v-sy'],['sl-zm','zm','v-zm'],['sl-ox','ox','v-ox'],['sl-oy','oy','v-oy']].forEach(([id,k,vid])=>{
   document.getElementById(id).addEventListener('input',e=>{
     st[k]=parseInt(e.target.value);document.getElementById(vid).textContent=e.target.value;
   });
 });
 
+// ── TOGGLES ───────────────────────────────────────────────────────────
+document.getElementById('toggle-smear').addEventListener('click',()=>{
+  st.smear=!st.smear;document.getElementById('smear-box').textContent=st.smear?'x':'';
+});
+document.getElementById('toggle-tile').addEventListener('click',()=>{
+  st.tile=!st.tile;document.getElementById('tile-box').textContent=st.tile?'x':'';
+});
+
+// ── SETTINGS TOGGLE ───────────────────────────────────────────────────
+document.getElementById('settings-toggle').addEventListener('click',()=>{
+  const p=document.getElementById('settings-panel'),b=document.getElementById('settings-toggle');
+  p.classList.toggle('open');b.textContent=p.classList.contains('open')?'settings ↑':'settings ↓';
+});
+
+// ── GENERATE ──────────────────────────────────────────────────────────
+document.getElementById('btn-gen').addEventListener('click',generate);
+
+// ── COPY ──────────────────────────────────────────────────────────────
 document.getElementById('btn-copy').addEventListener('click',()=>{
   navigator.clipboard.writeText(st.art).then(()=>{
     const b=document.getElementById('btn-copy');b.textContent='copied';setTimeout(()=>b.textContent='copy',1500);
   });
 });
+
+// ── SAVE TXT ──────────────────────────────────────────────────────────
 document.getElementById('btn-save').addEventListener('click',()=>{
   const b=new Blob([st.art],{type:'text/plain'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mantarini-'+st.seed+'-'+st.gen+'.txt';a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);
+  a.download='mantarini-'+st.seed+'-'+st.gen+'.txt';a.click();
 });
-document.getElementById('btn-invert').addEventListener('click',()=>{
-  st.inv=!st.inv;document.getElementById('btn-invert').textContent=st.inv?'normal':'invert';generate();
-});
-document.getElementById('btn-pin').addEventListener('click',()=>{
-  st.pinned=!st.pinned;
-  const b=document.getElementById('btn-pin');
-  b.textContent=st.pinned?'unpin':'pin seed';
-  b.style.borderColor=st.pinned?'var(--ink)':'var(--faint)';
-});
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='INPUT')generate();});
 
+// ── SAVE JPG ──────────────────────────────────────────────────────────
+document.getElementById('btn-img').addEventListener('click',()=>{
+  const btn=document.getElementById('btn-img');
+  btn.textContent='saving...';
+  const lines=st.art.split('\n');
+  const {fs}=SZ[st.size];
+  const scale=2;
+  const lh=Math.round(fs*1.18*scale),pad=Math.round(fs*2*scale);
+  const tmp=document.createElement('canvas').getContext('2d');
+  tmp.font=(fs*scale)+'px "Courier New",monospace';
+  const cw=tmp.measureText('M').width;
+  const cols=Math.max(...lines.map(l=>l.length));
+  const W=Math.ceil(cols*cw)+pad*2,H=lines.length*lh+pad*2;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+  ctx.fillStyle='#1c1510';ctx.font=(fs*scale)+'px "Courier New",monospace';ctx.textBaseline='top';
+  lines.forEach((line,i)=>ctx.fillText(line,pad,pad+i*lh));
+  ctx.fillStyle='#d0c8be';ctx.font=(8*scale)+'px "Courier New",monospace';ctx.textBaseline='bottom';
+  ctx.fillText('mantarini · seed '+st.seed,pad,H-Math.round(6*scale));
+  cv.toBlob(blob=>{
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+    a.download='mantarini-'+st.seed+'-'+st.gen+'.jpg';a.click();
+    setTimeout(()=>btn.textContent='save .jpg',800);
+  },'image/jpeg',0.92);
+});
+
+// ── RANDOM LAYER ──────────────────────────────────────────────────────
+document.getElementById('layer-rand').addEventListener('click',()=>{
+  const layerOpts=['none','perlin','warp','julia','reaction','voronoi','wave','clifford','dla'];
+  const pick=layerOpts[Math.floor(Math.random()*layerOpts.length)];
+  st.layer=pick;setPill('layer-pills',pick);
+  const modes=['add','multiply','max','min','diff','screen'];
+  st.blendMode=modes[Math.floor(Math.random()*modes.length)];
+  document.getElementById('blend-mode').value=st.blendMode;
+  flashBtn('layer-rand');
+});
+
+// ── GLOSSARY ──────────────────────────────────────────────────────────
+document.getElementById('btn-glossary').addEventListener('click',()=>{
+  document.getElementById('glossary-overlay').classList.add('open');
+});
+document.getElementById('glossary-close').addEventListener('click',()=>{
+  document.getElementById('glossary-overlay').classList.remove('open');
+});
+document.getElementById('glossary-overlay').addEventListener('click',e=>{
+  if(e.target===document.getElementById('glossary-overlay'))
+    document.getElementById('glossary-overlay').classList.remove('open');
+});
+function updateToggleButtons(){
+  const inv=document.getElementById('btn-invert');
+  inv.textContent=st.inv?'normal':'invert';
+  inv.style.borderColor=st.inv?'var(--ink)':'var(--faint)';
+  inv.style.color=st.inv?'var(--ink)':'var(--mid)';
+  const pin=document.getElementById('btn-pin');
+  pin.textContent=st.pinned?'unpin':'pin seed';
+  pin.style.borderColor=st.pinned?'var(--ink)':'var(--faint)';
+  pin.style.color=st.pinned?'var(--ink)':'var(--mid)';
+}
+
+// ── INVERT ────────────────────────────────────────────────────────────
+document.getElementById('btn-invert').addEventListener('click',()=>{
+  st.inv=!st.inv;updateToggleButtons();generate();
+});
+
+// ── PIN SEED ──────────────────────────────────────────────────────────
+document.getElementById('btn-pin').addEventListener('click',()=>{
+  st.pinned=!st.pinned;updateToggleButtons();
+});
+
+// ── KEYBOARD ──────────────────────────────────────────────────────────
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT')generate();});
+
+// ── ALGO LABELS ───────────────────────────────────────────────────────
+const LABELS={
+  perlin:'perlin flow field / warped octaves',
+  warp:'deep domain warping',
+  julia:'julia set iteration',
+  reaction:'gray-scott reaction-diffusion',
+  voronoi:'voronoi distance field',
+  wave:'interference wave superposition',
+  rorschach:'bilateral rorschach fold',
+  lsystem:'lindenmayer system / turtle',
+  cellular:'extended cellular automata',
+  clifford:'clifford strange attractor',
+  dla:'diffusion-limited aggregation',
+};
+
+// ── THEORY NOTES ──────────────────────────────────────────────────────
+// Each entry: { text, links: [{label, url}] }
+const THEORY={
+  perlin:{
+    text:'Perlin noise was invented by Ken Perlin in 1983 while working on Tron. The goal was to replace the flat, artificial look of early CGI with something organic. It works by interpolating smoothly between random gradient vectors placed on a grid. Stacking multiple layers at increasing frequencies (octaves) produces the flowing, cloud-like detail here. Each octave doubles the frequency and halves the amplitude of the one before. Perlin won a Technical Achievement Oscar for it in 1997. It is now the invisible texture of nearly every landscape, fire, and water simulation in cinema, and underlies the terrain of most open-world games.',
+    links:[{l:'Perlin noise',u:'https://en.wikipedia.org/wiki/Perlin_noise'},{l:'Gradient noise',u:'https://en.wikipedia.org/wiki/Gradient_noise'},{l:'Procedural texture',u:'https://en.wikipedia.org/wiki/Procedural_texture'}],
+  },
+  warp:{
+    text:'Domain warping uses one noise field to distort the input coordinates of another, then does it again with the result. The output is not just noise but noise bent through itself repeatedly, producing geological fold patterns, wood-grain textures, and viscous fluid forms. Inigo Quilez described the technique formally in 2002, though the underlying idea of composing noise functions had been in use in film production for years before. Each warp pass multiplies the complexity in ways the equations themselves cannot predict. The same principle governs the shape of turbulent mixing layers in computational fluid dynamics.',
+    links:[{l:'Domain warping',u:'https://en.wikipedia.org/wiki/Warping_(texture)'},{l:'Turbulence (fluid dynamics)',u:'https://en.wikipedia.org/wiki/Turbulence'},{l:'Fractal noise',u:'https://en.wikipedia.org/wiki/Fractal_landscape'}],
+  },
+  julia:{
+    text:'Julia sets belong to a class of objects that only became visible after computers existed, though Gaston Julia described them mathematically in 1918, entirely by hand, while recovering from wounds sustained in the First World War. Each pixel represents a point in the complex plane. The question asked is: if you repeatedly apply z becomes z-squared plus c, does the result grow without bound, or stay confined? The boundary between those two fates is infinitely detailed at every scale. Change c by a fraction and the shape transforms entirely. The smooth colouring used here avoids the harsh banding of naive iteration-count mapping by interpolating the escape value.',
+    links:[{l:'Julia set',u:'https://en.wikipedia.org/wiki/Julia_set'},{l:'Complex dynamics',u:'https://en.wikipedia.org/wiki/Complex_dynamics'},{l:'Mandelbrot set',u:'https://en.wikipedia.org/wiki/Mandelbrot_set'}],
+  },
+  reaction:{
+    text:'Alan Turing proposed in 1952 that the patterns on animal skins could arise from two chemicals reacting and diffusing across a surface at different speeds. One activates pattern formation, one inhibits it. The Gray-Scott model is a specific, well-studied version of this idea. Feed rate controls how quickly substance A is replenished from outside; kill rate controls how quickly substance B is removed. Together they determine which pattern emerges: isolated spots, connected labyrinths, coral-like branches, or a uniform grey. The same mathematics governs zebrafish pigmentation, cone snail shell patterns, and certain chemical oscillating reactions in the lab.',
+    links:[{l:'Reaction-diffusion system',u:'https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system'},{l:'Turing pattern',u:'https://en.wikipedia.org/wiki/Turing_pattern'},{l:'Gray-Scott model',u:'https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system#Gray%E2%80%93Scott_model'}],
+  },
+  voronoi:{
+    text:'Given a set of seed points, a Voronoi diagram assigns every location in the plane to its nearest seed. The boundaries between regions are equidistant from exactly two seeds. The structure appears at every scale in nature: the cells of a dragonfly wing, the pattern of a giraffe, the cracking of dry mud, the columnar joints of basalt, the arrangement of seeds in a sunflower. Georgy Voronoi formalised the construction in 1908. The dual of the Voronoi diagram is the Delaunay triangulation, which connects seeds whose regions share a boundary. In epidemiology Voronoi regions define hospital catchment areas; in ecology they model animal territory.',
+    links:[{l:'Voronoi diagram',u:'https://en.wikipedia.org/wiki/Voronoi_diagram'},{l:'Delaunay triangulation',u:'https://en.wikipedia.org/wiki/Delaunay_triangulation'},{l:'Computational geometry',u:'https://en.wikipedia.org/wiki/Computational_geometry'}],
+  },
+  wave:{
+    text:'Every point here is the sum of several sine waves, each originating from a different point in the plane, with a different frequency and phase offset. Where waves happen to peak at the same location they reinforce. Where a peak coincides with a trough they cancel. This is superposition and interference, the same phenomenon that produces the colours in a soap bubble, the dead zones in a concert hall, the fringes in a double-slit experiment, and the standing wave patterns that determine the modes of a vibrating drum. The mathematics is identical whether the medium is water, light, sound, or character density in a text grid.',
+    links:[{l:'Wave interference',u:'https://en.wikipedia.org/wiki/Wave_interference'},{l:'Superposition principle',u:'https://en.wikipedia.org/wiki/Superposition_principle'},{l:'Standing wave',u:'https://en.wikipedia.org/wiki/Standing_wave'}],
+  },
+  rorschach:{
+    text:'The left half is generated by Perlin noise. The right half is an exact mirror. Bilateral symmetry costs almost nothing computationally, but transforms perception entirely. The brain, tuned over millions of years to detect faces and bodies, treats symmetry as evidence of intention. It reads agency into the image even when none was present. Hermann Rorschach published his inkblot test in 1921, the year before he died at 37. The blots were always bilaterally symmetric, not to create meaning, but to eliminate orientation as a variable so that the only remaining variable was the viewer\'s own projection. The generator works by exactly the same logic.',
+    links:[{l:'Rorschach test',u:'https://en.wikipedia.org/wiki/Rorschach_test'},{l:'Bilateral symmetry',u:'https://en.wikipedia.org/wiki/Symmetry_in_biology'},{l:'Pareidolia',u:'https://en.wikipedia.org/wiki/Pareidolia'}],
+  },
+  lsystem:{
+    text:'Aristid Lindenmayer was a botanist studying the growth of filamentous algae in 1968 when he invented the system that bears his name. The idea is a grammar: a set of rewriting rules applied repeatedly to a string of symbols. F means draw forward a fixed distance. A plus or minus sign means rotate by the branching angle. Square brackets push and pop position and direction onto a stack. After a few iterations of replacing each F with a longer expression, the resulting string, interpreted as turtle-graphics instructions, looks indistinguishable from a fern, a tree, or a branching coral. Complexity does not require a complex plan. It emerges from a very short rule applied many times.',
+    links:[{l:'L-system',u:'https://en.wikipedia.org/wiki/L-system'},{l:'Turtle graphics',u:'https://en.wikipedia.org/wiki/Turtle_graphics'},{l:'Fractal plant',u:'https://en.wikipedia.org/wiki/Fractal_plant'}],
+  },
+  cellular:{
+    text:'John Conway invented his Game of Life in 1970, published in Scientific American the same year. The rules fit in four sentences: a live cell with two or three neighbours survives; with fewer it dies of loneliness; with more it dies of overcrowding; a dead cell with exactly three neighbours becomes alive. From those rules emerge gliders that travel across the grid, oscillators that pulse, and structures capable of universal computation. This was proved in 2002 when a working self-reproducing universal constructor was assembled inside a Life grid. The variants here relax or modify the survival and birth conditions, producing qualitatively different regimes: more alive, more dead, more chaotic, crystalline.',
+    links:[{l:'Cellular automaton',u:'https://en.wikipedia.org/wiki/Cellular_automaton'},{l:'Conway\'s Game of Life',u:'https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life'},{l:'Outer totalistic automaton',u:'https://en.wikipedia.org/wiki/Outer_totalistic_cellular_automaton'}],
+  },
+  clifford:{
+    text:'Clifford attractors take their name from the mathematician Clifford Pickover, who popularised them. They belong to the broader class of strange attractors: objects defined by simple equations iterated millions of times, where the trajectory wanders endlessly without repeating, confined to a finite region of the plane but never retracing its path. The density of the cloud of visited points forms the image. Four parameters, a, b, c, d, determine the shape entirely. A small perturbation produces an entirely different structure. Strange attractors were named by Ruelle and Takens in 1971. They are the geometric form of deterministic chaos: ordered in that they follow exact equations, chaotic in that nearby trajectories diverge exponentially.',
+    links:[{l:'Attractor',u:'https://en.wikipedia.org/wiki/Attractor'},{l:'Strange attractor',u:'https://en.wikipedia.org/wiki/Attractor#Strange_attractor'},{l:'Chaos theory',u:'https://en.wikipedia.org/wiki/Chaos_theory'}],
+  },
+  dla:{
+    text:'Diffusion-Limited Aggregation was described by Witten and Sander in 1981. Particles are released one at a time from a random point on a circle and walk randomly until they touch the growing cluster, where they stick permanently. The result is a dendritic, branching structure that looks like lightning bolts, snowflakes, coral, electrodeposition patterns, and mineral crystals. The branching arises because the tips of the cluster protrude into the space where wandering particles travel, intercepting them before they can penetrate to the interior. DLA clusters have a fractal dimension of approximately 1.71, sitting between the dimension of a line and the dimension of a filled surface.',
+    links:[{l:'Diffusion-limited aggregation',u:'https://en.wikipedia.org/wiki/Diffusion-limited_aggregation'},{l:'Fractal dimension',u:'https://en.wikipedia.org/wiki/Fractal_dimension'},{l:'Random walk',u:'https://en.wikipedia.org/wiki/Random_walk'}],
+  },
+};
+
+const RAND_THEORY=[
+  {text:'ASCII art as a distinct medium predates digital screens. Typewriter artists were composing pictures from keyboard characters as early as 1898, using the carriage-return to overprint and build up tone. The medium travelled through teletypewriter networks, bulletin board systems, and early email before arriving on the web.',links:[{l:'ASCII art',u:'https://en.wikipedia.org/wiki/ASCII_art'},{l:'Typewriter art',u:'https://en.wikipedia.org/wiki/Typewriter_art'},{l:'ANSI art',u:'https://en.wikipedia.org/wiki/ANSI_art'}]},
+  {text:'The 95 printable ASCII characters span codes 32 through 126. Every generator on this page uses only these. No unicode, no block elements, no escape hatches. The constraint is not a limitation but a commitment. Every image made here could be transmitted as plain text over a 1970s network.',links:[{l:'ASCII',u:'https://en.wikipedia.org/wiki/ASCII'},{l:'Character encoding',u:'https://en.wikipedia.org/wiki/Character_encoding'},{l:'Teleprinter',u:'https://en.wikipedia.org/wiki/Teleprinter'}]},
+  {text:'Generative art raises a question that has not been settled: if the artist writes the rule and the rule produces the work, who made it? Vera Molnar was asking this with pen plotters in 1968. Sol LeWitt was asking it through wall drawings executed by others. The question gets harder as the systems become more autonomous.',links:[{l:'Generative art',u:'https://en.wikipedia.org/wiki/Generative_art'},{l:'Vera Molnar',u:'https://en.wikipedia.org/wiki/Vera_Moln%C3%A1r'},{l:'Sol LeWitt',u:'https://en.wikipedia.org/wiki/Sol_LeWitt'}]},
+  {text:'Strange attractors were named by David Ruelle and Floris Takens in 1971. The strangeness refers to their fractal structure: they occupy a volume of zero in state space but are infinitely detailed at every scale. They are the geometric shape of deterministic chaos.',links:[{l:'Strange attractor',u:'https://en.wikipedia.org/wiki/Attractor#Strange_attractor'},{l:'Chaos theory',u:'https://en.wikipedia.org/wiki/Chaos_theory'},{l:'Fractal',u:'https://en.wikipedia.org/wiki/Fractal'}]},
+  {text:'A fractal is an object whose Hausdorff dimension is not an integer. A smooth curve has dimension 1. A filled plane has dimension 2. The boundary of a Julia set sits somewhere between those two values, more crumpled than a line but not solid enough to fill a surface. This is what the word fractal means in the technical sense that Mandelbrot intended.',links:[{l:'Fractal dimension',u:'https://en.wikipedia.org/wiki/Fractal_dimension'},{l:'Hausdorff dimension',u:'https://en.wikipedia.org/wiki/Hausdorff_dimension'},{l:'Mandelbrot set',u:'https://en.wikipedia.org/wiki/Mandelbrot_set'}]},
+  {text:'The word "algorithm" entered English through the Latin translation of a ninth-century Persian mathematician named al-Khwarizmi. His Latinised name became the word. The title of his most famous book gave us algebra. Generative art is, among other things, a return to that root: the picture as the output of a procedure, not the trace of a hand.',links:[{l:'Algorithm',u:'https://en.wikipedia.org/wiki/Algorithm'},{l:'Al-Khwarizmi',u:'https://en.wikipedia.org/wiki/Al-Khwarizmi'},{l:'Algebra',u:'https://en.wikipedia.org/wiki/Algebra'}]},
+];
+
+function showTheory(algo){
+  const el=document.getElementById('theory-note');
+  const entry=THEORY[algo]||(RAND_THEORY[Math.floor(Math.random()*RAND_THEORY.length)]);
+  el.innerHTML='';
+  const p=document.createElement('p');
+  p.textContent=entry.text;
+  el.appendChild(p);
+  if(entry.links&&entry.links.length){
+    const div=document.createElement('div');
+    div.style.cssText='margin-top:0.8rem;font-size:0.72rem;letter-spacing:0.04em;';
+    entry.links.forEach((lk,i)=>{
+      const a=document.createElement('a');
+      a.href=lk.u;a.target='_blank';a.rel='noopener noreferrer';
+      a.textContent=lk.l;
+      a.style.cssText='color:var(--mid);text-underline-offset:2px;';
+      div.appendChild(a);
+      if(i<entry.links.length-1){div.appendChild(document.createTextNode(', '));}
+    });
+    el.appendChild(div);
+  }
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────
+updateToggleButtons();
 generate();
 </script>
 </body>

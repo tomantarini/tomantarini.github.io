@@ -30,10 +30,10 @@ html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Couri
 .title a:hover{color:var(--mid);}
 .site-sub{font-size:0.5rem;color:var(--mid);letter-spacing:0.15em;text-transform:uppercase;font-family:'Courier Prime',monospace;margin-top:0.15rem;display:block;}
 
-#btn-gen{background:var(--ink);color:#fff;border:none;font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;padding:0.45rem 0.9rem;cursor:pointer;letter-spacing:0.03em;min-height:38px;transition:background 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
-#btn-gen:active{background:var(--mark);}
+#btn-gen{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+#btn-gen:active{border-color:var(--ink);color:var(--ink);}
 
-#btn-rand-all{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:1rem;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;transition:all 0.1s;}
+#btn-rand-all{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;transition:all 0.1s;}
 #btn-rand-all:active{border-color:var(--ink);color:var(--ink);}
 
 #settings-toggle{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
@@ -102,6 +102,8 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 
 #algo-name{margin-top:0.65rem;font-family:'Courier Prime',monospace;font-size:0.5rem;color:var(--faint);letter-spacing:0.13em;text-transform:uppercase;text-align:center;padding:0 0.5rem;}
 
+#about-piece{margin-top:0.35rem;font-family:'Courier Prime',monospace;font-size:0.6rem;color:var(--mid);letter-spacing:0.04em;text-align:center;padding:0 0.5rem;line-height:1.5;}
+
 #theory-note{margin-top:1.8rem;max-width:520px;width:100%;padding:0 0.5rem;font-family:'IM Fell English',serif;font-style:italic;font-size:0.92rem;color:var(--mid);line-height:1.85;text-align:center;letter-spacing:0.01em;}
 #theory-note a{color:var(--mid);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--faint);}
 #theory-note a:hover{color:var(--ink);}
@@ -117,8 +119,8 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   #controls::-webkit-scrollbar-thumb{background:var(--faint);}
   .ctrl-top{flex-direction:column;align-items:flex-start;margin-bottom:1.2rem;gap:0.5rem;}
   .ctrl-buttons{flex-direction:column;width:100%;}
-  #btn-gen{width:100%;flex:none;min-height:44px;font-size:0.95rem;padding:0.55rem 1.1rem;}
-  #btn-rand-all{width:100%;min-height:44px;padding:0.4rem 0.7rem;}
+  #btn-gen{width:100%;flex:none;min-height:36px;font-size:0.6rem;padding:0.35rem 0.7rem;}
+  #btn-rand-all{width:100%;min-height:36px;padding:0.35rem 0.7rem;font-size:0.6rem;}
   #settings-toggle{display:none;}
   #settings-panel{display:flex !important;}
   .s-lbl{margin-top:1.1rem;}
@@ -126,6 +128,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   #stage{flex:1;height:100vh;overflow:auto;padding:1.4rem 1rem 2rem;justify-content:center;}
   #art-meta{max-width:95vw;}
   #algo-name{text-align:left;}
+  #about-piece{text-align:left;}
   #theory-note{text-align:left;}
 }
 </style>
@@ -141,8 +144,8 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
       </div>
       <div class="ctrl-buttons">
         <button id="btn-gen">generate</button>
-        <button id="btn-rand-all" title="randomise everything">↺</button>
         <button id="settings-toggle">settings ↓</button>
+        <button id="btn-rand-all">↺ random</button>
       </div>
     </div>
 
@@ -244,6 +247,8 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
         <button class="btn-sm" id="btn-copy">copy</button>
         <button class="btn-sm" id="btn-save">save .txt</button>
         <button class="btn-sm" id="btn-img">save .jpg</button>
+        <button class="btn-sm" id="btn-svg">save .svg</button>
+        <button class="btn-sm" id="btn-share">share</button>
         <button class="btn-sm" id="btn-invert">invert</button>
         <button class="btn-sm" id="btn-pin">pin seed</button>
       </div>
@@ -259,6 +264,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     </div>
     <div id="art-scroll"><pre id="art"></pre></div>
     <div id="algo-name">—</div>
+    <div id="about-piece"></div>
     <div id="theory-note"></div>
   </div>
 
@@ -753,6 +759,7 @@ function generate(){
   document.getElementById('seed-disp').textContent='seed '+st.seed;
   document.getElementById('art-label').textContent='generation '+st.gen;
   showTheory(algo);
+  updateAbout(algo);
 }
 
 // ── PILL HELPERS ──────────────────────────────────────────────────────
@@ -1016,7 +1023,131 @@ function showTheory(algo){
   }
 }
 
+// ── ABOUT THIS PIECE ──────────────────────────────────────────────────
+function updateAbout(algo){
+  const el=document.getElementById('about-piece');
+  const {w,h}=SZ[st.size];
+  const algoName=LABELS[algo]||algo;
+  const parts=[algoName];
+  if(st.layer!=='none') parts.push('layered with '+(LABELS[st.layer]||st.layer)+' ('+st.blendMode+')');
+  parts.push(st.charset+' charset');
+  if(st.sy>0) parts.push(['','left-right mirror','4-fold mirror','all-axis mirror','rotational fold'][st.sy]||'symmetric');
+  if(st.inv) parts.push('inverted');
+  if(st.tile) parts.push('tiled 2x2');
+  parts.push(w+'x'+h+' · seed '+st.seed);
+  el.textContent=parts.join('  ·  ');
+}
+
+// ── SAVE SVG ──────────────────────────────────────────────────────────
+document.getElementById('btn-svg').addEventListener('click',()=>{
+  const btn=document.getElementById('btn-svg');
+  btn.textContent='saving...';
+  const lines=st.art.split('\n');
+  const {fs}=SZ[st.size];
+  const lh=Math.round(fs*1.18);
+  // measure char width using canvas
+  const tmp=document.createElement('canvas').getContext('2d');
+  tmp.font=fs+'px "Courier New",monospace';
+  const cw=tmp.measureText('M').width;
+  const cols=Math.max(...lines.map(l=>l.length));
+  const pad=Math.round(fs*1.5);
+  const W=Math.ceil(cols*cw)+pad*2;
+  const H=lines.length*lh+pad*2;
+  // build SVG
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">`;
+  svg+=`<rect width="${W}" height="${H}" fill="#ffffff"/>`;
+  svg+=`<g font-family="'Courier New',Courier,monospace" font-size="${fs}" fill="#1c1510">`;
+  lines.forEach((line,row)=>{
+    // render non-space runs as text elements
+    let i=0;
+    while(i<line.length){
+      if(line[i]===' '){i++;continue;}
+      let j=i;
+      while(j<line.length&&line[j]!==' ')j++;
+      const segment=line.slice(i,j);
+      const x=pad+i*cw;
+      const y=pad+row*lh;
+      // escape XML special chars
+      const safe=segment.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      svg+=`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" dominant-baseline="text-before-edge">${safe}</text>`;
+      i=j;
+    }
+  });
+  svg+=`</g>`;
+  // watermark
+  svg+=`<text x="${pad}" y="${H-4}" font-family="'Courier New',monospace" font-size="8" fill="#d0c8be">mantarini · seed ${st.seed}</text>`;
+  svg+=`</svg>`;
+  const blob=new Blob([svg],{type:'image/svg+xml'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='mantarini-'+st.seed+'-'+st.gen+'.svg';
+  a.click();
+  setTimeout(()=>btn.textContent='save .svg',800);
+});
+
+// ── SHARE URL ─────────────────────────────────────────────────────────
+function encodeState(){
+  // encode all settings into a compact hash string
+  const params={
+    a:st.algo, l:st.layer, bm:st.blendMode,
+    cs:st.charset, sz:st.size,
+    cx:st.cx, dn:st.dn, ct:st.ct, sy:st.sy,
+    zm:st.zm, ox:st.ox, oy:st.oy,
+    sm:st.smear?1:0, tl:st.tile?1:0,
+    iv:st.inv?1:0, sd:st.seed,
+  };
+  return btoa(JSON.stringify(params));
+}
+
+function decodeState(hash){
+  try{
+    const params=JSON.parse(atob(hash));
+    if(params.a) st.algo=params.a;
+    if(params.l) st.layer=params.l;
+    if(params.bm) st.blendMode=params.bm;
+    if(params.cs) st.charset=params.cs;
+    if(params.sz) st.size=params.sz;
+    if(params.cx!=null) st.cx=+params.cx;
+    if(params.dn!=null) st.dn=+params.dn;
+    if(params.ct!=null) st.ct=+params.ct;
+    if(params.sy!=null) st.sy=+params.sy;
+    if(params.zm!=null) st.zm=+params.zm;
+    if(params.ox!=null) st.ox=+params.ox;
+    if(params.oy!=null) st.oy=+params.oy;
+    if(params.sm!=null) st.smear=!!+params.sm;
+    if(params.tl!=null) st.tile=!!+params.tl;
+    if(params.iv!=null) st.inv=!!+params.iv;
+    if(params.sd!=null){ st.seed=+params.sd; st.pinned=true; }
+    // sync UI
+    setPill('algo-pills',st.algo);
+    setPill('layer-pills',st.layer);
+    setPill('cs-pills',st.charset);
+    setPill('size-pills',st.size);
+    document.getElementById('blend-mode').value=st.blendMode;
+    syncSliders();
+    document.getElementById('smear-box').textContent=st.smear?'x':'';
+    document.getElementById('tile-box').textContent=st.tile?'x':'';
+    updateToggleButtons();
+    return true;
+  }catch(e){return false;}
+}
+
+document.getElementById('btn-share').addEventListener('click',()=>{
+  const hash=encodeState();
+  const url=location.href.split('#')[0]+'#'+hash;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.getElementById('btn-share');
+    btn.textContent='copied!';
+    setTimeout(()=>btn.textContent='share',1800);
+  });
+  history.replaceState(null,'',url);
+});
+
 // ── INIT ──────────────────────────────────────────────────────────────
+// check for shared state in URL hash
+if(location.hash.length>1){
+  decodeState(location.hash.slice(1));
+}
 updateToggleButtons();
 generate();
 </script>

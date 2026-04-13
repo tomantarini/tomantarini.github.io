@@ -172,7 +172,9 @@ function buildField(entries) {
   const LINE_LEN = 200;
   const NUM_LINES = 50;
   const rng = makeRng(42);
-  const positions = entries.length > 0 ? assignPositions(entries.length, NUM_LINES, rng, LINE_LEN) : [];
+  // reverse so newest entries (last in sheet) appear first
+  const ordered = [...entries].reverse();
+  const positions = ordered.length > 0 ? assignPositions(ordered.length, NUM_LINES, rng, LINE_LEN) : [];
 
   const field = document.getElementById('field');
   if (!field) return;
@@ -189,7 +191,7 @@ function buildField(entries) {
     let cursorPos = 0;
 
     for (const ep of entriesOnLine) {
-      const entry = entries[ep.entryIdx];
+      const entry = ordered[ep.entryIdx];
       const label = wrapLabel(entry);
       const insertAt = Math.min(ep.col, LINE_LEN - label.length - 2);
       while (cursorPos < insertAt) {
@@ -217,7 +219,7 @@ function buildField(entries) {
       cursorPos += 1;
     }
 
-    buildLineDOM(lineDiv, content, entries);
+    buildLineDOM(lineDiv, content, ordered);
     field.appendChild(lineDiv);
   }
 }
@@ -243,19 +245,22 @@ function buildLineDOM(lineDiv, content, entries) {
 }
 
 function assignPositions(count, numLines, rng, lineLen) {
-  // Shuffle line indices for vertical spread
   const allLines = Array.from({length: numLines}, (_, i) => i);
   for (let i = allLines.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1));
     [allLines[i], allLines[j]] = [allLines[j], allLines[i]];
   }
 
-  // 5 horizontal bands cycling so all parts of the line get coverage
   const numBands = 5;
   const bandW = Math.floor(lineLen / numBands);
 
   return Array.from({length: count}, (_, i) => {
-    const line = allLines[i % numLines];
+    // bias: newer entries (low i) get lower line numbers (top of page)
+    const progress = count > 1 ? i / (count - 1) : 0;
+    const lineZone = Math.floor(progress * (numLines - 1));
+    const lineOffset = Math.floor(rng() * Math.max(1, Math.ceil(numLines * 0.15)));
+    const line = Math.min(numLines - 1, lineZone + lineOffset);
+
     const band = (i * 2 + Math.floor(rng() * 2)) % numBands;
     const bandStart = band * bandW;
     const bandEnd = (band === numBands - 1) ? lineLen - 15 : bandStart + bandW - 5;

@@ -353,7 +353,11 @@ document.getElementById('close-btn').addEventListener('click', closePanel);
 
 // rebuild field on resize (debounced)
 let resizeTimer;
+let lastWidth = window.innerWidth;
 window.addEventListener('resize', () => {
+  const currentWidth = window.innerWidth;
+  if (currentWidth === lastWidth) return; // height-only change, ignore
+  lastWidth = currentWidth;
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => buildField(entries), 250);
 });

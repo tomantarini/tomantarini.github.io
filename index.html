@@ -12,12 +12,12 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .title{margin:0 0 20px 0;font-size:1.08rem;font-weight:normal;letter-spacing:.01em;}
 .field{position:relative;}
 
-/* Lines — monospace so char width is exact, no estimation needed */
-.line{display:block;white-space:pre;overflow:hidden;line-height:1.62;font-size:14px;color:#595959;font-family:'Courier New',Courier,monospace;}
+/* Lines */
+.line{display:block;white-space:normal;word-break:break-all;overflow:hidden;line-height:1.62;font-size:14px;color:#595959;font-family:'Courier New',Courier,monospace;width:100%;}
 .line+.line{margin-top:.5rem;}
 
 /* Triggers — Georgia over the monospace field */
-.trigger{display:inline;cursor:pointer;color:#111;font-family:Georgia,"Times New Roman",serif;font-size:1.1em;line-height:1.2;background:none;border:none;padding:0;font-weight:500;}
+.trigger{display:inline;cursor:pointer;color:#111;font-family:Georgia,"Times New Roman",serif;font-size:1.1em;line-height:1.2;background:none;border:none;padding:0;font-weight:500;white-space:normal;}
 .trigger:hover{color:var(--accent);}
 .trigger.active{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
 
@@ -27,7 +27,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .panel-shell{background:#fff;border:1px solid var(--border);overflow-y:auto;overflow-x:hidden;scrollbar-gutter:stable;max-height:min(72vh, calc(100vh - 220px));}
 .panel-inner{padding:16px 16px 18px;position:relative;}
 .panel-type{margin:0 0 6px 0;color:var(--muted);font-size:.82rem;}
-.panel-title{margin:0 0 8px 0;font-size:1rem;font-weight:normal;padding-right:44px;}
 .panel-text{margin:0 0 10px 0;line-height:1.55;font-size:.96rem;}
 .panel-links{margin:6px 0 0 0;font-size:.95rem;}
 .panel-links a{color:var(--accent);}
@@ -44,7 +43,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .field-msg{color:var(--muted);font-size:.9rem;padding:20px 0;}
 
 @media (max-width:700px){
-  .page{padding:12px 10px 16px;}
+  .page{padding:12px 10px 0;}
   .title{font-size:1rem;}
   .line{font-size:11px;line-height:1.55;}
   .trigger{font-size:1.15em;}
@@ -120,29 +119,6 @@ function parseCSVRow(row) {
   return cells;
 }
 
-// Measure actual monospace char width at runtime using a hidden test element
-let _charWidthCache = null;
-function getCharWidth(isMobile) {
-  if (_charWidthCache) return _charWidthCache;
-  const el = document.createElement('span');
-  el.style.cssText = `position:absolute;visibility:hidden;font-family:'Courier New',Courier,monospace;font-size:${isMobile?'11px':'14px'};white-space:pre;`;
-  el.textContent = 'x'.repeat(100);
-  document.body.appendChild(el);
-  const w = el.getBoundingClientRect().width / 100;
-  document.body.removeChild(el);
-  _charWidthCache = w > 0 ? w : (isMobile ? 6.6 : 8.4);
-  return _charWidthCache;
-}
-
-function getLineLen() {
-  const page = document.querySelector('.page');
-  const pageW = page ? page.clientWidth : 0;
-  const w = (pageW > 100 ? pageW : window.innerWidth) - 24;
-  const isMobile = window.innerWidth <= 700;
-  const charWidth = getCharWidth(isMobile);
-  return Math.floor(w / charWidth);
-}
-
 function randomSymbol(rng) {
   return SYMBOLS[Math.floor(rng() * SYMBOLS.length)];
 }
@@ -159,18 +135,17 @@ function makeRng(seed) {
   };
 }
 
-function getNumLines() {
-  // fill viewport height + extra so scroll has content all the way down
-  // line height: 14px * 1.62 + 0.5rem gap ≈ 30px per line desktop
+function getLineLen() {
+  const page = document.querySelector('.page');
+  const w = page ? page.clientWidth - 24 : window.innerWidth - 24;
   const isMobile = window.innerWidth <= 700;
-  const lineH = isMobile ? (11 * 1.55 + 8) : (14 * 1.62 + 8);
-  const targetH = window.innerHeight * 2.2; // enough to scroll through comfortably
-  return Math.max(40, Math.ceil(targetH / lineH));
+  const charW = isMobile ? 6.6 : 8.4; // Courier New char width approx
+  return Math.max(40, Math.floor(w / charW));
 }
 
 function buildField(entries) {
-  const LINE_LEN = 200;
-  const NUM_LINES = 50;
+  const LINE_LEN = getLineLen();
+  const NUM_LINES = Math.max(40, Math.ceil((window.innerHeight * 2.2) / 30));
   const rng = makeRng(42);
   // reverse so newest entries (last in sheet) appear first
   const ordered = [...entries].reverse();
@@ -245,21 +220,17 @@ function buildLineDOM(lineDiv, content, entries) {
 }
 
 function assignPositions(count, numLines, rng, lineLen) {
-  const allLines = Array.from({length: numLines}, (_, i) => i);
-  for (let i = allLines.length - 1; i > 0; i--) {
-    const j = Math.floor(rng() * (i + 1));
-    [allLines[i], allLines[j]] = [allLines[j], allLines[i]];
-  }
-
   const numBands = 5;
   const bandW = Math.floor(lineLen / numBands);
 
   return Array.from({length: count}, (_, i) => {
-    // bias: newer entries (low i) get lower line numbers (top of page)
-    const progress = count > 1 ? i / (count - 1) : 0;
-    const lineZone = Math.floor(progress * (numLines - 1));
-    const lineOffset = Math.floor(rng() * Math.max(1, Math.ceil(numLines * 0.15)));
-    const line = Math.min(numLines - 1, lineZone + lineOffset);
+    // i=0 is newest (after reverse). oldest (high i) → top, newest (low i) → bottom
+    const progress = count > 1 ? i / (count - 1) : 0; // 0=newest, 1=oldest
+    const lineZone = Math.floor((1 - progress) * (numLines - 1)); // flip: newest → bottom
+    const spread = Math.ceil(numLines * 0.12);
+    const lineMin = Math.max(0, lineZone - spread);
+    const lineMax = Math.min(numLines - 1, lineZone + spread);
+    const line = lineMin + Math.floor(rng() * (lineMax - lineMin + 1));
 
     const band = (i * 2 + Math.floor(rng() * 2)) % numBands;
     const bandStart = band * bandW;
@@ -383,10 +354,7 @@ document.getElementById('close-btn').addEventListener('click', closePanel);
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    _charWidthCache = null;
-    buildField(entries);
-  }, 250);
+  resizeTimer = setTimeout(() => buildField(entries), 250);
 });
 
 // close on outside click

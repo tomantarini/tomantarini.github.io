@@ -30,7 +30,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .panel-type{margin:0 0 6px 0;color:var(--muted);font-size:.82rem;}
 .panel-text{margin:0 0 10px 0;line-height:1.7;font-size:.96rem;white-space:pre-wrap;word-break:break-word;}
 .panel-links{margin:6px 0 0 0;font-size:.95rem;}
-.panel-links a{color:var(--accent);}
+.panel-links a{color:#0000EE;text-decoration:underline;}
 .close-btn{background:none;border:none;font:inherit;font-size:.9rem;color:var(--muted);cursor:pointer;padding:0;}
 .close-btn:hover{color:var(--text);}
 .panel-shell::-webkit-scrollbar{width:6px;}
@@ -319,12 +319,19 @@ function openPanel(idx) {
   if (entry.link) {
     const p = document.createElement('p');
     p.className = 'panel-links';
-    const a = document.createElement('a');
-    a.href = entry.link;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.textContent = entry.linklabel || entry.link;
-    p.appendChild(a);
+    const pairs = entry.link.split('|').map(s => s.trim()).filter(Boolean);
+    pairs.forEach((pair, i) => {
+      const parts = pair.split('::');
+      const url = parts[1] ? parts[1].trim() : parts[0].trim();
+      const label = parts[1] ? parts[0].trim() : (entry.linklabel || url);
+      const a = document.createElement('a');
+      a.href = url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = label;
+      p.appendChild(a);
+      if (i < pairs.length - 1) p.appendChild(document.createTextNode(', '));
+    });
     body.appendChild(p);
   }
 

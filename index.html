@@ -234,9 +234,10 @@ function assignPositions(count, numLines, rng, lineLen) {
     // i=0 is newest → top of page (low line numbers)
     // i=count-1 is oldest → bottom (high line numbers)
     const progress = count > 1 ? i / (count - 1) : 0;
-    const lineZone = Math.floor(progress * (numLines - 1));
+    const OFFSET = 3; // never place in first 3 lines
+    const lineZone = OFFSET + Math.floor(progress * (numLines - 1 - OFFSET));
     const spread = Math.ceil(numLines * 0.10);
-    const line = Math.min(numLines - 1, Math.max(0, lineZone + Math.floor((rng() - 0.5) * spread)));
+    const line = Math.min(numLines - 1, Math.max(OFFSET, lineZone + Math.floor((rng() - 0.5) * spread)));
 
     const band = (i * 2 + Math.floor(rng() * 2)) % numBands;
     const bandStart = band * bandW;

@@ -42,7 +42,11 @@ html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Couri
 #settings-panel{display:none;flex-direction:column;gap:0.85rem;}
 #settings-panel.open{display:flex;}
 
-.s-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.72rem;color:var(--mid);display:block;margin-bottom:0.35rem;}
+.s-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.72rem;color:var(--mid);display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;}
+
+.lock-btn{background:none;border:none;cursor:pointer;font-size:0.55rem;color:var(--faint);padding:0 0 0 0.3rem;line-height:1;-webkit-tap-highlight-color:transparent;transition:color 0.12s;font-family:'Courier Prime',monospace;letter-spacing:0.08em;text-transform:uppercase;}
+.lock-btn:hover{color:var(--mid);}
+.lock-btn.locked{color:var(--ink);}
 
 .pill-wrap{display:flex;flex-wrap:wrap;gap:0.28rem;align-items:flex-start;}
 
@@ -89,13 +93,13 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 .g-def{font-family:'IM Fell English',serif;font-style:italic;font-size:0.88rem;color:var(--mid);line-height:1.7;display:block;margin-top:0.2rem;}
 
 /* STAGE */
-#stage{flex:1;background:#ffffff;display:flex;flex-direction:column;align-items:center;padding:0.8rem 0.4rem 3rem;overflow-x:hidden;}
+#stage{flex:1;background:#ffffff;display:flex;flex-direction:column;align-items:center;padding:0.8rem 0.4rem 3rem;overflow-y:auto;overflow-x:hidden;}
 
 #art-meta{width:100%;display:flex;justify-content:space-between;align-items:baseline;padding:0 0.3rem 0.4rem;}
 .meta-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.6rem;color:var(--mid);}
 .meta-seed{font-family:'Courier Prime',monospace;font-size:0.52rem;color:var(--faint);letter-spacing:0.07em;}
 
-#art-scroll{width:100%;overflow:hidden;display:flex;justify-content:center;}
+#art-scroll{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;display:flex;justify-content:center;}
 
 #art{font-family:'Courier Prime','Courier New',monospace;line-height:1.18;white-space:pre;color:var(--ink);background:#ffffff;letter-spacing:0.01em;display:inline-block;opacity:0;transition:opacity 0.5s ease;}
 #art.visible{opacity:1;}
@@ -139,8 +143,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   <div id="controls">
     <div class="ctrl-top">
       <div class="ctrl-title-block">
-        <div class="title">το μανταρίνι <a href="index.html">(((◌)))</a></div>
-        <span class="site-sub">ascii generator</span>
+        <a href="index.html" class="title" style="text-decoration:none;color:inherit;">(((◌)))</a>
       </div>
       <div class="ctrl-buttons">
         <button id="btn-gen">generate</button>
@@ -152,7 +155,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     <div id="settings-panel">
 
       <div>
-        <span class="s-lbl">algorithm</span>
+        <span class="s-lbl">algorithm <button class="lock-btn" id="lock-algo">lock</button></span>
         <div class="pill-wrap" id="algo-pills">
           <button class="pill on" data-v="perlin">flow field</button>
           <button class="pill" data-v="warp">domain warp</button>
@@ -170,7 +173,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
       </div>
 
       <div>
-        <span class="s-lbl">layer (blend with)</span>
+        <span class="s-lbl">layer (blend with) <button class="lock-btn" id="lock-layer">lock</button></span>
         <div class="pill-wrap" id="layer-pills">
           <button class="pill on" data-v="none">none</button>
           <button class="pill" data-v="perlin">flow field</button>
@@ -197,7 +200,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
       </div>
 
       <div>
-        <span class="s-lbl">charset</span>
+        <span class="s-lbl">charset <button class="lock-btn" id="lock-charset">lock</button></span>
         <div class="pill-wrap" id="cs-pills">
           <button class="pill on" data-v="density">density</button>
           <button class="pill" data-v="hicon">hi-contrast</button>
@@ -220,9 +223,15 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
           <button class="pill" data-v="lg">L</button>
           <button class="pill" data-v="xl">XL</button>
         </div>
+        <div class="pill-wrap" id="orient-pills" style="margin-top:0.28rem;">
+          <button class="pill" data-v="portrait">portrait</button>
+          <button class="pill on" data-v="landscape">landscape</button>
+          <button class="pill" data-v="square">square</button>
+        </div>
       </div>
 
       <div>
+        <span class="s-lbl">parameters <button class="lock-btn" id="lock-params">lock</button></span>
         <div class="sl-row"><span class="sl-lbl">complexity</span><input type="range" id="sl-cx" min="1" max="10" value="6"><span class="sl-val" id="v-cx">6</span></div>
         <div class="sl-row"><span class="sl-lbl">density</span><input type="range" id="sl-dn" min="1" max="10" value="5"><span class="sl-val" id="v-dn">5</span></div>
         <div class="sl-row"><span class="sl-lbl">contrast</span><input type="range" id="sl-ct" min="1" max="10" value="5"><span class="sl-val" id="v-ct">5</span></div>
@@ -246,7 +255,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
       <div class="util-row">
         <button class="btn-sm" id="btn-copy">copy</button>
         <button class="btn-sm" id="btn-save">save .txt</button>
-        <button class="btn-sm" id="btn-img">save .jpg</button>
+        <button class="btn-sm" id="btn-img">save .png</button>
         <button class="btn-sm" id="btn-svg">save .svg</button>
         <button class="btn-sm" id="btn-share">share</button>
         <button class="btn-sm" id="btn-invert">invert</button>
@@ -340,26 +349,79 @@ const CS={
 };
 const CSKEYS=Object.keys(CS);
 
-// ── SIZES ─────────────────────────────────────────────────────────────
-// ── SIZES ─────────────────────────────────────────────────────────────
-// M is tuned so that at 9px font, 90 cols × 6.6px ≈ 594px — fills most phones
-// without horizontal scroll. Larger sizes scroll naturally on mobile.
+// ── SIZES — grid dimensions only, font size computed at render time ───
 const SZ={
-  xs:{w:45, h:28, fs:9},
-  sm:{w:62, h:38, fs:9},
-  md:{w:90, h:52, fs:9},
-  lg:{w:130,h:72, fs:8},
-  xl:{w:175,h:96, fs:7},
+  xs:{w:45, h:28},
+  sm:{w:62, h:38},
+  md:{w:90, h:52},
+  lg:{w:130,h:72},
+  xl:{w:175,h:96},
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────
 const st={
   algo:'perlin', layer:'none', blendMode:'add',
-  charset:'density', size:'md',
+  charset:'density', size:'md', orient:'landscape',
   cx:6, dn:5, ct:5, sy:0, zm:5, ox:50, oy:50,
   smear:true, tile:false,
   seed:0, pinned:false, gen:0, inv:false, art:'',
 };
+
+// ── GRID DIMENSIONS ───────────────────────────────────────────────────
+// Courier Prime monospace: charWidth ≈ fontSize × 0.601, lineHeight = fontSize × 1.18
+// Visual pixel dimensions: visW = cols × charW, visH = rows × lineH
+// Landscape: native SZ ratios (already wider than tall visually)
+// Square:    visW = visH → rows = cols × 0.601/1.18 ≈ cols × 0.509
+// Portrait:  visH/visW = 16/9 → rows = cols × (16/9) × (0.601/1.18) ≈ cols × 0.906
+const CHAR_W_RATIO = 0.601;
+const CHAR_H_RATIO = 1.18;
+
+function getGrid(size, orient){
+  const {w, h} = SZ[size];
+  if(orient === 'landscape') return {w, h};
+  if(orient === 'square'){
+    const newH = Math.round(w * CHAR_W_RATIO / CHAR_H_RATIO);
+    return {w, h: newH};
+  }
+  if(orient === 'portrait'){
+    const newH = Math.round(w * (16/9) * (CHAR_W_RATIO / CHAR_H_RATIO));
+    return {w, h: newH};
+  }
+  return {w, h};
+}
+
+// compute font size so the art fills the available stage width
+function computeFs(cols){
+  const isMobile = window.innerWidth < 680;
+  if(isMobile){
+    const stageW = window.innerWidth - 8; // small padding
+    // charWidth = fs * CHAR_W_RATIO → fs = stageW / (cols * CHAR_W_RATIO)
+    const fs = stageW / (cols * CHAR_W_RATIO);
+    return Math.max(5, Math.min(14, fs));
+  }
+  // desktop: fixed comfortable size, don't overflow sidebar
+  const stageW = window.innerWidth - 260;
+  const fs = stageW / (cols * CHAR_W_RATIO);
+  return Math.max(6, Math.min(12, fs));
+}
+
+// ── LOCKS ─────────────────────────────────────────────────────────────
+// Set of state keys that are locked from randomisation
+const locks = new Set();
+
+function isLocked(key){ return locks.has(key); }
+
+function toggleLock(key, btnEl){
+  if(locks.has(key)){
+    locks.delete(key);
+    btnEl.textContent='lock';
+    btnEl.classList.remove('locked');
+  } else {
+    locks.add(key);
+    btnEl.textContent='unlock';
+    btnEl.classList.add('locked');
+  }
+}
 
 // ── RNG ───────────────────────────────────────────────────────────────
 function rng32(seed){
@@ -725,7 +787,8 @@ function generate(){
   st.gen++;
   let algo=st.algo;
   const rng=rng32(st.seed+st.gen*17);
-  const {w,h,fs}=SZ[st.size];
+  const {w,h}=getGrid(st.size, st.orient);
+  const fs=computeFs(w);
 
   let field;
   try{field=ALGOS[algo](w,h,rng,st.cx,st.zm,st.ox,st.oy);}
@@ -778,42 +841,79 @@ function pills(id,setter){
 pills('algo-pills',v=>st.algo=v);
 pills('layer-pills',v=>st.layer=v);
 pills('cs-pills',v=>st.charset=v);
-pills('size-pills',v=>st.size=v);
+pills('size-pills',v=>{st.size=v;generate();});
+pills('orient-pills',v=>{st.orient=v;generate();});
 
 document.getElementById('blend-mode').addEventListener('change',e=>st.blendMode=e.target.value);
 
 // ── RANDOM BUTTONS ────────────────────────────────────────────────────
 function flashBtn(id){const b=document.getElementById(id);b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),300);}
 
-document.getElementById('algo-rand').addEventListener('click',()=>{
-  const pick=AKEYS[Math.floor(Math.random()*AKEYS.length)];
-  st.algo=pick;setPill('algo-pills',pick);
-  st.cx=2+Math.floor(Math.random()*9);st.dn=1+Math.floor(Math.random()*10);
-  st.ct=1+Math.floor(Math.random()*10);st.sy=Math.floor(Math.random()*5);
-  syncSliders();flashBtn('algo-rand');
+// ── LOCK BUTTONS ──────────────────────────────────────────────────────
+['algo','layer','charset','params'].forEach(key=>{
+  const btn=document.getElementById('lock-'+key);
+  if(btn) btn.addEventListener('click',e=>{e.stopPropagation();toggleLock(key,btn);});
 });
 
+// ── RANDOM ALGO ──────────────────────────────────────────────────────
+document.getElementById('algo-rand').addEventListener('click',()=>{
+  if(isLocked('algo')) return;
+  const pick=AKEYS[Math.floor(Math.random()*AKEYS.length)];
+  st.algo=pick; setPill('algo-pills',pick);
+  if(!isLocked('params')){
+    st.cx=2+Math.floor(Math.random()*9); st.dn=1+Math.floor(Math.random()*10);
+    st.ct=1+Math.floor(Math.random()*10); st.sy=Math.floor(Math.random()*5);
+    syncSliders();
+  }
+  flashBtn('algo-rand');
+});
+
+// ── RANDOM CHARSET ────────────────────────────────────────────────────
 document.getElementById('cs-rand').addEventListener('click',()=>{
+  if(isLocked('charset')) return;
   const pick=CSKEYS[Math.floor(Math.random()*CSKEYS.length)];
-  st.charset=pick;setPill('cs-pills',pick);
-  st.dn=1+Math.floor(Math.random()*10);st.ct=1+Math.floor(Math.random()*10);
-  document.getElementById('sl-dn').value=st.dn;document.getElementById('v-dn').textContent=st.dn;
-  document.getElementById('sl-ct').value=st.ct;document.getElementById('v-ct').textContent=st.ct;
+  st.charset=pick; setPill('cs-pills',pick);
+  if(!isLocked('params')){
+    st.dn=1+Math.floor(Math.random()*10); st.ct=1+Math.floor(Math.random()*10);
+    document.getElementById('sl-dn').value=st.dn; document.getElementById('v-dn').textContent=st.dn;
+    document.getElementById('sl-ct').value=st.ct; document.getElementById('v-ct').textContent=st.ct;
+  }
   flashBtn('cs-rand');
 });
 
-document.getElementById('btn-rand-all').addEventListener('click',()=>{
-  st.algo=AKEYS[Math.floor(Math.random()*AKEYS.length)];setPill('algo-pills',st.algo);
-  const lkeys=['none',...AKEYS.filter(k=>k!==st.algo).slice(0,4),'none','none','none'];
-  st.layer=lkeys[Math.floor(Math.random()*lkeys.length)];setPill('layer-pills',st.layer);
-  st.charset=CSKEYS[Math.floor(Math.random()*CSKEYS.length)];setPill('cs-pills',st.charset);
+// ── RANDOM LAYER ──────────────────────────────────────────────────────
+document.getElementById('layer-rand').addEventListener('click',()=>{
+  if(isLocked('layer')) return;
+  const layerOpts=['none','perlin','warp','julia','reaction','voronoi','wave','clifford','dla'];
+  st.layer=layerOpts[Math.floor(Math.random()*layerOpts.length)]; setPill('layer-pills',st.layer);
   const modes=['add','multiply','max','min','diff','screen'];
   st.blendMode=modes[Math.floor(Math.random()*modes.length)];
   document.getElementById('blend-mode').value=st.blendMode;
-  st.cx=2+Math.floor(Math.random()*9);st.dn=1+Math.floor(Math.random()*10);
-  st.ct=1+Math.floor(Math.random()*10);st.sy=Math.floor(Math.random()*5);
-  st.zm=1+Math.floor(Math.random()*15);st.ox=20+Math.floor(Math.random()*60);st.oy=20+Math.floor(Math.random()*60);
-  syncSliders();generate();
+  flashBtn('layer-rand');
+});
+
+// ── RAND ALL ──────────────────────────────────────────────────────────
+document.getElementById('btn-rand-all').addEventListener('click',()=>{
+  if(!isLocked('algo')){
+    st.algo=AKEYS[Math.floor(Math.random()*AKEYS.length)]; setPill('algo-pills',st.algo);
+  }
+  if(!isLocked('layer')){
+    const lkeys=['none',...AKEYS.filter(k=>k!==st.algo).slice(0,4),'none','none','none'];
+    st.layer=lkeys[Math.floor(Math.random()*lkeys.length)]; setPill('layer-pills',st.layer);
+    const modes=['add','multiply','max','min','diff','screen'];
+    st.blendMode=modes[Math.floor(Math.random()*modes.length)];
+    document.getElementById('blend-mode').value=st.blendMode;
+  }
+  if(!isLocked('charset')){
+    st.charset=CSKEYS[Math.floor(Math.random()*CSKEYS.length)]; setPill('cs-pills',st.charset);
+  }
+  if(!isLocked('params')){
+    st.cx=2+Math.floor(Math.random()*9); st.dn=1+Math.floor(Math.random()*10);
+    st.ct=1+Math.floor(Math.random()*10); st.sy=Math.floor(Math.random()*5);
+    st.zm=1+Math.floor(Math.random()*15); st.ox=20+Math.floor(Math.random()*60);
+    st.oy=20+Math.floor(Math.random()*60); syncSliders();
+  }
+  generate();
 });
 
 // ── SLIDERS ───────────────────────────────────────────────────────────
@@ -860,7 +960,7 @@ document.getElementById('btn-img').addEventListener('click',()=>{
   const btn=document.getElementById('btn-img');
   btn.textContent='saving...';
   const lines=st.art.split('\n');
-  const {fs}=SZ[st.size];
+  const {w:_w}=getGrid(st.size,st.orient);const fs=computeFs(_w);
   const scale=2;
   const lh=Math.round(fs*1.18*scale),pad=Math.round(fs*2*scale);
   const tmp=document.createElement('canvas').getContext('2d');
@@ -877,20 +977,9 @@ document.getElementById('btn-img').addEventListener('click',()=>{
   ctx.fillText('mantarini · seed '+st.seed,pad,H-Math.round(6*scale));
   cv.toBlob(blob=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    a.download='mantarini-'+st.seed+'-'+st.gen+'.jpg';a.click();
-    setTimeout(()=>btn.textContent='save .jpg',800);
-  },'image/jpeg',0.92);
-});
-
-// ── RANDOM LAYER ──────────────────────────────────────────────────────
-document.getElementById('layer-rand').addEventListener('click',()=>{
-  const layerOpts=['none','perlin','warp','julia','reaction','voronoi','wave','clifford','dla'];
-  const pick=layerOpts[Math.floor(Math.random()*layerOpts.length)];
-  st.layer=pick;setPill('layer-pills',pick);
-  const modes=['add','multiply','max','min','diff','screen'];
-  st.blendMode=modes[Math.floor(Math.random()*modes.length)];
-  document.getElementById('blend-mode').value=st.blendMode;
-  flashBtn('layer-rand');
+    a.download='mantarini-'+st.seed+'-'+st.gen+'.png';a.click();
+    setTimeout(()=>btn.textContent='save .png',800);
+  },'image/png');
 });
 
 // ── GLOSSARY ──────────────────────────────────────────────────────────
@@ -1026,7 +1115,7 @@ function showTheory(algo){
 // ── ABOUT THIS PIECE ──────────────────────────────────────────────────
 function updateAbout(algo){
   const el=document.getElementById('about-piece');
-  const {w,h}=SZ[st.size];
+  const {w,h}=getGrid(st.size,st.orient);
   const algoName=LABELS[algo]||algo;
   const parts=[algoName];
   if(st.layer!=='none') parts.push('layered with '+(LABELS[st.layer]||st.layer)+' ('+st.blendMode+')');
@@ -1043,7 +1132,7 @@ document.getElementById('btn-svg').addEventListener('click',()=>{
   const btn=document.getElementById('btn-svg');
   btn.textContent='saving...';
   const lines=st.art.split('\n');
-  const {fs}=SZ[st.size];
+  const {w:_w}=getGrid(st.size,st.orient);const fs=computeFs(_w);
   const lh=Math.round(fs*1.18);
   // measure char width using canvas
   const tmp=document.createElement('canvas').getContext('2d');
@@ -1090,7 +1179,7 @@ function encodeState(){
   // encode all settings into a compact hash string
   const params={
     a:st.algo, l:st.layer, bm:st.blendMode,
-    cs:st.charset, sz:st.size,
+    cs:st.charset, sz:st.size, or:st.orient,
     cx:st.cx, dn:st.dn, ct:st.ct, sy:st.sy,
     zm:st.zm, ox:st.ox, oy:st.oy,
     sm:st.smear?1:0, tl:st.tile?1:0,
@@ -1107,6 +1196,7 @@ function decodeState(hash){
     if(params.bm) st.blendMode=params.bm;
     if(params.cs) st.charset=params.cs;
     if(params.sz) st.size=params.sz;
+    if(params.or) st.orient=params.or;
     if(params.cx!=null) st.cx=+params.cx;
     if(params.dn!=null) st.dn=+params.dn;
     if(params.ct!=null) st.ct=+params.ct;
@@ -1123,6 +1213,7 @@ function decodeState(hash){
     setPill('layer-pills',st.layer);
     setPill('cs-pills',st.charset);
     setPill('size-pills',st.size);
+    setPill('orient-pills',st.orient);
     document.getElementById('blend-mode').value=st.blendMode;
     syncSliders();
     document.getElementById('smear-box').textContent=st.smear?'x':'';

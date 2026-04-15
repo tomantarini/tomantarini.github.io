@@ -18,19 +18,22 @@ html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Couri
 #shell{display:flex;flex-direction:column;min-height:100vh;}
 
 /* CONTROLS */
-#controls{background:#ffffff;border-bottom:1px solid var(--faint);padding:0.6rem 1rem 0.6rem;display:flex;flex-direction:column;gap:0.6rem;}
+#controls{background:#ffffff;border-bottom:1px solid var(--faint);padding:0.6rem 1rem 0.6rem;display:flex;flex-direction:column;gap:0;}
 
 /* mobile: single row — title left, buttons right */
 .ctrl-top{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:0.5rem;}
-.ctrl-title-block{display:flex;flex-direction:column;gap:0;flex-shrink:1;min-width:0;}
-.ctrl-buttons{display:flex;gap:0.3rem;align-items:stretch;flex-shrink:0;}
+.ctrl-title-block{display:flex;flex-direction:row;align-items:center;gap:0.4rem;min-width:0;flex-shrink:1;}
+.title-sep{display:inline-block;width:1px;height:0.8em;background:var(--faint);flex-shrink:0;}
+.ctrl-buttons{display:flex;gap:0.3rem;align-items:center;flex-shrink:0;}
 /* TITLE — exact match to index.html */
 .title{margin:0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;}
 .title a{color:inherit;text-decoration:none;cursor:pointer;font-family:Georgia,"Times New Roman",serif;font-size:inherit;font-weight:inherit;font-style:normal;}
 .title a:hover{color:var(--mid);}
-.site-sub{font-size:0.5rem;color:var(--mid);letter-spacing:0.15em;text-transform:uppercase;font-family:'Courier Prime',monospace;margin-top:0.15rem;display:block;}
+.site-sub{font-size:0.48rem;color:var(--faint);letter-spacing:0.13em;text-transform:uppercase;font-family:'Courier Prime',monospace;display:block;white-space:nowrap;}
 
 #btn-gen{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+#btn-dl{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.85rem;padding:0 0.55rem;cursor:pointer;min-height:38px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;line-height:1;}
+#btn-dl:active{border-color:var(--ink);color:var(--ink);}
 #btn-gen:active{border-color:var(--ink);color:var(--ink);}
 
 #btn-rand-all{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;transition:all 0.1s;}
@@ -39,7 +42,7 @@ html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Couri
 #settings-toggle{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
 #settings-toggle:active{border-color:var(--ink);color:var(--ink);}
 
-#settings-panel{display:none;flex-direction:column;gap:0.85rem;}
+#settings-panel{display:none;flex-direction:column;gap:0.85rem;border-top:1px solid var(--faint);margin-top:0.8rem;padding-top:1.1rem;}
 #settings-panel.open{display:flex;}
 
 .s-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.72rem;color:var(--mid);display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem;}
@@ -73,12 +76,37 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 .toggle-box{width:14px;height:14px;border:1px solid var(--faint);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--ink);flex-shrink:0;font-family:'Courier Prime',monospace;}
 .toggle-lbl{font-size:0.57rem;color:var(--mid);letter-spacing:0.05em;}
 
+/* kentima — distinct mode section above algorithm */
+#kentima-section{padding-bottom:0.9rem;border-bottom:1px solid var(--faint);margin-bottom:0.3rem;}
+.kentima-lbl{font-family:"IM Fell English",serif;font-style:italic;text-transform:none;font-size:0.9rem;letter-spacing:0.02em;color:var(--ink);}
+/* mode pills use IM Fell italic to distinguish from regular pills */
+.mode-pill{font-family:'IM Fell English',serif !important;font-style:italic;letter-spacing:0.02em !important;font-size:0.72rem !important;text-transform:none !important;}
+.mode-pill.on{border-color:var(--ink);background:var(--ink);color:#fff;}
+#toggle-border.forced{opacity:0.45;pointer-events:none;}
+#toggle-border.forced .toggle-box{border-color:var(--ink);background:var(--ink);color:#fff;}
+
 .util-row{display:flex;flex-wrap:wrap;gap:0.3rem;}
 .btn-sm{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;padding:0.38rem 0.7rem;cursor:pointer;min-height:34px;-webkit-tap-highlight-color:transparent;transition:all 0.1s;}
 .btn-sm:active{border-color:var(--ink);color:var(--ink);}
 
-#btn-glossary{display:block;width:100%;background:none;border:none;border-top:1px solid var(--faint);color:var(--faint);font-family:'IM Fell English',serif;font-style:italic;font-size:0.8rem;letter-spacing:0.05em;padding:0.65rem 0 0.1rem;cursor:pointer;text-align:left;margin-top:0.6rem;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
-#btn-glossary:hover{color:var(--mid);}
+#meta-links{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;}
+#btn-about,#btn-glossary{background:none;border:none;color:var(--faint);font-family:'IM Fell English',serif;font-style:italic;font-size:0.78rem;letter-spacing:0.04em;cursor:pointer;padding:0;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
+#btn-about:hover,#btn-glossary:hover{color:var(--mid);}
+#btn-reset{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.7rem;cursor:pointer;min-height:30px;-webkit-tap-highlight-color:transparent;transition:all 0.1s;}
+#btn-reset:active{border-color:var(--ink);color:var(--ink);}
+.meta-sep{color:var(--faint);font-size:0.65rem;font-family:'Courier Prime',monospace;}
+
+#about-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2rem 1.5rem 4rem;}
+#about-overlay.open{display:block;}
+#about-inner{max-width:560px;margin:0 auto;}
+#about-close{background:none;border:none;font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);cursor:pointer;padding:0;margin-bottom:2rem;display:block;}
+#about-close:hover{color:var(--ink);}
+.about-title{font-family:Georgia,'Times New Roman',serif;font-size:1.4rem;font-weight:normal;margin-bottom:1.8rem;color:var(--ink);}
+.about-body{font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;color:var(--mid);line-height:1.85;letter-spacing:0.01em;}
+.about-body p{margin-bottom:1.4rem;}
+.about-body p:last-child{margin-bottom:0;}
+.about-body a{color:var(--mid);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--faint);}
+.about-body a:hover{color:var(--ink);}
 
 #glossary-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2rem 1.5rem 4rem;}
 #glossary-overlay.open{display:block;}
@@ -93,22 +121,30 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 .g-def{font-family:'IM Fell English',serif;font-style:italic;font-size:0.88rem;color:var(--mid);line-height:1.7;display:block;margin-top:0.2rem;}
 
 /* STAGE */
-#stage{flex:1;background:#ffffff;display:flex;flex-direction:column;align-items:center;padding:0.8rem 0.4rem 0.5rem;overflow:hidden;}
+#stage{flex:1;background:#ffffff;display:flex;flex-direction:column;align-items:center;padding:0.8rem 0.4rem 3rem;overflow-x:hidden;overflow-y:auto;}
 
 #art-meta{width:100%;display:flex;justify-content:space-between;align-items:baseline;padding:0 0.3rem 0.4rem;}
 .meta-lbl{font-family:'IM Fell English',serif;font-style:italic;font-size:0.6rem;color:var(--mid);}
 .meta-seed{font-family:'Courier Prime',monospace;font-size:0.52rem;color:var(--faint);letter-spacing:0.07em;}
 
-#art-scroll{width:100%;overflow:hidden;display:flex;justify-content:center;}
+#art-scroll{width:100%;overflow:hidden;display:flex;justify-content:center;flex-shrink:0;}
 
-#art{font-family:'Courier Prime','Courier New',monospace;line-height:1.18;white-space:pre;color:var(--ink);background:#ffffff;letter-spacing:0.01em;display:inline-block;opacity:0;transition:opacity 0.5s ease;}
+#art{font-family:'Courier Prime','Courier New',monospace;line-height:1.18;white-space:pre;color:var(--ink);background:#ffffff;letter-spacing:0.01em;display:inline-block;opacity:0;transition:opacity 0.5s ease;flex-shrink:0;}
 #art.visible{opacity:1;}
 
 #algo-name{margin-top:0.4rem;font-family:'Courier Prime',monospace;font-size:0.5rem;color:var(--faint);letter-spacing:0.13em;text-transform:uppercase;text-align:center;padding:0 0.5rem;}
+#art-actions{display:flex;align-items:center;justify-content:center;gap:0.35rem;margin-top:0.5rem;flex-shrink:0;}
+.art-btn{background:none;border:none;color:var(--faint);font-family:'Courier Prime',monospace;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
+.art-btn:hover{color:var(--mid);}
+.art-btn-sep{color:var(--faint);font-size:0.5rem;font-family:'Courier Prime',monospace;}
+.btn-toggle{background:none;border:none;color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;padding:0.3rem 0.5rem;-webkit-tap-highlight-color:transparent;transition:color 0.15s;flex-shrink:0;}
+.btn-toggle:hover{color:var(--ink);}
+.btn-toggle.active{color:var(--ink);text-decoration:underline;text-underline-offset:2px;}
+
 
 #about-piece{margin-top:0.2rem;font-family:'Courier Prime',monospace;font-size:0.6rem;color:var(--mid);letter-spacing:0.04em;text-align:center;padding:0 0.5rem;line-height:1.5;}
 
-#theory-note{margin-top:0.8rem;max-width:520px;width:100%;padding:0 0.5rem;font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:var(--mid);line-height:1.75;text-align:center;letter-spacing:0.01em;max-height:6rem;overflow:hidden;}
+#theory-note{margin-top:0.8rem;max-width:520px;width:100%;padding:0 0.5rem 2rem;font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:var(--mid);line-height:1.75;text-align:center;letter-spacing:0.01em;}
 #theory-note a{color:var(--mid);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--faint);}
 #theory-note a:hover{color:var(--ink);}
 
@@ -121,17 +157,22 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   #controls{width:250px;min-width:250px;flex-direction:column;border-bottom:none;border-right:1px solid var(--faint);padding:1.5rem 1.2rem 1.2rem;height:100vh;overflow-y:auto;gap:0;}
   #controls::-webkit-scrollbar{width:3px;}
   #controls::-webkit-scrollbar-thumb{background:var(--faint);}
-  .ctrl-top{flex-direction:column;align-items:flex-start;margin-bottom:1.2rem;gap:0.5rem;}
+  .ctrl-top{flex-direction:column;align-items:flex-start;margin-bottom:0.3rem;gap:0.5rem;}
+  #meta-links{align-self:center;margin-bottom:0.3rem;}
+  #btn-reset{align-self:center;}
   .ctrl-buttons{flex-direction:column;width:100%;}
   #btn-gen{width:100%;flex:none;min-height:36px;font-size:0.6rem;padding:0.35rem 0.7rem;}
+  #btn-dl{width:100%;min-height:36px;}
   #btn-rand-all{width:100%;min-height:36px;padding:0.35rem 0.7rem;font-size:0.6rem;}
+  .btn-toggle{width:100%;text-align:left;border-top:1px solid var(--faint);padding:0.35rem 0;font-size:0.55rem;}
   #settings-toggle{display:none;}
   #settings-panel{display:flex !important;}
   .s-lbl{margin-top:1.1rem;}
   .s-lbl:first-child{margin-top:0;}
-  #stage{flex:1;height:100vh;overflow:hidden;padding:1rem 1rem 0.5rem;align-items:center;}
+  #stage{flex:1;height:100vh;overflow-x:hidden;overflow-y:auto;padding:1rem 1rem 3rem;align-items:center;justify-content:flex-start;}
   #art-meta{max-width:95vw;}
   #algo-name{text-align:left;}
+  #art-actions{justify-content:flex-start;}
   #about-piece{text-align:left;}
   #theory-note{text-align:left;}
 }
@@ -144,15 +185,47 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     <div class="ctrl-top">
       <div class="ctrl-title-block">
         <a href="index.html" class="title" style="text-decoration:none;color:inherit;">(((◌)))</a>
+        <span class="title-sep"></span>
+        <span class="site-sub">ascii generator</span>
       </div>
       <div class="ctrl-buttons">
         <button id="btn-gen">generate</button>
         <button id="settings-toggle">settings ↓</button>
-        <button id="btn-rand-all">↺ random</button>
+        <button id="btn-rand-all">random</button>
+        <button id="btn-dl" title="save as png">↓</button>
       </div>
     </div>
 
     <div id="settings-panel">
+
+      <div id="meta-links">
+        <button id="btn-about">about</button>
+        <span class="meta-sep">·</span>
+        <button id="btn-glossary">glossary</button>
+      </div>
+      <button class="btn-sm" id="btn-reset">reset settings</button>
+
+      <div id="kentima-section">
+        <span class="s-lbl" style="margin-top:0;">mode <button class="lock-btn" id="lock-mode">lock</button></span>
+        <div class="pill-wrap" style="margin-top:0.3rem;">
+          <button class="pill mode-pill on" id="mode-none" data-mode="none">none</button>
+          <button class="pill mode-pill" id="mode-kentima" data-mode="kentima">kentima</button>
+          <button class="pill mode-pill" id="mode-stipple" data-mode="stipple">stipple</button>
+          <button class="pill mode-pill" id="mode-dither" data-mode="dither">dither</button>
+          <button class="pill mode-pill" id="mode-planographic" data-mode="planographic">planographic</button>
+        </div>
+        <label class="toggle-row" style="margin-top:0.5rem;" id="toggle-border">
+          <div class="toggle-box" id="border-box"></div>
+          <span class="toggle-lbl" style="flex:1;">border</span>
+          <button class="lock-btn" id="lock-border">lock</button>
+        </label>
+        <div class="pill-wrap" id="border-motif-pills" style="margin-top:0.28rem;display:none;">
+          <button class="pill on" data-v="line">frame</button>
+          <button class="pill" data-v="zigzag">rhythm</button>
+          <button class="pill" data-v="meander">step</button>
+          <button class="pill" data-v="cross">grid</button>
+        </div>
+      </div>
 
       <div>
         <span class="s-lbl">algorithm <button class="lock-btn" id="lock-algo">lock</button></span>
@@ -168,7 +241,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
           <button class="pill" data-v="cellular">automata</button>
           <button class="pill" data-v="clifford">clifford</button>
           <button class="pill" data-v="dla">dla</button>
-          <button class="pill pill-rand" id="algo-rand">↺</button>
+          <button class="pill pill-rand" id="algo-rand">rand</button>
         </div>
       </div>
 
@@ -184,7 +257,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
           <button class="pill" data-v="wave">waves</button>
           <button class="pill" data-v="clifford">clifford</button>
           <button class="pill" data-v="dla">dla</button>
-          <button class="pill pill-rand" id="layer-rand">↺</button>
+          <button class="pill pill-rand" id="layer-rand">rand</button>
         </div>
         <div class="blend-row" style="margin-top:0.35rem;">
           <span class="sl-lbl">blend mode</span>
@@ -210,7 +283,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
           <button class="pill" data-v="alpha">alpha</button>
           <button class="pill" data-v="binary">binary</button>
           <button class="pill" data-v="punct">punct</button>
-          <button class="pill pill-rand" id="cs-rand">↺</button>
+          <button class="pill pill-rand" id="cs-rand">rand</button>
         </div>
       </div>
 
@@ -219,7 +292,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
         <div class="pill-wrap" id="size-pills">
           <button class="pill" data-v="xs">XS</button>
           <button class="pill" data-v="sm">S</button>
-          <button class="pill on" data-v="md">M</button>
+          <button class="pill" data-v="md">M</button>
           <button class="pill" data-v="lg">L</button>
           <button class="pill" data-v="xl">XL</button>
         </div>
@@ -252,11 +325,9 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
         <button class="btn-sm" id="btn-save">save .txt</button>
         <button class="btn-sm" id="btn-img">save .png</button>
         <button class="btn-sm" id="btn-svg">save .svg</button>
-        <button class="btn-sm" id="btn-share">share</button>
         <button class="btn-sm" id="btn-invert">invert</button>
         <button class="btn-sm" id="btn-pin">pin seed</button>
       </div>
-      <button id="btn-glossary">glossary</button>
 
     </div>
   </div>
@@ -281,52 +352,80 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     <p class="g-title">glossary</p>
 
     <div class="g-section">
-      <div class="g-section-head">algorithms — what they look like</div>
-      <div class="g-entry"><span class="g-term">flow field</span><span class="g-def">smooth, drifting clouds. organic and fluid.</span></div>
-      <div class="g-entry"><span class="g-term">domain warp</span><span class="g-def">folded, twisted, geological. like wood grain or bent smoke.</span></div>
-      <div class="g-entry"><span class="g-term">julia set</span><span class="g-def">crystalline fractal edges. intricate and symmetric in unexpected ways.</span></div>
-      <div class="g-entry"><span class="g-term">reaction</span><span class="g-def">spots, stripes, or labyrinths. like animal skin or coral growth.</span></div>
-      <div class="g-entry"><span class="g-term">voronoi</span><span class="g-def">cellular regions with visible boundaries. like cracked mud or a dragonfly wing.</span></div>
-      <div class="g-entry"><span class="g-term">waves</span><span class="g-def">interference rings and ripple patterns.</span></div>
-      <div class="g-entry"><span class="g-term">rorschach</span><span class="g-def">bilaterally mirrored — any pattern becomes an inkblot.</span></div>
-      <div class="g-entry"><span class="g-term">l-system</span><span class="g-def">branching structures. ferns, trees, roots.</span></div>
-      <div class="g-entry"><span class="g-term">automata</span><span class="g-def">grid-based growth patterns. can be organic, crystalline, or chaotic depending on the random ruleset.</span></div>
-      <div class="g-entry"><span class="g-term">clifford</span><span class="g-def">wispy orbital trails. the density of millions of iterated points forms the image.</span></div>
-      <div class="g-entry"><span class="g-term">dla</span><span class="g-def">lightning bolts, snowflakes, coral. particles walk randomly and stick on contact.</span></div>
+      <div class="g-section-head">mode</div>
+      <div class="g-entry"><span class="g-term">none</span><span class="g-def">no mode active. the field is mapped directly to characters through the selected charset.</span></div>
+      <div class="g-entry"><span class="g-term">kentima</span><span class="g-def">transforms the field into a counted-thread textile surface. quantized to three levels; each cell biases toward its diagonal predecessor in a fixed warp direction, creating visible stitch runs. isolated marks are absorbed into neighbours. charset switches to stitch marks.</span></div>
+      <div class="g-entry"><span class="g-term">stipple</span><span class="g-def">each 4x4 cell receives a cluster of marks growing from center outward, proportional to the cell's average value. higher value = denser cluster. result: dot density engraving, like copper stipple or Ben-Day.</span></div>
+      <div class="g-entry"><span class="g-term">dither</span><span class="g-def">Floyd-Steinberg error diffusion (Bell Labs, 1976). binary quantization: each cell is 0 or 1. rounding error propagates to neighbours with fixed weights (7/16, 5/16, 3/16, 1/16). produces the diagonal grain of early 1-bit printing.</span></div>
+      <div class="g-entry"><span class="g-term">planographic</span><span class="g-def">hard posterization into 5 flat tonal bands. no gradient within a band — each region carries one value. result: flat tones with sharp boundaries, like a reduction linocut or silkscreen.</span></div>
     </div>
 
     <div class="g-section">
-      <div class="g-section-head">layer + blend</div>
+      <div class="g-section-head">border</div>
+      <div class="g-entry"><span class="g-term">border</span><span class="g-def">overwrites edge cells with a repeating motif, framing the output as a bounded object. corners are resolved separately. starts on when kentima is enabled but can be toggled off.</span></div>
+      <div class="g-entry"><span class="g-term">frame / rhythm / step / grid</span><span class="g-def">four border motif types. frame is a solid line. rhythm alternates marks. step is a meander pattern. grid is a cross-hatch.</span></div>
+    </div>
+
+    <div class="g-section">
+      <div class="g-section-head">algorithm</div>
+      <div class="g-entry"><span class="g-term">flow field</span><span class="g-def">smooth, drifting clouds. organic and fluid. Perlin noise stacked at multiple frequencies.</span></div>
+      <div class="g-entry"><span class="g-term">domain warp</span><span class="g-def">folded, twisted, geological. noise bent through itself repeatedly. like wood grain or bent smoke.</span></div>
+      <div class="g-entry"><span class="g-term">julia set</span><span class="g-def">crystalline fractal edges. each pixel is a point in the complex plane tested for escape under iteration.</span></div>
+      <div class="g-entry"><span class="g-term">reaction</span><span class="g-def">spots, stripes, or labyrinths. Gray-Scott reaction-diffusion — two chemicals activating and inhibiting each other.</span></div>
+      <div class="g-entry"><span class="g-term">voronoi</span><span class="g-def">cellular regions with visible boundaries. every point assigned to its nearest seed. like cracked mud or a dragonfly wing.</span></div>
+      <div class="g-entry"><span class="g-term">waves</span><span class="g-def">interference rings and ripple patterns. sum of multiple sine waves at different origins and phases.</span></div>
+      <div class="g-entry"><span class="g-term">rorschach</span><span class="g-def">bilaterally mirrored noise. any pattern becomes an inkblot.</span></div>
+      <div class="g-entry"><span class="g-term">l-system</span><span class="g-def">branching structures — ferns, trees, roots. a rewriting grammar applied repeatedly then drawn as turtle graphics.</span></div>
+      <div class="g-entry"><span class="g-term">automata</span><span class="g-def">grid-based growth from simple birth and survival rules. can be organic, crystalline, or chaotic.</span></div>
+      <div class="g-entry"><span class="g-term">clifford</span><span class="g-def">wispy orbital trails. density of millions of iterated attractor points forms the image.</span></div>
+      <div class="g-entry"><span class="g-term">dla</span><span class="g-def">lightning bolts, snowflakes, coral. particles walk randomly and stick on contact with the growing cluster.</span></div>
+    </div>
+
+    <div class="g-section">
+      <div class="g-section-head">layer</div>
       <div class="g-entry"><span class="g-term">layer</span><span class="g-def">generates a second field with a different algorithm and overlays it on the first. none means no overlay.</span></div>
-      <div class="g-entry"><span class="g-term">blend mode</span><span class="g-def">how the two layers combine mathematically. add and screen lighten. multiply darkens. max and min take the stronger or weaker value at each point. difference creates edges where the two differ most.</span></div>
+      <div class="g-entry"><span class="g-term">blend mode</span><span class="g-def">how the two layers combine. add and screen lighten. multiply darkens. max and min take the stronger or weaker value. difference creates edges where the two fields diverge most.</span></div>
     </div>
 
     <div class="g-section">
-      <div class="g-section-head">charset — what the characters do</div>
+      <div class="g-section-head">charset</div>
       <div class="g-entry"><span class="g-term">density</span><span class="g-def">smooth gradient from empty to full. the most faithful rendering of the underlying field.</span></div>
       <div class="g-entry"><span class="g-term">hi-contrast</span><span class="g-def">only five steps. very graphic, almost like a stamp or linocut.</span></div>
-      <div class="g-entry"><span class="g-term">grit</span><span class="g-def">characters picked for visual weight, not tonal order. the texture is rough regardless of the field underneath.</span></div>
-      <div class="g-entry"><span class="g-term">sparse / alpha / binary / symbol / punct</span><span class="g-def">different character pools that change the surface feel. combine with contrast and density sliders to find the right register.</span></div>
+      <div class="g-entry"><span class="g-term">grit</span><span class="g-def">characters picked for visual weight, not tonal order. rough texture regardless of the field.</span></div>
+      <div class="g-entry"><span class="g-term">sparse / alpha / binary / symbol / punct</span><span class="g-def">different character pools. combine with contrast and density sliders to find the right register.</span></div>
     </div>
 
     <div class="g-section">
-      <div class="g-section-head">sliders</div>
+      <div class="g-section-head">parameters</div>
       <div class="g-entry"><span class="g-term">complexity</span><span class="g-def">more iterations, more layers, more detail. higher values are slower to compute.</span></div>
-      <div class="g-entry"><span class="g-term">density</span><span class="g-def">biases the output toward sparse (mostly empty) or full (mostly filled).</span></div>
-      <div class="g-entry"><span class="g-term">contrast</span><span class="g-def">low = milky and compressed. high = stark, mostly empty or full, few mid-tones.</span></div>
-      <div class="g-entry"><span class="g-term">symmetry</span><span class="g-def">0 = none. 1 = left-right mirror. 2 = also top-bottom. 3 = all four quadrants. 4 = adds rotational fold. higher values impose mandala-like structure on any algorithm.</span></div>
-      <div class="g-entry"><span class="g-term">zoom</span><span class="g-def">zooms into the generated field. high zoom on julia set or clifford reveals very different detail.</span></div>
-      <div class="g-entry"><span class="g-term">offset x / y</span><span class="g-def">pans the view when zoomed in. lets you explore a different region of the same seed.</span></div>
+      <div class="g-entry"><span class="g-term">density</span><span class="g-def">biases output toward sparse (mostly empty) or full (mostly filled).</span></div>
+      <div class="g-entry"><span class="g-term">contrast</span><span class="g-def">low = milky and compressed. high = stark, few mid-tones.</span></div>
+      <div class="g-entry"><span class="g-term">symmetry</span><span class="g-def">0 = none. 1 = left-right mirror. 2 = top-bottom added. 3 = all four quadrants. 4 = rotational fold.</span></div>
+      <div class="g-entry"><span class="g-term">zoom</span><span class="g-def">zooms into the generated field. high zoom on julia set or clifford reveals very different structure.</span></div>
+      <div class="g-entry"><span class="g-term">offset x / y</span><span class="g-def">pans the view when zoomed in. explore a different region of the same seed.</span></div>
     </div>
 
     <div class="g-section">
       <div class="g-section-head">other controls</div>
-      <div class="g-entry"><span class="g-term">↺ (next to generate)</span><span class="g-def">randomises everything at once — algorithm, layer, charset, and all sliders — then generates.</span></div>
-      <div class="g-entry"><span class="g-term">flow smear</span><span class="g-def">shifts characters slightly along the field's gradient direction. gives the image a sense of movement. on by default.</span></div>
-      <div class="g-entry"><span class="g-term">tile repeat</span><span class="g-def">mirrors the field into a 2x2 grid. any image becomes a seamless repeating pattern.</span></div>
-      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the random seed so generate keeps the same underlying structure. useful for comparing how algorithm or charset changes transform the same form.</span></div>
+      <div class="g-entry"><span class="g-term">random</span><span class="g-def">randomises algorithm, layer, charset, all sliders, mode, and border, then generates. locked sections are skipped.</span></div>
+      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the random seed so generate keeps the same underlying structure. useful for comparing how settings transform the same form.</span></div>
+      <div class="g-entry"><span class="g-term">lock</span><span class="g-def">appears next to each section label. when locked, that section is skipped by the randomiser.</span></div>
     </div>
 
+  </div>
+</div>
+
+<!-- ABOUT OVERLAY -->
+<div id="about-overlay">
+  <div id="about-inner">
+    <button id="about-close">close ×</button>
+    <div class="about-body">
+      <p>The 95 printable characters of the <a href="https://en.wikipedia.org/wiki/ASCII" target="_blank" rel="noopener">ASCII</a> standard were designed to carry linguistic meaning: punctuation, numerals, letters. <a href="https://en.wikipedia.org/wiki/ASCII_art" target="_blank" rel="noopener">ASCII art</a> is what happens when they are used for something else. The medium is defined by this misuse. Its constraint is not incidental but structural: every image is made of marks that mean something else, marks that belong to writing before they belong to drawing.</p>
+      <p>The ASCII standard was published in 1963 as a solution to a practical problem: different machines could not communicate because they encoded text differently. Standardizing the <a href="https://en.wikipedia.org/wiki/Character_encoding" target="_blank" rel="noopener">character set</a> made transmission possible across incompatible systems. In that sense ASCII is not primarily a typographic system but a communication protocol, a shared agreement about what a sequence of bits means. It became the substrate of the early internet, of email, of <a href="https://en.wikipedia.org/wiki/Bulletin_board_system" target="_blank" rel="noopener">bulletin board systems</a>, of every terminal window. <a href="https://en.wikipedia.org/wiki/Typewriter_art" target="_blank" rel="noopener">Typewriter artists</a> had already been composing images from keyboard characters since at least 1898, using the carriage return to overprint and build density. That practice moved through <a href="https://en.wikipedia.org/wiki/Teleprinter" target="_blank" rel="noopener">teletypewriter</a> networks in the early 20th century, through <a href="https://en.wikipedia.org/wiki/ARPANET" target="_blank" rel="noopener">ARPANET</a>, through BBS culture in the 1980s, through the ASCII art embedded in email signatures and forum posts throughout the 1990s. The characters designed to be read as language were continuously being redirected toward image. This redirection is not marginal to the history of networked communication; it is woven through it.</p>
+      <p>(((◌))) is a <a href="https://en.wikipedia.org/wiki/Generative_art" target="_blank" rel="noopener">generative</a> system. It produces images from mathematical rules with no source image. Eleven algorithms drawn from mathematics, physics, and biology compute scalar fields from which images are built: <a href="https://en.wikipedia.org/wiki/Perlin_noise" target="_blank" rel="noopener">Perlin noise</a>, <a href="https://en.wikipedia.org/wiki/Warping_(texture)" target="_blank" rel="noopener">domain warping</a>, <a href="https://en.wikipedia.org/wiki/Julia_set" target="_blank" rel="noopener">Julia set</a> iteration, <a href="https://en.wikipedia.org/wiki/Reaction%E2%80%93diffusion_system" target="_blank" rel="noopener">Gray-Scott reaction-diffusion</a>, <a href="https://en.wikipedia.org/wiki/Voronoi_diagram" target="_blank" rel="noopener">Voronoi distance fields</a>, <a href="https://en.wikipedia.org/wiki/Wave_interference" target="_blank" rel="noopener">wave interference</a>, <a href="https://en.wikipedia.org/wiki/L-system" target="_blank" rel="noopener">L-systems</a>, <a href="https://en.wikipedia.org/wiki/Cellular_automaton" target="_blank" rel="noopener">cellular automata</a>, <a href="https://en.wikipedia.org/wiki/Attractor#Strange_attractor" target="_blank" rel="noopener">Clifford attractors</a>, <a href="https://en.wikipedia.org/wiki/Diffusion-limited_aggregation" target="_blank" rel="noopener">diffusion-limited aggregation</a>. Each is a procedure that generates structure, not a translation of an existing picture. Most ASCII art tools work the other way: they take a photograph and convert its tones into character approximations. (((◌))) has nothing to convert. The image does not precede the system.</p>
+      <p>Four processing modes extend the rendering through historically grounded techniques. <a href="https://en.wikipedia.org/wiki/Counted-thread_embroidery" target="_blank" rel="noopener">Kentima</a> takes its name from Greek counted-thread embroidery, a tradition in which pattern is produced by counting rather than drawing: each mark occupies exactly one cell of a woven grid, and the grid is not a limitation but the condition of meaning. <a href="https://en.wikipedia.org/wiki/Stipple_engraving" target="_blank" rel="noopener">Stipple engraving</a>, practised since the 16th century, encodes tone as dot density rather than continuous shade; <a href="https://en.wikipedia.org/wiki/Giulio_Campagnola" target="_blank" rel="noopener">Giulio Campagnola</a> and later the mechanical <a href="https://en.wikipedia.org/wiki/Ben-Day_dots" target="_blank" rel="noopener">Ben-Day dot</a> system applied the same principle across different centuries and different surfaces. <a href="https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering" target="_blank" rel="noopener">Floyd-Steinberg dithering</a> was published at Bell Labs in 1976 to solve the problem of rendering continuous-tone images on devices that could only produce two states; its diagonal <a href="https://en.wikipedia.org/wiki/Error_diffusion" target="_blank" rel="noopener">error-diffusion</a> grain became the visual signature of early personal computing. <a href="https://en.wikipedia.org/wiki/Planographic_printing" target="_blank" rel="noopener">Planographic printing</a>, of which <a href="https://en.wikipedia.org/wiki/Lithography" target="_blank" rel="noopener">lithography</a> is the founding instance, produces flat tonal regions separated by hard boundaries; Picasso's <a href="https://en.wikipedia.org/wiki/Linocut" target="_blank" rel="noopener">reduction linocuts</a> are among its most concentrated expressions.</p>
+      <p>These are not filters. They are transformations applied to fields before rendering, each encoding a different historical relationship between surface, mark, and tone. The proposition is that this history is portable: that the logic of a copper engraver or a lithographic stone or a counted-thread weaver can be expressed as a function that operates on a scalar field and produces a text file. The medium changes; the structure of the problem does not.</p>
+    </div>
   </div>
 </div>
 
@@ -334,60 +433,51 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 // ── CHARSETS ──────────────────────────────────────────────────────────
 const CS={
   density: ' .`-\',:;!i>lt1fi?rjTIv7J=+L3s5CAe*2SEzPGy4gm6VUb8ko0HOdXnWqp9BRQ#KF%MD@&$',
-  hicon:   '  . : # @',           // high contrast: very few steps, extreme gaps
-  grit:    ' !?%&#*@$+/\\|^~`"\'',  // texture-weight chars, no density gradient
+  hicon:   '  . : # @',
+  grit:    ' !?%&#*@$+/\\|^~`"\'',
   sparse:  '   .  `  -  ,  :  ;  |  +  @',
   symbol:  ' .-_~^*+=<>[]{}()|/\\!?#%@&$',
   alpha:   ' abcdefghijklmnopqrstuvwxyz',
   binary:  '  0  1  0  0  1  1  0  1  ',
   punct:   ' .,;:!?-_=+*/\\|()[]{}^~`"\'<>',
+  kentima: "  '  +  X  #",  // ground · light stitch · cross · dense cross
 };
-const CSKEYS=Object.keys(CS);
+const CSKEYS=Object.keys(CS).filter(k=>k!=='kentima'); // kentima charset reserved for kentima mode
 
 // ── SIZES ─────────────────────────────────────────────────────────────
-// Orientation is automatic: portrait on mobile, landscape on desktop.
-// Size controls density — more characters = more detail.
-// Font is fixed per device so character size is consistent.
-// Grid dimensions are computed to fill the available stage area.
+// Fixed lookup — no window measurements, no computation.
+// Desktop: landscape proportions. Mobile: portrait proportions.
+// These never change regardless of what happens in the DOM or settings.
+const _MOBILE = window.innerWidth < 680;
 
-const FS_MOB  = 8;   // fixed font size mobile (px)
-const FS_DESK = 10;  // fixed font size desktop (px)
-
-const CHAR_W_RATIO = 0.601; // charWidth  / fontSize (Courier New)
-const CHAR_H_RATIO = 1.18;  // lineHeight / fontSize
-
-// Coverage: fraction of available width the art fills per size
-const COVERAGE = { xs:0.40, sm:0.58, md:0.78, lg:0.90, xl:0.99 };
+const SZ_DESK = {
+  xs: {w:50,  h:13, fs:10},
+  sm: {w:74,  h:19, fs:10},
+  md: {w:100, h:26, fs:10},
+  lg: {w:130, h:33, fs:10},
+  xl: {w:160, h:41, fs:10},
+};
+const SZ_MOB = {
+  xs: {w:36, h:33, fs:8},
+  sm: {w:48, h:44, fs:8},
+  md: {w:62, h:57, fs:8},
+  lg: {w:72, h:66, fs:8},
+  xl: {w:79, h:72, fs:8},
+};
 
 function getGrid(size){
-  const isMobile = window.innerWidth < 680;
-  const fs = isMobile ? FS_MOB : FS_DESK;
-  const cov = COVERAGE[size] || 0.78;
-
-  // available stage area (fixed constants, no DOM measurement)
-  const availW = isMobile ? window.innerWidth - 8 : window.innerWidth - 268;
-  const availH = isMobile ? window.innerHeight - 130 : window.innerHeight - 120;
-
-  // orientation: portrait on mobile (ratio 2:1 tall), landscape on desktop (ratio 2:1 wide)
-  // ratio = visH / visW
-  const ratio = isMobile ? 2.0 : 0.5;
-
-  // target visual width, clamped so height also fits
-  const visW = Math.min(availW * cov, availH / ratio);
-  const visH = visW * ratio;
-
-  const w = Math.max(10, Math.round(visW / (fs * CHAR_W_RATIO)));
-  const h = Math.max(5,  Math.round(visH / (fs * CHAR_H_RATIO)));
-
-  return {w, h, fs};
+  const tbl = _MOBILE ? SZ_MOB : SZ_DESK;
+  return tbl[size] || tbl.md;
 }
 
 // ── STATE ─────────────────────────────────────────────────────────────
 const st={
   algo:'perlin', layer:'none', blendMode:'add',
-  charset:'density', size:'md',
+  charset:'density', size: window.innerWidth>=680 ? 'lg' : 'md',
   cx:6, dn:5, ct:5, sy:0, zm:5, ox:50, oy:50,
   smear:true, tile:false,
+  kentima:false, border:false, borderMotif:'line',
+  stipple:false, dither:false, planographic:false,
   seed:0, pinned:false, gen:0, inv:false, art:'',
 };
 
@@ -728,28 +818,278 @@ function applyTile(field,W,H){
   return Array.from(out);
 }
 
-// ── FIELD → ASCII ─────────────────────────────────────────────────────
-function toAscii(field,W,H,csKey,dn,ct,inv){
-  const cs=CS[csKey];
-  // histogram equalization
-  const sorted=[...field].sort((a,b)=>a-b),n=sorted.length;
-  const eq=field.map(v=>{
-    let lo=0,hi=n-1;
-    while(lo<hi){const m=(lo+hi)>>1;if(sorted[m]<v)lo=m+1;else hi=m;}
-    return lo/n;
+// ── KENTIMA CONSTRAINT LAYER ──────────────────────────────────────────
+// Transforms a continuous field into a counted-stitch surface.
+// Three mechanisms:
+//   1. Hard quantization to 3 levels (ground / half-stitch / full cross)
+//   2. Diagonal run propagation — each cell biases toward its diagonal
+//      neighbor in the warp direction, creating visible stitch runs
+//   3. Motif reinforcement — isolated marks are absorbed into neighbors
+//      to prevent speckling; stitch groups are the unit, not pixels
+function applyKentima(field, W, H, rng){
+  const LEVELS = 3;
+  // warp direction fixed per generation: diagonal NW-SE or NE-SW
+  const diagDir = rng() > 0.5 ? 1 : -1; // +1 = NW-SE, -1 = NE-SW
+
+  // step 1: hard quantize to 3 levels
+  const q = field.map(v => Math.floor(v * LEVELS) / (LEVELS - 1));
+
+  // step 2: diagonal run propagation
+  // scan in warp direction and pull each cell toward its diagonal predecessor
+  const out = new Float32Array(W * H);
+  const PULL = 0.72; // strong bias — makes runs visually obvious
+  for(let y = 0; y < H; y++){
+    for(let x = 0; x < W; x++){
+      const i = y * W + x;
+      // predecessor in diagonal direction
+      const px = x - 1;
+      const py = diagDir === 1 ? y - 1 : y + 1;
+      if(px >= 0 && py >= 0 && py < H){
+        const pi = py * W + px;
+        // only pull if predecessor is same or higher level (stitches continue, don't start)
+        if(q[pi] >= q[i]){
+          out[i] = q[i] * (1 - PULL) + q[pi] * PULL;
+        } else {
+          out[i] = q[i];
+        }
+      } else {
+        out[i] = q[i];
+      }
+      // re-quantize after pull to keep discrete levels
+      out[i] = Math.floor(out[i] * LEVELS) / (LEVELS - 1);
+      out[i] = Math.min(1, out[i]);
+    }
+  }
+
+  // step 3: motif reinforcement — absorb isolated single-cell marks
+  // a cell is isolated if none of its 4 neighbours share its level
+  const final = new Float32Array(W * H);
+  let wiped = 0;
+  for(let y = 0; y < H; y++){
+    for(let x = 0; x < W; x++){
+      const i = y * W + x;
+      const v = out[i];
+      if(v === 0){ final[i] = 0; continue; }
+      const neighbors = [
+        x > 0   ? out[i-1] : -1,
+        x < W-1 ? out[i+1] : -1,
+        y > 0   ? out[i-W] : -1,
+        y < H-1 ? out[i+W] : -1,
+      ];
+      const hasNeighbour = neighbors.some(nv => nv === v);
+      if(hasNeighbour){ final[i] = v; } else { final[i] = 0; wiped++; }
+    }
+  }
+  // if isolation wiped too much (>60%), skip it and return pre-isolation field
+  if(wiped > W * H * 0.6) return Array.from(out);
+
+  return Array.from(final);
+}
+
+// ── BORDER SYSTEM ─────────────────────────────────────────────────────
+// Overwrites edge cells with motif pattern. Corners are handled separately.
+// Motifs operate on a 0-1 position along each edge.
+function applyBorder(field, W, H, motif){
+  const out = [...field];
+  const T = Math.max(2, Math.round(Math.min(W, H) * 0.045)); // border thickness
+
+  // motif functions: return 0.0 or 1.0 given position t∈[0,1] and level∈[0,T-1]
+  function motifVal(motif, t, level){
+    switch(motif){
+      case 'line':
+        // solid frame — outermost level solid, inner levels lighter
+        return level === 0 ? 1.0 : 0.15;
+      case 'zigzag':
+        // alternating high-low along edge
+        return (Math.floor(t * W * 0.5) % 2 === 0) ? (level === 0 ? 1.0 : 0.2) : 0.1;
+      case 'meander':
+        // stepped key pattern: alternates solid blocks with gaps
+        {
+          const step = Math.floor(t * W * 0.25) % 4;
+          if(step < 2) return level <= 1 ? 1.0 : 0.1;
+          return level === 0 ? 1.0 : 0.1;
+        }
+      case 'cross':
+        // grid of crosses along edge
+        {
+          const pos = Math.floor(t * W * 0.5) % 4;
+          return (pos === 0 || pos === 2) ? 1.0 : 0.1;
+        }
+      default: return 1.0;
+    }
+  }
+
+  // corner anchor: solid block, overrides edge motif
+  function isCorner(x, y){
+    return (x < T && y < T) || (x >= W-T && y < T) ||
+           (x < T && y >= H-T) || (x >= W-T && y >= H-T);
+  }
+
+  function cornerVal(x, y){
+    // turn motif at corners — diagonal gradient resolving into solid
+    const cx = x < W/2 ? x : W-1-x;
+    const cy = y < H/2 ? y : H-1-y;
+    const d = Math.min(cx, cy);
+    return d < T ? (d % 2 === 0 ? 1.0 : 0.3) : 0.15;
+  }
+
+  // apply to all four edges
+  for(let y = 0; y < H; y++){
+    for(let x = 0; x < W; x++){
+      const onTop    = y < T;
+      const onBottom = y >= H - T;
+      const onLeft   = x < T;
+      const onRight  = x >= W - T;
+      if(!onTop && !onBottom && !onLeft && !onRight) continue;
+
+      if(isCorner(x, y)){
+        out[y * W + x] = cornerVal(x, y);
+        continue;
+      }
+
+      let t, level;
+      if(onTop)    { t = x / W; level = y; }
+      else if(onBottom){ t = x / W; level = (H-1-y); }
+      else if(onLeft)  { t = y / H; level = x; }
+      else             { t = y / H; level = (W-1-x); }
+
+      out[y * W + x] = motifVal(motif, t, level);
+    }
+  }
+  return out;
+}
+
+// ── STIPPLE MODE ──────────────────────────────────────────────────────
+// Per-cell mark clusters that grow with field value.
+// Each 4×4 cell gets a number of marks proportional to its average value,
+// placed in a spiral pattern from center outward — mimicking how an engraver
+// builds up tone by clustering dots, not by placing single marks.
+function applyStipple(field, W, H){
+  const N=4;
+  // spiral order from center outward within a 4×4 cell
+  const ORDER=[
+    [1,1],[2,1],[2,2],[1,2],   // inner ring (center 4)
+    [0,1],[1,0],[2,0],[3,0],   // top edge
+    [3,1],[3,2],[3,3],[2,3],   // right + bottom-right
+    [1,3],[0,3],[0,2],[0,0],   // bottom + corners
+  ];
+  const TOTAL=ORDER.length; // 16
+
+  let fmin=Infinity,fmax=-Infinity;
+  for(let i=0;i<field.length;i++){if(field[i]<fmin)fmin=field[i];if(field[i]>fmax)fmax=field[i];}
+  const frange=fmax-fmin||1;
+
+  const out=new Float32Array(W*H);
+  const tW=Math.ceil(W/N), tH=Math.ceil(H/N);
+
+  for(let ty=0;ty<tH;ty++){
+    for(let tx=0;tx<tW;tx++){
+      let sum=0,count=0;
+      for(let dy=0;dy<N;dy++) for(let dx=0;dx<N;dx++){
+        const x=tx*N+dx,y=ty*N+dy;
+        if(x<W&&y<H){sum+=(field[y*W+x]-fmin)/frange;count++;}
+      }
+      const avg=count>0?sum/count:0;
+      // number of marks to place in this cell
+      const marks=Math.round(avg*TOTAL);
+      for(let k=0;k<marks&&k<TOTAL;k++){
+        const [dx,dy]=ORDER[k];
+        const x=tx*N+dx, y=ty*N+dy;
+        if(x<W&&y<H) out[y*W+x]=avg;
+      }
+    }
+  }
+  return Array.from(out);
+}
+
+// ── DITHER MODE ────────────────────────────────────────────────────────
+// Floyd-Steinberg error diffusion, published 1976 at Bell Labs.
+// Binary quantization (2 levels: 0 or 1) forces the error propagation
+// diagonal grain to be maximally visible — exactly what made early Mac,
+// ZX Spectrum, and laser-printer output look the way it did.
+// Error weights: 7/16 right, 1/16 below-right, 5/16 below, 3/16 below-left.
+function applyDither(field, W, H){
+  let fmin=Infinity,fmax=-Infinity;
+  for(let i=0;i<field.length;i++){if(field[i]<fmin)fmin=field[i];if(field[i]>fmax)fmax=field[i];}
+  const frange=fmax-fmin||1;
+  const buf=Array.from(field, v=>(v-fmin)/frange);
+
+  for(let y=0;y<H;y++){
+    for(let x=0;x<W;x++){
+      const i=y*W+x;
+      const old=Math.max(0,Math.min(1,buf[i]));
+      const q=old<0.5?0:1; // binary threshold
+      buf[i]=q;
+      const err=old-q;
+      if(x+1<W)           buf[i+1]           = Math.max(0,Math.min(1,buf[i+1]           +err*7/16));
+      if(x+1<W&&y+1<H)    buf[(y+1)*W+x+1]   = Math.max(0,Math.min(1,buf[(y+1)*W+x+1]  +err*1/16));
+      if(y+1<H)           buf[(y+1)*W+x]     = Math.max(0,Math.min(1,buf[(y+1)*W+x]     +err*5/16));
+      if(x>0&&y+1<H)      buf[(y+1)*W+x-1]   = Math.max(0,Math.min(1,buf[(y+1)*W+x-1]  +err*3/16));
+    }
+  }
+  return buf; // all values are exactly 0 or 1
+}
+
+// ── PLANOGRAPHIC MODE ─────────────────────────────────────────────────
+// Hard posterization into 5 flat tonal bands, each with its own value.
+// No gradient within a band — every cell in the same level has the same
+// output value. The sharp flat boundaries read like a reduction linocut
+// or silkscreen where each pass lays down one solid tone.
+function applyPlanographic(field, W, H){
+  const LEVELS=5;
+  let fmin=Infinity,fmax=-Infinity;
+  for(let i=0;i<field.length;i++){if(field[i]<fmin)fmin=field[i];if(field[i]>fmax)fmax=field[i];}
+  const frange=fmax-fmin||1;
+  return field.map(v=>{
+    const norm=(v-fmin)/frange;
+    const level=Math.min(LEVELS-1,Math.floor(norm*LEVELS));
+    return level/(LEVELS-1);
   });
-  // contrast: ct 1-10 maps gamma from 2.0 to 0.5
-  const gamma=2.0-(ct-1)*(1.5/9);
-  // density bias
-  const dbias=1+(1-dn/10);
+}
+
+function toAscii(field,W,H,csKey,dn,ct,inv,skipStretch){
+  const cs=CS[csKey];
+  if(!cs||cs.length===0) return '';
+
+  // 1. stretch field to full 0-1 range
+  let fmin=Infinity,fmax=-Infinity;
+  for(let i=0;i<field.length;i++){
+    if(field[i]<fmin)fmin=field[i];
+    if(field[i]>fmax)fmax=field[i];
+  }
+  const frange=fmax-fmin||1;
+  const norm=field.map(v=>(v-fmin)/frange);
+
+  // 2. contrast gamma
+  const gamma=1.8-(ct-1)*(1.2/9);
+
+  // 3. density bias
+  const dbias=1+(0.6-(dn/10)*0.6);
+
+  // 4. apply transforms
+  let vals=norm.map(v=>{
+    let u=Math.pow(v,gamma);
+    u=Math.pow(u,dbias);
+    return u;
+  });
+
+  // 5. second stretch — skip for stipple/dither/planographic/kentima (intentionally sparse fields)
+  if(!skipStretch){
+    let vmin=Infinity,vmax=-Infinity;
+    for(let i=0;i<vals.length;i++){
+      if(vals[i]<vmin)vmin=vals[i];
+      if(vals[i]>vmax)vmax=vals[i];
+    }
+    const vrange=vmax-vmin||1;
+    vals=vals.map(v=>(v-vmin)/vrange);
+  }
+
   const rows=[];
   for(let y=0;y<H;y++){
     let row='';
     for(let x=0;x<W;x++){
-      let v=eq[y*W+x];
+      let v=Math.max(0,Math.min(1,vals[y*W+x]));
       if(inv)v=1-v;
-      v=Math.pow(v,gamma);
-      v=Math.pow(v,dbias);
       row+=cs[Math.min(cs.length-1,Math.floor(v*cs.length))];
     }
     rows.push(row);
@@ -788,16 +1128,28 @@ function generate(){
   }
 
   if(st.smear)field=applySmear(field,w,h);
-  field=applySymmetry(field,w,h,st.sy);
+  const useKentima = st.kentima;
+  if(useKentima)      field=applyKentima(field,w,h,rng32(st.seed+99));
+  if(st.stipple)      field=applyStipple(field,w,h);
+  if(st.dither)       field=applyDither(field,w,h);
+  if(st.planographic) field=applyPlanographic(field,w,h);
+  const sym = useKentima ? Math.max(1, st.sy) : st.sy;
+  field=applySymmetry(field,w,h,sym);
   if(st.tile)field=applyTile(field,w,h);
-
-  const art=toAscii(field,w,h,st.charset,st.dn,st.ct,st.inv);
+  if(st.border) field=applyBorder(field,w,h,st.borderMotif);
+  // mode charsets: dither is binary so needs high-contrast; stipple needs density to show clusters
+  let csKey = useKentima ? 'kentima' : st.charset;
+  if(st.dither)  csKey = 'hicon';    // binary field maps cleanly to 5-step hi-contrast
+  if(st.stipple) csKey = 'density';  // gradual charset shows cluster density variation
+  const skipStretch = st.stipple || st.dither || st.planographic || useKentima;
+  const art=toAscii(field,w,h,csKey,st.dn,st.ct,st.inv,skipStretch);
   st.art=art;
 
   const el=document.getElementById('art');
   el.style.fontSize=fs+'px';
   el.style.transform='none';
   el.parentElement.style.height='auto';
+  document.getElementById('stage').scrollTop=0;
   el.classList.remove('visible');
   requestAnimationFrame(()=>{
     el.textContent=art;
@@ -826,7 +1178,7 @@ function pills(id,setter){
 pills('algo-pills',v=>st.algo=v);
 pills('layer-pills',v=>st.layer=v);
 pills('cs-pills',v=>st.charset=v);
-pills('size-pills',v=>{st.size=v;generate();});
+pills('size-pills',v=>{st.size=v; generate();});
 
 document.getElementById('blend-mode').addEventListener('change',e=>st.blendMode=e.target.value);
 
@@ -834,7 +1186,7 @@ document.getElementById('blend-mode').addEventListener('change',e=>st.blendMode=
 function flashBtn(id){const b=document.getElementById(id);b.classList.add('flash');setTimeout(()=>b.classList.remove('flash'),300);}
 
 // ── LOCK BUTTONS ──────────────────────────────────────────────────────
-['algo','layer','charset','params'].forEach(key=>{
+['algo','layer','charset','params','mode','border'].forEach(key=>{
   const btn=document.getElementById('lock-'+key);
   if(btn) btn.addEventListener('click',e=>{e.stopPropagation();toggleLock(key,btn);});
 });
@@ -845,8 +1197,10 @@ document.getElementById('algo-rand').addEventListener('click',()=>{
   const pick=AKEYS[Math.floor(Math.random()*AKEYS.length)];
   st.algo=pick; setPill('algo-pills',pick);
   if(!isLocked('params')){
-    st.cx=2+Math.floor(Math.random()*9); st.dn=1+Math.floor(Math.random()*10);
-    st.ct=1+Math.floor(Math.random()*10); st.sy=Math.floor(Math.random()*5);
+    st.cx=2+Math.floor(Math.random()*9);
+    st.dn=4+Math.floor(Math.random()*6);
+    st.ct=3+Math.floor(Math.random()*6);
+    st.sy=Math.floor(Math.random()*5);
     syncSliders();
   }
   flashBtn('algo-rand');
@@ -882,21 +1236,54 @@ document.getElementById('btn-rand-all').addEventListener('click',()=>{
     st.algo=AKEYS[Math.floor(Math.random()*AKEYS.length)]; setPill('algo-pills',st.algo);
   }
   if(!isLocked('layer')){
-    const lkeys=['none',...AKEYS.filter(k=>k!==st.algo).slice(0,4),'none','none','none'];
+    // heavily weight none — layers can blank output when poorly combined
+    const lkeys=['none','none','none','none',...AKEYS.filter(k=>k!==st.algo).slice(0,3)];
     st.layer=lkeys[Math.floor(Math.random()*lkeys.length)]; setPill('layer-pills',st.layer);
-    const modes=['add','multiply','max','min','diff','screen'];
-    st.blendMode=modes[Math.floor(Math.random()*modes.length)];
+    // only safe blend modes — multiply/diff/min can blank fields
+    const safeModes=['add','max','screen'];
+    st.blendMode=safeModes[Math.floor(Math.random()*safeModes.length)];
     document.getElementById('blend-mode').value=st.blendMode;
   }
   if(!isLocked('charset')){
-    st.charset=CSKEYS[Math.floor(Math.random()*CSKEYS.length)]; setPill('cs-pills',st.charset);
+    // exclude ultra-sparse charsets that go blank with mode output
+    const safeCS=['density','hicon','grit','symbol','punct'];
+    st.charset=safeCS[Math.floor(Math.random()*safeCS.length)]; setPill('cs-pills',st.charset);
   }
   if(!isLocked('params')){
-    st.cx=2+Math.floor(Math.random()*9); st.dn=1+Math.floor(Math.random()*10);
-    st.ct=1+Math.floor(Math.random()*10); st.sy=Math.floor(Math.random()*5);
-    st.zm=1+Math.floor(Math.random()*15); st.ox=20+Math.floor(Math.random()*60);
-    st.oy=20+Math.floor(Math.random()*60); syncSliders();
+    st.cx=2+Math.floor(Math.random()*9);
+    st.dn=5+Math.floor(Math.random()*4);  // min 5 — avoids near-empty density
+    st.ct=3+Math.floor(Math.random()*5);  // max 7 — avoids crushing to blank
+    st.sy=Math.floor(Math.random()*5);
+    st.zm=1+Math.floor(Math.random()*8);
+    st.ox=20+Math.floor(Math.random()*60);
+    st.oy=20+Math.floor(Math.random()*60);
+    syncSliders();
   }
+  if(!isLocked('mode')){
+    const modes_list=['kentima','stipple','dither','planographic',null,null];
+    const picked=modes_list[Math.floor(Math.random()*modes_list.length)];
+    st.kentima=picked==='kentima'; st.stipple=picked==='stipple';
+    st.dither=picked==='dither'; st.planographic=picked==='planographic';
+    // when a sparse mode is active, force density charset so output is never blank
+    if(st.stipple||st.dither){
+      st.charset='density'; setPill('cs-pills','density');
+    }
+    if(st.kentima && !st.border){ st.border=true; }
+    syncModeUI();
+  }
+  if(!isLocked('border')){
+    st.border = st.kentima || Math.random()<0.25;
+    if(st.border){
+      const motifs=['line','zigzag','meander','cross'];
+      st.borderMotif=motifs[Math.floor(Math.random()*motifs.length)];
+      setPill('border-motif-pills',st.borderMotif);
+    }
+    syncBorderUI();
+  }
+  st.smear = Math.random()<0.7;
+  st.tile  = Math.random()<0.1;
+  document.getElementById('smear-box').textContent=st.smear?'x':'';
+  document.getElementById('tile-box').textContent=st.tile?'x':'';
   generate();
 });
 
@@ -915,8 +1302,42 @@ document.getElementById('toggle-smear').addEventListener('click',()=>{
 document.getElementById('toggle-tile').addEventListener('click',()=>{
   st.tile=!st.tile;document.getElementById('tile-box').textContent=st.tile?'x':'';
 });
+// ── MODE PILLS (mutually exclusive) ───────────────────────────────────
+function syncModeUI(){
+  const noMode=!st.kentima&&!st.stipple&&!st.dither&&!st.planographic;
+  document.getElementById('mode-none').classList.toggle('on', noMode);
+  document.getElementById('mode-kentima').classList.toggle('on', st.kentima);
+  document.getElementById('mode-stipple').classList.toggle('on', st.stipple);
+  document.getElementById('mode-dither').classList.toggle('on', st.dither);
+  document.getElementById('mode-planographic').classList.toggle('on', st.planographic);
+  document.getElementById('settings-panel').classList.toggle('kentima-on', st.kentima);
+}
 
-// ── SETTINGS TOGGLE ───────────────────────────────────────────────────
+function setMode(mode){
+  st.kentima=false; st.stipple=false; st.dither=false; st.planographic=false;
+  if(mode!=='none') st[mode]=true;
+  if(st.kentima && !st.border){ st.border=true; syncBorderUI(); }
+  syncModeUI();
+}
+
+document.getElementById('mode-none').addEventListener('click',()=>setMode('none'));
+document.getElementById('mode-kentima').addEventListener('click',()=>setMode('kentima'));
+document.getElementById('mode-stipple').addEventListener('click',()=>setMode('stipple'));
+document.getElementById('mode-dither').addEventListener('click',()=>setMode('dither'));
+document.getElementById('mode-planographic').addEventListener('click',()=>setMode('planographic'));
+
+function syncBorderUI(){
+  document.getElementById('border-motif-pills').style.display=st.border?'flex':'none';
+  document.getElementById('border-box').textContent=st.border?'x':'';
+}
+
+document.getElementById('toggle-border').addEventListener('click',()=>{
+  st.border=!st.border;
+  syncBorderUI();
+});
+
+pills('border-motif-pills',v=>{st.borderMotif=v;});
+
 document.getElementById('settings-toggle').addEventListener('click',()=>{
   const p=document.getElementById('settings-panel'),b=document.getElementById('settings-toggle');
   p.classList.toggle('open');b.textContent=p.classList.contains('open')?'settings ↑':'settings ↓';
@@ -940,9 +1361,9 @@ document.getElementById('btn-save').addEventListener('click',()=>{
 });
 
 // ── SAVE JPG ──────────────────────────────────────────────────────────
-document.getElementById('btn-img').addEventListener('click',()=>{
-  const btn=document.getElementById('btn-img');
-  btn.textContent='saving...';
+function savePNG(btn){
+  const orig=btn.textContent;
+  btn.textContent='↓…';
   const lines=st.art.split('\n');
   const {fs}=getGrid(st.size);
   const scale=2;
@@ -958,13 +1379,16 @@ document.getElementById('btn-img').addEventListener('click',()=>{
   ctx.fillStyle='#1c1510';ctx.font=(fs*scale)+'px "Courier New",monospace';ctx.textBaseline='top';
   lines.forEach((line,i)=>ctx.fillText(line,pad,pad+i*lh));
   ctx.fillStyle='#d0c8be';ctx.font=(8*scale)+'px "Courier New",monospace';ctx.textBaseline='bottom';
-  ctx.fillText('mantarini · seed '+st.seed,pad,H-Math.round(6*scale));
+  ctx.fillText('(((◌))) · seed '+st.seed,pad,H-Math.round(6*scale));
   cv.toBlob(blob=>{
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);
     a.download='mantarini-'+st.seed+'-'+st.gen+'.png';a.click();
-    setTimeout(()=>btn.textContent='save .png',800);
+    setTimeout(()=>btn.textContent=orig,800);
   },'image/png');
-});
+}
+
+document.getElementById('btn-img').addEventListener('click',()=>savePNG(document.getElementById('btn-img')));
+document.getElementById('btn-dl').addEventListener('click',()=>savePNG(document.getElementById('btn-dl')));
 
 // ── GLOSSARY ──────────────────────────────────────────────────────────
 document.getElementById('btn-glossary').addEventListener('click',()=>{
@@ -973,6 +1397,12 @@ document.getElementById('btn-glossary').addEventListener('click',()=>{
 document.getElementById('glossary-close').addEventListener('click',()=>{
   document.getElementById('glossary-overlay').classList.remove('open');
 });
+document.getElementById('btn-about').addEventListener('click',()=>{
+  document.getElementById('about-overlay').classList.add('open');
+});
+document.getElementById('about-close').addEventListener('click',()=>{
+  document.getElementById('about-overlay').classList.remove('open');
+});
 document.getElementById('glossary-overlay').addEventListener('click',e=>{
   if(e.target===document.getElementById('glossary-overlay'))
     document.getElementById('glossary-overlay').classList.remove('open');
@@ -980,12 +1410,10 @@ document.getElementById('glossary-overlay').addEventListener('click',e=>{
 function updateToggleButtons(){
   const inv=document.getElementById('btn-invert');
   inv.textContent=st.inv?'normal':'invert';
-  inv.style.borderColor=st.inv?'var(--ink)':'var(--faint)';
-  inv.style.color=st.inv?'var(--ink)':'var(--mid)';
+  inv.classList.toggle('active',st.inv);
   const pin=document.getElementById('btn-pin');
   pin.textContent=st.pinned?'unpin':'pin seed';
-  pin.style.borderColor=st.pinned?'var(--ink)':'var(--faint)';
-  pin.style.color=st.pinned?'var(--ink)':'var(--mid)';
+  pin.classList.toggle('active',st.pinned);
 }
 
 // ── INVERT ────────────────────────────────────────────────────────────
@@ -998,8 +1426,38 @@ document.getElementById('btn-pin').addEventListener('click',()=>{
   st.pinned=!st.pinned;updateToggleButtons();
 });
 
+// ── RESET ─────────────────────────────────────────────────────────────
+document.getElementById('btn-reset').addEventListener('click',()=>{
+  // clear all modes
+  setMode('none');
+  // clear border
+  st.border=false; syncBorderUI();
+  // clear layer
+  st.layer='none'; setPill('layer-pills','none');
+  // reset blend
+  st.blendMode='add'; document.getElementById('blend-mode').value='add';
+  // reset charset
+  st.charset='density'; setPill('cs-pills','density');
+  // reset sliders to default
+  st.cx=6; st.dn=5; st.ct=5; st.sy=0; st.zm=5; st.ox=50; st.oy=50;
+  syncSliders();
+  // reset toggles
+  st.smear=true;  document.getElementById('smear-box').textContent='x';
+  st.tile=false;  document.getElementById('tile-box').textContent='';
+  st.inv=false;
+  updateToggleButtons();
+  // keep: algo, seed, size
+  generate();
+});
+
 // ── KEYBOARD ──────────────────────────────────────────────────────────
-document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT')generate();});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.tagName!=='INPUT'&&e.target.tagName!=='SELECT') generate();
+  if(e.key==='Escape'){
+    document.getElementById('glossary-overlay').classList.remove('open');
+    document.getElementById('about-overlay').classList.remove('open');
+  }
+});
 
 // ── ALGO LABELS ───────────────────────────────────────────────────────
 const LABELS={
@@ -1074,26 +1532,79 @@ const RAND_THEORY=[
   {text:'The word "algorithm" entered English through the Latin translation of a ninth-century Persian mathematician named al-Khwarizmi. His Latinised name became the word. The title of his most famous book gave us algebra. Generative art is, among other things, a return to that root: the picture as the output of a procedure, not the trace of a hand.',links:[{l:'Algorithm',u:'https://en.wikipedia.org/wiki/Algorithm'},{l:'Al-Khwarizmi',u:'https://en.wikipedia.org/wiki/Al-Khwarizmi'},{l:'Algebra',u:'https://en.wikipedia.org/wiki/Algebra'}]},
 ];
 
-function showTheory(algo){
-  const el=document.getElementById('theory-note');
-  const entry=THEORY[algo]||(RAND_THEORY[Math.floor(Math.random()*RAND_THEORY.length)]);
-  el.innerHTML='';
+const KENTIMA_NOTE = {
+  text: 'Kentima (κέντημα) is Greek embroidery, counted-thread work in which every mark occupies exactly one cell of a woven grid. The pattern is not drawn; it is counted. Thread colour on fabric ground, repetition as grammar, constraint as form. The grid is not a limitation but the condition of meaning: only within it can a motif be read, repeated, transmitted. The same structural logic of discrete levels, directional continuity, and motif reinforcement is what this mode imposes on the generated field. Noise becomes surface. Field becomes textile.',
+  links:[
+    {l:'Kentima',u:'https://en.wikipedia.org/wiki/Embroidery'},
+    {l:'Counted-thread embroidery',u:'https://en.wikipedia.org/wiki/Counted-thread_embroidery'},
+    {l:'Greek folk art',u:'https://en.wikipedia.org/wiki/Greek_folk_art'},
+  ]
+};
+
+const STIPPLE_NOTE = {
+  text: 'Stipple engraving emerged as a technique in the 16th century, developed by printmakers who needed to represent continuous tone on a copper plate using only dots. Giulio Campagnola is among its earliest practitioners. The principle is simple: density of marks per unit area reads as tone. Close dots read as dark; sparse dots read as light; the ground between them is the lightest tone of all. The technique passed into mechanical reproduction through the Ben-Day dot system patented in 1879 and the halftone screen developed for newspaper photographic reproduction in the 1880s. What this mode does is structurally identical: each cell in a fixed grid receives at most one mark, placed at a position within the cell that shifts with field value, so that density of marks across the image encodes the underlying field.',
+  links:[
+    {l:'Stipple engraving',u:'https://en.wikipedia.org/wiki/Stipple_engraving'},
+    {l:'Ben-Day dots',u:'https://en.wikipedia.org/wiki/Ben-Day_dots'},
+    {l:'Giulio Campagnola',u:'https://en.wikipedia.org/wiki/Giulio_Campagnola'},
+  ]
+};
+
+const DITHER_NOTE = {
+  text: 'Floyd-Steinberg dithering was published by Robert Floyd and Louis Steinberg at Bell Labs in 1976. The problem it solves is how to render a continuous-tone image on a device that can only produce two states: ink or no ink, on or off, black or white. Each pixel is rounded to the nearest available level; the rounding error is not discarded but passed forward to the neighbouring pixels using fixed weights: seven sixteenths to the right, five sixteenths below, three sixteenths below-left, one sixteenth below-right. The accumulated errors produce diagonal texture that the eye reads as intermediate tone. It was the standard algorithm for 1-bit rendering on the original Macintosh, the ZX Spectrum, and every early laser printer. The characteristic diagonal grain it produces is one of the defining visual signatures of early personal computing.',
+  links:[
+    {l:'Floyd-Steinberg dithering',u:'https://en.wikipedia.org/wiki/Floyd%E2%80%93Steinberg_dithering'},
+    {l:'Dither',u:'https://en.wikipedia.org/wiki/Dither'},
+    {l:'Error diffusion',u:'https://en.wikipedia.org/wiki/Error_diffusion'},
+  ]
+};
+
+const PLANOGRAPHIC_NOTE = {
+  text: 'Planographic printing refers to any process where the printing and non-printing areas are on the same plane, distinguished by chemistry or masking rather than physical relief. Lithography, invented by Alois Senefelder in 1796, is the foundational planographic process. Reduction printing, associated with Picasso and developed through linocut practice, extends the logic: a single block is printed, then cut away further, then printed again in a different ink. Each pass lays down one flat tonal region. The result is a set of hard, posterized tones with no gradient between them, each region carrying a single mark or colour. This mode applies the same logic to the field: four tonal levels, each mapped to a single value, creating flat regions with sharp boundaries rather than continuous gradation.',
+  links:[
+    {l:'Planographic printing',u:'https://en.wikipedia.org/wiki/Planographic_printing'},
+    {l:'Reduction linocut',u:'https://en.wikipedia.org/wiki/Linocut'},
+    {l:'Posterization',u:'https://en.wikipedia.org/wiki/Posterization'},
+  ]
+};
+
+function appendNote(el, note, spacerAbove){
+  if(spacerAbove){
+    const hr=document.createElement('div');
+    hr.style.cssText='border-top:1px solid var(--faint);margin:0.9rem 0;';
+    el.appendChild(hr);
+  }
   const p=document.createElement('p');
-  p.textContent=entry.text;
+  p.textContent=note.text;
+  p.style.cssText=spacerAbove?'':'margin-bottom:0.7rem;';
   el.appendChild(p);
-  if(entry.links&&entry.links.length){
+  if(note.links&&note.links.length){
     const div=document.createElement('div');
-    div.style.cssText='margin-top:0.8rem;font-size:0.72rem;letter-spacing:0.04em;';
-    entry.links.forEach((lk,i)=>{
+    div.style.cssText='margin-top:0.6rem;font-size:0.72rem;letter-spacing:0.04em;';
+    note.links.forEach((lk,i)=>{
       const a=document.createElement('a');
       a.href=lk.u;a.target='_blank';a.rel='noopener noreferrer';
-      a.textContent=lk.l;
-      a.style.cssText='color:var(--mid);text-underline-offset:2px;';
+      a.textContent=lk.l;a.style.cssText='color:var(--mid);text-underline-offset:2px;';
       div.appendChild(a);
-      if(i<entry.links.length-1){div.appendChild(document.createTextNode(', '));}
+      if(i<note.links.length-1) div.appendChild(document.createTextNode(', '));
     });
     el.appendChild(div);
   }
+}
+
+function showTheory(algo){
+  const el=document.getElementById('theory-note');
+  el.innerHTML='';
+  let hasMode=false;
+
+  if(st.kentima){ appendNote(el,KENTIMA_NOTE,false); hasMode=true; }
+  if(st.stipple)     { appendNote(el,STIPPLE_NOTE,hasMode);      hasMode=true; }
+  if(st.dither)      { appendNote(el,DITHER_NOTE,hasMode);       hasMode=true; }
+  if(st.planographic){ appendNote(el,PLANOGRAPHIC_NOTE,hasMode); hasMode=true; }
+
+  // always show algorithm note below, separated if a mode note is present
+  const entry=THEORY[algo]||(RAND_THEORY[Math.floor(Math.random()*RAND_THEORY.length)]);
+  appendNote(el, entry, hasMode);
 }
 
 // ── ABOUT THIS PIECE ──────────────────────────────────────────────────
@@ -1105,7 +1616,10 @@ function updateAbout(algo){
   if(st.layer!=='none') parts.push('layered with '+(LABELS[st.layer]||st.layer)+' ('+st.blendMode+')');
   parts.push(st.charset+' charset');
   if(st.sy>0) parts.push(['','left-right mirror','4-fold mirror','all-axis mirror','rotational fold'][st.sy]||'symmetric');
-  if(st.inv) parts.push('inverted');
+  if(st.kentima||st.border) parts.push(st.border?'border · '+st.borderMotif:'kentima');
+  if(st.stipple) parts.push('stipple');
+  if(st.dither) parts.push('dither');
+  if(st.planographic) parts.push('planographic');
   if(st.tile) parts.push('tiled 2x2');
   parts.push(w+'x'+h+' · seed '+st.seed);
   el.textContent=parts.join('  ·  ');
@@ -1167,6 +1681,8 @@ function encodeState(){
     cx:st.cx, dn:st.dn, ct:st.ct, sy:st.sy,
     zm:st.zm, ox:st.ox, oy:st.oy,
     sm:st.smear?1:0, tl:st.tile?1:0,
+    kt:st.kentima?1:0, bd:st.border?1:0, bm:st.borderMotif,
+    st:st.stipple?1:0, di:st.dither?1:0, pl:st.planographic?1:0,
     iv:st.inv?1:0, sd:st.seed,
   };
   return btoa(JSON.stringify(params));
@@ -1189,6 +1705,12 @@ function decodeState(hash){
     if(params.oy!=null) st.oy=+params.oy;
     if(params.sm!=null) st.smear=!!+params.sm;
     if(params.tl!=null) st.tile=!!+params.tl;
+    if(params.kt!=null) st.kentima=!!+params.kt;
+    if(params.bd!=null) st.border=!!+params.bd;
+    if(params.bm) st.borderMotif=params.bm;
+    if(params.st!=null) st.stipple=!!+params.st;
+    if(params.di!=null) st.dither=!!+params.di;
+    if(params.pl!=null) st.planographic=!!+params.pl;
     if(params.iv!=null) st.inv=!!+params.iv;
     if(params.sd!=null){ st.seed=+params.sd; st.pinned=true; }
     // sync UI
@@ -1200,26 +1722,23 @@ function decodeState(hash){
     syncSliders();
     document.getElementById('smear-box').textContent=st.smear?'x':'';
     document.getElementById('tile-box').textContent=st.tile?'x':'';
+    syncModeUI();
+    syncBorderUI();
+    if(st.border) setPill('border-motif-pills',st.borderMotif);
     updateToggleButtons();
     return true;
   }catch(e){return false;}
 }
 
-document.getElementById('btn-share').addEventListener('click',()=>{
-  const hash=encodeState();
-  const url=location.href.split('#')[0]+'#'+hash;
-  navigator.clipboard.writeText(url).then(()=>{
-    const btn=document.getElementById('btn-share');
-    btn.textContent='copied!';
-    setTimeout(()=>btn.textContent='share',1800);
-  });
-  history.replaceState(null,'',url);
-});
-
 // ── INIT ──────────────────────────────────────────────────────────────
-if(location.hash.length>1){ decodeState(location.hash.slice(1)); }
-updateToggleButtons();
-generate();
+window.addEventListener('load', ()=>{
+  if(location.hash.length>1){ decodeState(location.hash.slice(1)); }
+  updateToggleButtons();
+  syncModeUI();
+  syncBorderUI();
+  setPill('size-pills', st.size);
+  generate();
+});
 </script>
 </body>
 </html>

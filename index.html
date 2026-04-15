@@ -119,18 +119,18 @@ function parseCSV(text) {
   if (row.some(v => v.trim())) rows.push(row);
   if (rows.length < 2) return [];
 
-  const headers = rows[0].map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
+  const headers = rows[0].map(h => h.trim().toLowerCase().replace(/[\s\(\)\*\.]+/g, ''));
   const results = [];
   for (let i = 1; i < rows.length; i++) {
     const obj = {};
     headers.forEach((h, idx) => { obj[h] = (rows[i][idx] || '').trim(); });
     // normalise column names from Google Form variations
-    obj.label = obj.label || obj.title || '';
-    obj.link  = obj.link  || obj.linkoptional || obj['link(optional)'] || '';
-    obj.name  = obj.nameorpseudonymrequired || obj.nameorpseudonym || obj.name || '';
-    obj.instagram = obj.instagramhandleoptional || obj.instagramhandle || obj.instagram || '';
-    obj.credited  = (obj.iwanttobepubliclycreditedformywork || obj.iwanttobepubliclycredited || '').toLowerCase();
-    obj.keywords  = obj.keywords || '';
+    obj.label = obj['label'] || obj['title'] || '';
+    obj.link  = obj['link'] || obj['linkoptional'] || obj['linkoptional'] || '';
+    obj.name  = obj['nameorpseudonymrequired'] || obj['nameorpseudonym'] || obj['name'] || '';
+    obj.instagram = obj['instagramhandleoptional'] || obj['instagramhandle'] || obj['instagram'] || '';
+    obj.credited  = (obj['iwanttobepubliclycreditedformywork'] || obj['iwanttobepubliclycredited'] || '').toLowerCase();
+    obj.keywords  = obj['keywords'] || '';
     // publish: only show if explicitly True (controlled from sheet, not form)
     const pub = (obj.publish || '').toLowerCase();
     if (obj.label && pub === 'true') results.push(obj);

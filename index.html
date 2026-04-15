@@ -45,6 +45,9 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .panel-shell::-webkit-scrollbar-thumb{background:#999;border-radius:3px;}
 .panel-shell::-webkit-scrollbar-thumb:hover{background:#555;}
 .panel-img{width:100%;height:auto;border:1px solid #000;display:block;margin-top:10px;}
+.panel-meta{display:flex;justify-content:space-between;align-items:flex-end;margin-top:1rem;gap:0.5rem;flex-wrap:wrap;}
+.panel-signature{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:0.82rem;color:#999;line-height:1.4;}
+.panel-keywords{font-family:'Courier New',monospace;font-size:0.7rem;color:#bbb;letter-spacing:0.05em;text-align:right;line-height:1.4;}
 .field-msg{color:var(--muted);font-size:.9rem;padding:20px 0;}
 
 @media (max-width:700px){
@@ -121,9 +124,14 @@ function parseCSV(text) {
   for (let i = 1; i < rows.length; i++) {
     const obj = {};
     headers.forEach((h, idx) => { obj[h] = (rows[i][idx] || '').trim(); });
-    // normalise link title column name variations
-    if (!obj.linktitle && obj['linktitle']) obj.linktitle = obj['linktitle'];
-    // publish: only show if explicitly True
+    // normalise column names from Google Form variations
+    obj.label = obj.label || obj.title || '';
+    obj.link  = obj.link  || obj.linkoptional || obj['link(optional)'] || '';
+    obj.name  = obj.nameorpseudonymrequired || obj.nameorpseudonym || obj.name || '';
+    obj.instagram = obj.instagramhandleoptional || obj.instagramhandle || obj.instagram || '';
+    obj.credited  = (obj.iwanttobepubliclycreditedformywork || obj.iwanttobepubliclycredited || '').toLowerCase();
+    obj.keywords  = obj.keywords || '';
+    // publish: only show if explicitly True (controlled from sheet, not form)
     const pub = (obj.publish || '').toLowerCase();
     if (obj.label && pub === 'true') results.push(obj);
   }
@@ -277,6 +285,32 @@ function openPanel(idx) {
       if (i < pairs.length - 1) p.appendChild(document.createTextNode(', '));
     });
     body.appendChild(p);
+  }
+  // signature + keywords at bottom
+  const hasName = entry.name && entry.credited === 'yes';
+  const hasIG = entry.instagram;
+  const hasKeywords = entry.keywords;
+  if (hasName || hasIG || hasKeywords) {
+    const meta = document.createElement('div');
+    meta.className = 'panel-meta';
+    // signature: name and/or instagram if credited
+    const sig = document.createElement('div');
+    sig.className = 'panel-signature';
+    if (hasName) {
+      sig.textContent = '— ' + entry.name;
+      if (hasIG) sig.textContent += '  ' + entry.instagram;
+    } else if (hasIG) {
+      sig.textContent = '— ' + entry.instagram;
+    }
+    meta.appendChild(sig);
+    // keywords right side
+    if (hasKeywords) {
+      const kw = document.createElement('div');
+      kw.className = 'panel-keywords';
+      kw.textContent = entry.keywords.split(',').map(k => k.trim()).filter(Boolean).join(', ');
+      meta.appendChild(kw);
+    }
+    body.appendChild(meta);
   }
   document.getElementById('panel-shell').scrollTop = 0;
   document.getElementById('panel-wrap').classList.add('open');

@@ -296,11 +296,19 @@ function openPanel(idx) {
     // signature: name and/or instagram if credited
     const sig = document.createElement('div');
     sig.className = 'panel-signature';
-    if (hasName) {
-      sig.textContent = '— ' + entry.name;
-      if (hasIG) sig.textContent += '  ' + entry.instagram;
-    } else if (hasIG) {
-      sig.textContent = '— ' + entry.instagram;
+    sig.appendChild(document.createTextNode('— '));
+    if (hasName) sig.appendChild(document.createTextNode(entry.name));
+    if (hasIG) {
+      if (hasName) sig.appendChild(document.createTextNode('  '));
+      const igHandle = entry.instagram.startsWith('@') ? entry.instagram : '@' + entry.instagram;
+      const igUrl = 'https://www.instagram.com/' + igHandle.replace('@','');
+      const igA = document.createElement('a');
+      igA.href = igUrl; igA.target = '_blank'; igA.rel = 'noopener noreferrer';
+      igA.textContent = igHandle;
+      igA.style.cssText = 'color:#bbb;text-decoration:none;font-style:italic;';
+      igA.onmouseover = () => igA.style.color = '#555';
+      igA.onmouseout  = () => igA.style.color = '#bbb';
+      sig.appendChild(igA);
     }
     meta.appendChild(sig);
     // keywords right side

@@ -22,17 +22,15 @@ html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Couri
 
 /* mobile: single row — title left, buttons right */
 .ctrl-top{display:flex;flex-direction:row;align-items:center;justify-content:space-between;gap:0.5rem;}
-.ctrl-title-block{display:flex;flex-direction:row;align-items:center;gap:0.4rem;min-width:0;flex-shrink:1;}
-.title-sep{display:inline-block;width:1px;height:0.8em;background:var(--faint);flex-shrink:0;}
+.ctrl-title-block{display:flex;flex-direction:row;align-items:center;gap:0.25rem;min-width:0;flex-shrink:1;}
 .ctrl-buttons{display:flex;gap:0.3rem;align-items:center;flex-shrink:0;}
 /* TITLE — exact match to index.html */
 .title{margin:0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;}
 .title a{color:inherit;text-decoration:none;cursor:pointer;font-family:Georgia,"Times New Roman",serif;font-size:inherit;font-weight:inherit;font-style:normal;}
 .title a:hover{color:var(--mid);}
-.site-sub{font-size:0.48rem;color:var(--faint);letter-spacing:0.13em;text-transform:uppercase;font-family:'Courier Prime',monospace;display:block;white-space:nowrap;}
 
 #btn-gen{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
-#btn-dl{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.85rem;padding:0 0.55rem;cursor:pointer;min-height:38px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;line-height:1;}
+#btn-dl{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.6rem;cursor:pointer;min-height:38px;transition:all 0.1s;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
 #btn-dl:active{border-color:var(--ink);color:var(--ink);}
 #btn-gen:active{border-color:var(--ink);color:var(--ink);}
 
@@ -158,9 +156,10 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   #controls{width:250px;min-width:250px;flex-direction:column;border-bottom:none;border-right:1px solid var(--faint);padding:1.5rem 1.2rem 1.2rem;height:100vh;overflow-y:auto;gap:0;}
   #controls::-webkit-scrollbar{width:3px;}
   #controls::-webkit-scrollbar-thumb{background:var(--faint);}
-  .ctrl-top{flex-direction:column;align-items:flex-start;margin-bottom:0.3rem;gap:0.5rem;}
+  .ctrl-top{flex-direction:column;align-items:center;margin-bottom:0.8rem;gap:0;}
   #meta-links{align-self:center;margin-bottom:0.3rem;}
   #btn-reset{align-self:center;}
+  .ctrl-title-block{margin-bottom:1rem;align-self:center;}
   .ctrl-buttons{flex-direction:column;width:100%;}
   #btn-gen{width:100%;flex:none;min-height:36px;font-size:0.6rem;padding:0.35rem 0.7rem;}
   #btn-dl{width:100%;min-height:36px;}
@@ -186,14 +185,12 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     <div class="ctrl-top">
       <div class="ctrl-title-block">
         <a href="index.html" class="title" style="text-decoration:none;color:inherit;">(((◌)))</a>
-        <span class="title-sep"></span>
-        <span class="site-sub">ascii art</span>
       </div>
       <div class="ctrl-buttons">
         <button id="btn-gen">generate</button>
         <button id="settings-toggle">settings</button>
-        <button id="btn-rand-all">random</button>
-        <button id="btn-dl" title="save as png">↓</button>
+        <button id="btn-rand-all">randomise</button>
+        <button id="btn-dl">download</button>
       </div>
     </div>
 
@@ -1368,23 +1365,38 @@ function savePNG(btn){
   btn.textContent='↓…';
   const lines=st.art.split('\n');
   const {fs}=getGrid(st.size);
-  const scale=2;
-  const lh=Math.round(fs*1.18*scale),pad=Math.round(fs*2*scale);
+  const scale=4; // 4× for high quality download
+  const fontPx=fs*scale;
+  const lh=Math.round(fs*1.18*scale);
+  const pad=Math.round(fs*2.5*scale);
+  const font=`${fontPx}px "Courier New",Courier,monospace`;
+  // measure width accurately
   const tmp=document.createElement('canvas').getContext('2d');
-  tmp.font=(fs*scale)+'px "Courier New",monospace';
+  tmp.font=font;
   const cw=tmp.measureText('M').width;
   const cols=Math.max(...lines.map(l=>l.length));
-  const W=Math.ceil(cols*cw)+pad*2,H=lines.length*lh+pad*2;
-  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const W=Math.ceil(cols*cw)+pad*2;
+  const H=lines.length*lh+pad*2+Math.round(20*scale);
+  const cv=document.createElement('canvas');
+  cv.width=W; cv.height=H;
   const ctx=cv.getContext('2d');
-  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
-  ctx.fillStyle='#1c1510';ctx.font=(fs*scale)+'px "Courier New",monospace';ctx.textBaseline='top';
+  // white background
+  ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
+  // render text
+  ctx.fillStyle='#1c1510';
+  ctx.font=font;
+  ctx.textBaseline='top';
   lines.forEach((line,i)=>ctx.fillText(line,pad,pad+i*lh));
-  ctx.fillStyle='#d0c8be';ctx.font=(8*scale)+'px "Courier New",monospace';ctx.textBaseline='bottom';
-  ctx.fillText('(((◌))) · seed '+st.seed,pad,H-Math.round(6*scale));
+  // watermark
+  ctx.fillStyle='#c8c0b8';
+  ctx.font=`${Math.round(7*scale)}px "Courier New",Courier,monospace`;
+  ctx.textBaseline='bottom';
+  ctx.fillText('(((◌))) · seed '+st.seed,pad,H-Math.round(5*scale));
   cv.toBlob(blob=>{
-    const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    a.download='mantarini-'+st.seed+'-'+st.gen+'.png';a.click();
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download='mantarini-'+st.seed+'-'+st.gen+'.png';
+    a.click();
     setTimeout(()=>btn.textContent=orig,800);
   },'image/png');
 }
@@ -1430,6 +1442,12 @@ document.getElementById('btn-pin').addEventListener('click',()=>{
 
 // ── RESET ─────────────────────────────────────────────────────────────
 document.getElementById('btn-reset').addEventListener('click',()=>{
+  // clear all locks
+  locks.clear();
+  ['algo','layer','charset','params','mode','border'].forEach(key=>{
+    const btn=document.getElementById('lock-'+key);
+    if(btn){btn.textContent='lock';btn.classList.remove('locked');}
+  });
   // clear all modes
   setMode('none');
   // clear border

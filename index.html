@@ -9,7 +9,7 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;overflow-x:hidden;padding-bottom:0;}
 .page{max-width:1120px;margin:0 auto;padding:14px 12px 0;}
-.site-header{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:20px;}
+.site-header{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:20px;}
 .title{margin:0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;}
 .nav-links{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;padding-top:0.2rem;}
 .nav-link{background:none;border:none;color:#bbb;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:0.75rem;letter-spacing:0.03em;cursor:pointer;padding:0;text-decoration:none;transition:color 0.15s;white-space:nowrap;}
@@ -367,7 +367,7 @@ init();
 <!-- ABOUT OVERLAY -->
 <div id="about-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2rem 1.5rem 4rem;">
   <div style="max-width:560px;margin:0 auto;">
-    <button id="about-close" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#777;cursor:pointer;padding:0;margin-bottom:2rem;display:block;">close ×</button>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:2rem;"><button id="about-close" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#777;cursor:pointer;padding:0;">close ×</button></div>
     <p style="font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;font-weight:normal;margin:0 0 1.8rem 0;color:#111;font-style:normal;">about</p>
     <div style="display:flex;justify-content:flex-end;margin-bottom:1.2rem;">
       <button id="lang-el" onclick="setLang('el')" style="background:none;border:none;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.68rem;color:#aaa;cursor:pointer;padding:0;letter-spacing:0.04em;text-decoration:underline;text-underline-offset:3px;text-decoration-color:#ddd;">ελλ</button>
@@ -375,14 +375,14 @@ init();
       <button id="lang-en" onclick="setLang('en')" style="background:none;border:none;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.68rem;color:#ccc;cursor:pointer;padding:0;letter-spacing:0.04em;">en</button>
     </div>
     <div id="about-el" style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:#777;line-height:1.85;letter-spacing:0.01em;">
-      <p style="margin-bottom:1.4rem;">το μανταρίνι είναι ένα διεπιστημονικό ψηφιακό περιοδικό που ξεφλουδίζει τη σύγχρονη εμπειρία ανάμεσα στον εσωτερικό και τον δικτυωμένο κόσμο.</p>
-      <p style="margin-bottom:1.4rem;">Η θεωρία δεν καταφέρνει πολλά όταν αναμασιέται σε ακαδημαϊκά τραπέζια, αλλά ούτε και το βίωμα είναι αρκετό μόνο όταν εξομολογείται. Σε έναν κόσμο κατακερματισμένης προσοχής και ρευστής ταυτότητας, αυτός ο χώρος λειτουργεί ως ένα πολυφωνικό αρχείο παρατηρήσεων για το τι σημαίνει να είσαι άνθρωπος σήμερα.</p>
-      <p style="margin-bottom:0;">Φιλοξενεί επώνυμα και ανώνυμα θραύσματα σκέψεων, δοκίμια, στοχασμούς και ερωτήματα που αγγίζουν κάτω από την επιφάνεια της καθημερινότητας.</p>
+      <p style="margin-bottom:1.4rem;">το μανταρίνι είναι ένα διεπιστημονικό ψηφιακό περιοδικό που ξεφλουδίζει τη σύγχρονη εμπειρία μεταξύ εσωτερικού και δικτυωμένου κόσμου.</p>
+      <p style="margin-bottom:1.4rem;">Η θεωρία δεν καταφέρνει πολλά όταν αναμασιέται σε ακαδημαϊκά τραπέζια, αλλά ούτε και το βίωμα είναι αρκετό μόνο όταν εξομολογείται. Και τελικά φαίνεται να είμαστε κάμποσοι που ψάχνουμε το ενδιάμεσο, εκεί όπου είναι κατευθείαν προφανές ότι το δάχτυλα παραπέμπουν σε κλαδιά ή το μάτι σε νεφέλωμα, αλλά το να' χεις βγάλει ολοκληρωμένο πόρισμα δεν είναι αναγκαίο.</p>
+      <p style="margin-bottom:0;">Αυτός ο χώρος λειτουργεί ως ένα πολυφωνικό αρχείο παρατηρήσεων για το τι σημαίνει να είσαι άνθρωπος σήμερα. Φιλοξενεί θραύσματα σκέψεων, δοκίμια, στοχασμούς και ερωτήματα που ψαχουλεύουν κάτω από την επιφάνεια της καθημερινότητας. Η οπτική του κινείται ανάμεσα στη θεωρία των μέσων, την κριτική ψυχολογία, τη φιλοσοφία της τεχνολογίας και την φαινομενολογία, χωρίς να ανήκει αποκλειστικά σε ένα πεδίο. Ίσως και σε κανένα.</p>
     </div>
     <div id="about-en" style="display:none;font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:#777;line-height:1.85;letter-spacing:0.01em;">
-      <p style="margin-bottom:1.4rem;">to mantarini is a curated online magazine that peels back contemporary experience across the internal and the networked.</p>
-      <p style="margin-bottom:1.4rem;">Theory achieves little when it remains trapped in academic circles, just as lived experience is not enough when it is limited to confession. In a world of fragmented attention and fluid identity, this space functions as a polyphonic archive of observations on what it means to be human today.</p>
-      <p style="margin-bottom:0;">It hosts both signed and anonymous fragments of thought, essays, reflections, and questions that reach beneath the surface of the everyday.</p>
+      <p style="margin-bottom:1.4rem;">το μανταρίνι is an interdisciplinary online magazine that peels back contemporary experience across the internal and the networked.</p>
+      <p style="margin-bottom:1.4rem;">Theory does not achieve much when it is endlessly chewed across academic tables, and lived experience is also not enough when it remains confined to confession. And apparently, there are quite a few of us searching for the in-between, where it is obvious that fingers point directly to branches or the eye to a nebula, without needing to have arrived at a fully formed conclusion.</p>
+      <p style="margin-bottom:0;">This space functions as a polyphonic archive of observations on what it means to be human today. It hosts fragments of thought, essays, reflections, and questions that probe beneath the surface of everyday life. Its perspective moves between media theory, critical psychology, philosophy of technology, and phenomenology, without belonging exclusively to any single field. Perhaps to none at all.</p>
     </div>
   </div>
 </div>

@@ -125,10 +125,10 @@ function parseCSV(text) {
     const obj = {};
     headers.forEach((h, idx) => { obj[h] = (rows[i][idx] || '').trim(); });
     // normalise column names from Google Form variations
-    obj.label = obj['label'] || obj['title'] || '';
-    obj.link  = obj['link'] || obj['linkoptional'] || obj['linkoptional'] || '';
-    obj.name  = obj['nameorpseudonymrequired'] || obj['nameorpseudonym'] || obj['name'] || '';
-    obj.instagram = obj['instagramhandleoptional'] || obj['instagramhandle'] || obj['instagram'] || '';
+    obj.label = obj['title'] || obj['label'] || '';
+    obj.link  = obj['linkoptional'] || obj['link'] || '';
+    obj.name  = obj['nameorpseudonym'] || obj['nameorpseudonymrequired'] || obj['name'] || '';
+    obj.instagram = obj['instagramhandle'] || obj['instagramhandleoptional'] || obj['instagram'] || '';
     obj.credited  = (obj['iwanttobepubliclycreditedformywork'] || obj['iwanttobepubliclycredited'] || '').toLowerCase();
     obj.keywords  = obj['keywords'] || '';
     // publish: only show if explicitly True (controlled from sheet, not form)
@@ -287,30 +287,34 @@ function openPanel(idx) {
     body.appendChild(p);
   }
   // signature + keywords at bottom
-  const hasName = entry.name && entry.credited.startsWith('yes');
-  const hasIG = entry.instagram && entry.credited.startsWith('yes');
-  const hasKeywords = entry.keywords;
+  console.log('[mantarini] entry:', {name: entry.name, instagram: entry.instagram, credited: entry.credited, keywords: entry.keywords});
+  const isCredited = entry.credited.startsWith('yes');
+  const hasName = !!(entry.name && isCredited);
+  const hasIG = !!(entry.instagram && isCredited);
+  const hasKeywords = !!entry.keywords;
   if (hasName || hasIG || hasKeywords) {
     const meta = document.createElement('div');
     meta.className = 'panel-meta';
-    // signature: name and/or instagram if credited
-    const sig = document.createElement('div');
-    sig.className = 'panel-signature';
-    sig.appendChild(document.createTextNode('— '));
-    if (hasName) sig.appendChild(document.createTextNode(entry.name));
-    if (hasIG) {
-      if (hasName) sig.appendChild(document.createTextNode('  '));
-      const igHandle = entry.instagram.startsWith('@') ? entry.instagram : '@' + entry.instagram;
-      const igUrl = 'https://www.instagram.com/' + igHandle.replace('@','');
-      const igA = document.createElement('a');
-      igA.href = igUrl; igA.target = '_blank'; igA.rel = 'noopener noreferrer';
-      igA.textContent = igHandle;
-      igA.style.cssText = 'color:#bbb;text-decoration:none;font-style:italic;';
-      igA.onmouseover = () => igA.style.color = '#555';
-      igA.onmouseout  = () => igA.style.color = '#bbb';
-      sig.appendChild(igA);
+    // signature: only if credited
+    if (hasName || hasIG) {
+      const sig = document.createElement('div');
+      sig.className = 'panel-signature';
+      sig.appendChild(document.createTextNode('— '));
+      if (hasName) sig.appendChild(document.createTextNode(entry.name));
+      if (hasIG) {
+        if (hasName) sig.appendChild(document.createTextNode('  '));
+        const igHandle = entry.instagram.startsWith('@') ? entry.instagram : '@' + entry.instagram;
+        const igUrl = 'https://www.instagram.com/' + igHandle.replace('@', '');
+        const igA = document.createElement('a');
+        igA.href = igUrl; igA.target = '_blank'; igA.rel = 'noopener noreferrer';
+        igA.textContent = igHandle;
+        igA.style.cssText = 'color:#bbb;text-decoration:none;font-style:italic;';
+        igA.onmouseover = () => igA.style.color = '#555';
+        igA.onmouseout  = () => igA.style.color = '#bbb';
+        sig.appendChild(igA);
+      }
+      meta.appendChild(sig);
     }
-    meta.appendChild(sig);
     // keywords right side
     if (hasKeywords) {
       const kw = document.createElement('div');
@@ -366,13 +370,11 @@ init();
     <button id="about-close" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#777;cursor:pointer;padding:0;margin-bottom:2rem;display:block;">close ×</button>
     <p style="font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;font-weight:normal;margin:0 0 1.8rem 0;color:#111;font-style:normal;">about</p>
     <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:#777;line-height:1.85;letter-spacing:0.01em;">
-      <p style="margin-bottom:1.4rem;">το μανταρίνι είναι ένα διεπιστημονικό ψηφιακό περιοδικό που ξεφλουδίζει τη σύγχρονη εμπειρία ανάμεσα στον εσωτερικό και τον δικτυωμένο κόσμο.</p>
-      <p style="margin-bottom:1.4rem;">Η θεωρία δεν καταφέρνει πολλά όταν αναμασιέται σε ακαδημαϊκά τραπέζια, αλλά ούτε και το βίωμα είναι αρκετό μόνο όταν εξομολογείται. Αυτός ο χώρος λειτουργεί ως ένα πολυφωνικό αρχείο παρατηρήσεων για το τι σημαίνει να είσαι άνθρωπος σήμερα.</p>
-      <p style="margin-bottom:1.4rem;">Φιλοξενεί επώνυμα και ανώνυμα θραύσματα σκέψεων, δοκίμια και στοχασμούς που αγγίζουν κάτω από την επιφάνεια της καθημερινότητας.</p>
+      <p style="margin-bottom:1.4rem;">το μανταρίνι επιχειρεί μια καταγραφή της σύγχρονης εμπειρίας, εκεί που η κριτική σκέψη συναντά το προσωπικό βίωμα.</p>
+      <p style="margin-bottom:1.4rem;">Το κάλεσμα αφορά σκέψεις, δοκίμια, στοχασμούς και ερωτήματα που επιλέγουν να ξεφλουδίσουν την πραγματικότητα αντί να την προσπεράσουν.</p>
       <p style="margin-bottom:1.4rem;font-family:'Courier New',monospace;font-size:0.65rem;color:#ccc;font-style:normal;">·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·..·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.</p>
-      <p style="margin-bottom:1.4rem;">το μανταρίνι is a curated online magazine that peels back contemporary experience across the internal and the networked.</p>
-      <p style="margin-bottom:1.4rem;">Theory achieves little when it remains trapped in academic circles, just as lived experience is not enough when it is limited to confession. This space functions as a polyphonic archive of observations on what it means to be human today.</p>
-      <p style="margin-bottom:0;">It hosts both signed and anonymous fragments of thought, essays, and reflections that probe beneath the surface of the everyday.</p>
+      <p style="margin-bottom:1.4rem;">το μανταρίνι attempts to document contemporary experience, where critical thought meets personal record.</p>
+      <p style="margin-bottom:0;">The call is for fragments of thought, essays, reflections, and questions that choose to peel back reality rather than bypass it.</p>
     </div>
   </div>
 </div>

@@ -9,27 +9,32 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;overflow-x:hidden;padding-bottom:0;}
 .page{max-width:1120px;margin:0 auto;padding:14px 12px 0;}
-.title{margin:0 0 20px 0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;}
+.site-header{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:20px;}
+.title{margin:0;font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;}
+.nav-links{display:flex;align-items:center;gap:0.5rem;flex-shrink:0;padding-top:0.2rem;}
+.nav-link{background:none;border:none;color:#bbb;font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:0.75rem;letter-spacing:0.03em;cursor:pointer;padding:0;text-decoration:none;transition:color 0.15s;white-space:nowrap;}
+.nav-link:hover{color:#555;}
+.nav-sep{color:#ddd;font-size:0.55rem;font-family:'Courier New',monospace;}
+@media(max-width:700px){
+  .nav-links{padding-top:0.05rem;}
+  .nav-link{font-size:0.7rem;}
+}
 .orbit-link{color:inherit;text-decoration:none;cursor:pointer;font-family:Georgia,"Times New Roman",serif;font-size:inherit;font-weight:normal;font-style:normal;}
 .orbit-link:hover{color:var(--accent);}
 .field{position:relative;}
 
-/* Lines */
+
 .line{display:block;white-space:pre;overflow:hidden;line-height:1.62;font-size:17px;color:#595959;font-family:'Courier New',Courier,monospace;width:100%;}
 .line+.line{margin-top:.6rem;}
-
-/* Triggers — Georgia over the monospace field */
 .trigger{display:inline;cursor:pointer;color:#111;font-family:Georgia,"Times New Roman",serif;font-size:1.15em;line-height:1.2;background:none;border:none;padding:0;font-weight:500;white-space:pre;}
 .trigger:hover{color:var(--accent);}
 .trigger.active{color:var(--accent);text-decoration:underline;text-underline-offset:2px;}
 
-/* Panel */
 .panel-wrap{display:none;position:fixed;left:50%;transform:translateX(-50%);bottom:clamp(60px,10vh,120px);width:min(1020px, calc(100vw - 20px));z-index:20;}
 .panel-wrap.open{display:block;}
 .panel-shell{background:#fff;border:1px solid var(--border);overflow-y:scroll;overflow-x:hidden;max-height:min(72vh, calc(100vh - 160px));-webkit-overflow-scrolling:touch;position:relative;}
 .panel-inner{padding:16px 16px 18px;position:relative;}
 .panel-close-bar{display:flex;justify-content:flex-end;padding:6px 10px;position:sticky;top:0;background:#fff;z-index:5;border-bottom:1px solid #eee;}
-.panel-type{margin:0 0 6px 0;color:var(--muted);font-size:.82rem;}
 .panel-text{margin:0 0 10px 0;line-height:1.75;font-size:1.05rem;white-space:pre-wrap;word-break:break-word;}
 .panel-links{margin:6px 0 0 0;font-size:.95rem;}
 .panel-links a{color:var(--accent);text-decoration:underline;}
@@ -39,11 +44,7 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 .panel-shell::-webkit-scrollbar-track{background:#f0f0f0;}
 .panel-shell::-webkit-scrollbar-thumb{background:#999;border-radius:3px;}
 .panel-shell::-webkit-scrollbar-thumb:hover{background:#555;}
-
-/* Image in panel */
 .panel-img{width:100%;height:auto;border:1px solid #000;display:block;margin-top:10px;}
-
-/* Loading / error state */
 .field-msg{color:var(--muted);font-size:.9rem;padding:20px 0;}
 
 @media (max-width:700px){
@@ -55,12 +56,24 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
   .panel-shell{max-height:min(78vh, calc(100vh - 120px));}
   .panel-inner{padding:12px 12px 14px;}
   .panel-text{font-size:.92rem;}
+  .about-text{font-size:0.88rem;}
 }
+
 </style>
 </head>
 <body>
 <main class="page">
-  <div class="title">το μανταρίνι <a href="ascii.html" class="orbit-link">(((◌)))</a></div>
+  <div class="site-header">
+    <div class="title">το μανταρίνι <a href="ascii.html" class="orbit-link">(((◌)))</a></div>
+    <nav class="nav-links">
+      <button class="nav-link" id="nav-about">about</button>
+      <span class="nav-sep">·</span>
+      <a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSc3lK3i_TBO5ngj8lbK9UgMxF9PDjzDwHrZKoAPom8OnA-hUw/viewform?usp=sharing&ouid=112909486775798749016" target="_blank" rel="noopener noreferrer">submissions</a>
+      <span class="nav-sep">·</span>
+      <a class="nav-link" href="https://www.instagram.com/to.mantarini" target="_blank" rel="noopener noreferrer">instagram</a>
+    </nav>
+  </div>
+
   <section class="field" id="field"></section>
 </main>
 
@@ -76,24 +89,13 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
 </div>
 
 <script>
-// ─── CONFIG ────────────────────────────────────────────────────────────────
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_L3BRTS15mXDYMn01jC63svihZjidfiwFuZYA1D50_1wBMcWu1th38yZgvMgzEVtDchLmAHNpVSle/pub?output=csv';
-
-// Symbol pool — single chars only, so cursor tracking stays exact
 const SYMBOLS = ['\\','/','{','}','[',']','|','<','>','+','-','~','*','?',':',';',',','.','^','_','`','"',"'",'=','#','%','&'];
-// Multi-char decorative clusters injected whole, tracked by actual length
 const CLUSTERS = ['[[]]','{::}','`^`','{_}','=-=','|-|','<//>', '/\\', '<_>'];
 
-// ─── STATE ─────────────────────────────────────────────────────────────────
-let entries = [];
-let ordered = []; // reversed entries — newest first
-let driftInterval = null;
-let driftPaused = false;
-let activeId = null;
+let entries = [], ordered = [], driftInterval = null, driftPaused = false, activeId = null;
 
-// ─── CSV PARSE ─────────────────────────────────────────────────────────────
 function parseCSV(text) {
-  // Parse entire CSV character by character so quoted newlines are handled
   const rows = [];
   let cur = '', inQ = false, row = [];
   for (let i = 0; i < text.length; i++) {
@@ -104,107 +106,76 @@ function parseCSV(text) {
     } else if (c === ',' && !inQ) {
       row.push(cur); cur = '';
     } else if ((c === '\n' || c === '\r') && !inQ) {
-      if (c === '\r' && text[i+1] === '\n') i++; // skip \r\n
+      if (c === '\r' && text[i+1] === '\n') i++;
       row.push(cur); cur = '';
       if (row.some(v => v.trim())) rows.push(row);
       row = [];
-    } else {
-      cur += c;
-    }
+    } else { cur += c; }
   }
   row.push(cur);
   if (row.some(v => v.trim())) rows.push(row);
-
   if (rows.length < 2) return [];
+
   const headers = rows[0].map(h => h.trim().toLowerCase().replace(/\s+/g, ''));
   const results = [];
   for (let i = 1; i < rows.length; i++) {
     const obj = {};
     headers.forEach((h, idx) => { obj[h] = (rows[i][idx] || '').trim(); });
-    // 'linklabel' handles both 'linklabel' and 'link label'
-    if (!obj.linklabel && obj['link label']) obj.linklabel = obj['link label'];
-    if (obj.label && (!obj.publish || obj.publish.toLowerCase() !== 'false')) {
-      results.push(obj);
-    }
+    // normalise link title column name variations
+    if (!obj.linktitle && obj['linktitle']) obj.linktitle = obj['linktitle'];
+    // publish: only show if explicitly True
+    const pub = (obj.publish || '').toLowerCase();
+    if (obj.label && pub === 'true') results.push(obj);
   }
   return results;
 }
 
-function randomSymbol(rng) {
-  return SYMBOLS[Math.floor(rng() * SYMBOLS.length)];
-}
-function randomCluster(rng) {
-  return CLUSTERS[Math.floor(rng() * CLUSTERS.length)];
-}
-
-// seeded RNG so layout is stable per session
+function randomSymbol(rng) { return SYMBOLS[Math.floor(rng() * SYMBOLS.length)]; }
+function randomCluster(rng) { return CLUSTERS[Math.floor(rng() * CLUSTERS.length)]; }
 function makeRng(seed) {
   let s = seed;
-  return function() {
-    s = (s * 1664525 + 1013904223) & 0xffffffff;
-    return (s >>> 0) / 0xffffffff;
-  };
+  return () => { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 0xffffffff; };
 }
-
 function getLineLen() {
   const page = document.querySelector('.page');
   const w = page ? page.clientWidth - 24 : window.innerWidth - 24;
-  const isMobile = window.innerWidth <= 700;
-  const charW = isMobile ? 7.8 : 10.2; // Courier New at 13px / 17px
-  return Math.max(40, Math.floor(w / charW));
+  return Math.max(40, Math.floor(w / (window.innerWidth <= 700 ? 7.8 : 10.2)));
 }
 
 function buildField(e) {
   entries = e;
-  ordered = [...e].reverse(); // newest first (index 0 = most recent)
+  ordered = [...e].reverse();
   const LINE_LEN = getLineLen();
   const NUM_LINES = Math.max(40, Math.ceil((window.innerHeight * 2.2) / 30));
   const rng = makeRng(42);
   const positions = ordered.length > 0 ? assignPositions(ordered.length, NUM_LINES, rng, LINE_LEN) : [];
-
   const field = document.getElementById('field');
   if (!field) return;
   field.innerHTML = '';
-
   for (let li = 0; li < NUM_LINES; li++) {
     const lineDiv = document.createElement('div');
     lineDiv.className = 'line';
-
     const entriesOnLine = positions.filter(p => p.line === li);
     entriesOnLine.sort((a, b) => a.col - b.col);
-
-    let content = '';
-    let cursorPos = 0;
-
+    let content = '', cursorPos = 0;
     for (const ep of entriesOnLine) {
       const entry = ordered[ep.entryIdx];
       const label = wrapLabel(entry);
       const insertAt = Math.min(ep.col, LINE_LEN - label.length - 2);
       while (cursorPos < insertAt) {
         const remaining = insertAt - cursorPos;
-        if (remaining >= 4 && rng() < 0.07) {
-          const cl = randomCluster(rng);
-          if (cursorPos + cl.length <= insertAt) { content += cl; cursorPos += cl.length; continue; }
-        }
+        if (remaining >= 4 && rng() < 0.07) { const cl = randomCluster(rng); if (cursorPos + cl.length <= insertAt) { content += cl; cursorPos += cl.length; continue; } }
         if (remaining > 2 && rng() < 0.10) { content += ' '; cursorPos += 1; continue; }
-        content += randomSymbol(rng);
-        cursorPos += 1;
+        content += randomSymbol(rng); cursorPos += 1;
       }
-      content += `\x00${ep.entryIdx}\x00`;
-      cursorPos += label.length;
+      content += `\x00${ep.entryIdx}\x00`; cursorPos += label.length;
     }
-
     while (cursorPos < LINE_LEN) {
       const remaining = LINE_LEN - cursorPos;
-      if (remaining >= 4 && rng() < 0.07) {
-        const cl = randomCluster(rng);
-        if (cursorPos + cl.length <= LINE_LEN) { content += cl; cursorPos += cl.length; continue; }
-      }
+      if (remaining >= 4 && rng() < 0.07) { const cl = randomCluster(rng); if (cursorPos + cl.length <= LINE_LEN) { content += cl; cursorPos += cl.length; continue; } }
       if (remaining > 2 && rng() < 0.10) { content += ' '; cursorPos += 1; continue; }
-      content += randomSymbol(rng);
-      cursorPos += 1;
+      content += randomSymbol(rng); cursorPos += 1;
     }
-
     buildLineDOM(lineDiv, content);
     field.appendChild(lineDiv);
   }
@@ -213,15 +184,12 @@ function buildField(e) {
 function buildLineDOM(lineDiv, content) {
   const parts = content.split('\x00');
   for (let i = 0; i < parts.length; i++) {
-    if (i % 2 === 0) {
-      if (parts[i]) lineDiv.appendChild(document.createTextNode(parts[i]));
-    } else {
+    if (i % 2 === 0) { if (parts[i]) lineDiv.appendChild(document.createTextNode(parts[i])); }
+    else {
       const idx = parseInt(parts[i], 10);
       const entry = ordered[idx];
       const btn = document.createElement('button');
-      btn.className = 'trigger';
-      btn.textContent = wrapLabel(entry);
-      btn.dataset.id = idx;
+      btn.className = 'trigger'; btn.textContent = wrapLabel(entry); btn.dataset.id = idx;
       btn.addEventListener('click', () => openPanel(idx));
       lineDiv.appendChild(btn);
     }
@@ -229,18 +197,13 @@ function buildLineDOM(lineDiv, content) {
 }
 
 function assignPositions(count, numLines, rng, lineLen) {
-  const numBands = 5;
-  const bandW = Math.floor(lineLen / numBands);
-
+  const numBands = 5, bandW = Math.floor(lineLen / numBands);
   return Array.from({length: count}, (_, i) => {
-    // i=0 is newest → top of page (low line numbers)
-    // i=count-1 is oldest → bottom (high line numbers)
     const progress = count > 1 ? i / (count - 1) : 0;
-    const OFFSET = 3; // never place in first 3 lines
+    const OFFSET = 3;
     const lineZone = OFFSET + Math.floor(progress * (numLines - 1 - OFFSET));
     const spread = Math.ceil(numLines * 0.10);
     const line = Math.min(numLines - 1, Math.max(OFFSET, lineZone + Math.floor((rng() - 0.5) * spread)));
-
     const band = (i * 2 + Math.floor(rng() * 2)) % numBands;
     const bandStart = band * bandW;
     const bandEnd = (band === numBands - 1) ? lineLen - 15 : bandStart + bandW - 5;
@@ -249,33 +212,25 @@ function assignPositions(count, numLines, rng, lineLen) {
   });
 }
 
-// ─── LABEL WRAPPING ─────────────────────────────────────────────────────────
-// Wraps label in parentheses based on content length
-// < 100 chars  → (label)
-// 100–300      → ((label))
-// 300–600      → (((label)))
-// 600+         → ((((label))))
 function wrapLabel(entry) {
   const raw = entry.label || '';
-  // if already wrapped (has parens), use as-is
   if (raw.startsWith('(')) return raw;
   const len = (entry.content || '').length;
-  if (len < 100)  return `(${raw})`;
-  if (len < 300)  return `((${raw}))`;
-  if (len < 600)  return `(((${raw})))`;
+  if (len < 100) return `(${raw})`;
+  if (len < 300) return `((${raw}))`;
+  if (len < 600) return `(((${raw})))`;
   return `((((${raw}))))`;
 }
+
 function startDrift() {
   if (driftInterval) clearInterval(driftInterval);
   driftInterval = setInterval(() => {
     if (driftPaused) return;
     const lines = document.querySelectorAll('.line');
     if (!lines.length) return;
-    // shift 1–3 random lines slightly
     const count = 1 + Math.floor(Math.random() * 2);
     for (let i = 0; i < count; i++) {
       const line = lines[Math.floor(Math.random() * lines.length)];
-      // find text nodes and nudge one character
       const textNodes = [];
       line.childNodes.forEach(n => { if (n.nodeType === 3 && n.textContent.trim()) textNodes.push(n); });
       if (!textNodes.length) continue;
@@ -283,42 +238,31 @@ function startDrift() {
       const t = tn.textContent;
       if (t.length < 3) continue;
       const pos = 1 + Math.floor(Math.random() * (t.length - 2));
-      const sym = SYMBOLS[Math.floor(Math.random() * (SYMBOLS.length - 5))]; // short symbols only
+      const sym = SYMBOLS[Math.floor(Math.random() * (SYMBOLS.length - 5))];
       tn.textContent = t.slice(0, pos) + sym[0] + t.slice(pos + 1);
     }
   }, 7000 + Math.random() * 4000);
 }
 
-// ─── PANEL ─────────────────────────────────────────────────────────────────
 function openPanel(idx) {
   const entry = ordered[idx];
   if (!entry) return;
-
   document.querySelectorAll('.trigger.active').forEach(t => t.classList.remove('active'));
   document.querySelectorAll(`.trigger[data-id="${idx}"]`).forEach(t => t.classList.add('active'));
-
-  activeId = idx;
-  driftPaused = true;
-
+  activeId = idx; driftPaused = true;
   const body = document.getElementById('panel-body');
   body.innerHTML = '';
-
   if (entry.content) {
     const div = document.createElement('div');
     div.className = 'panel-text';
-    // use textContent so actual newlines render via white-space:pre-wrap
     div.textContent = entry.content.replace(/\\n/g, '\n');
     body.appendChild(div);
   }
-
   if (entry.image) {
     const img = document.createElement('img');
-    img.src = entry.image;
-    img.alt = entry.label || '';
-    img.className = 'panel-img';
+    img.src = entry.image; img.alt = entry.label || ''; img.className = 'panel-img';
     body.appendChild(img);
   }
-
   if (entry.link) {
     const p = document.createElement('p');
     p.className = 'panel-links';
@@ -326,50 +270,36 @@ function openPanel(idx) {
     pairs.forEach((pair, i) => {
       const parts = pair.split('::');
       const url = parts[1] ? parts[1].trim() : parts[0].trim();
-      const label = parts[1] ? parts[0].trim() : (entry.linklabel || url);
+      const label = parts[1] ? parts[0].trim() : (entry.linktitle || url);
       const a = document.createElement('a');
-      a.href = url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.textContent = label;
+      a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = label;
       p.appendChild(a);
       if (i < pairs.length - 1) p.appendChild(document.createTextNode(', '));
     });
     body.appendChild(p);
   }
-
-  const shell = document.getElementById('panel-shell');
-  shell.scrollTop = 0;
+  document.getElementById('panel-shell').scrollTop = 0;
   document.getElementById('panel-wrap').classList.add('open');
 }
 
 function closePanel() {
   document.getElementById('panel-wrap').classList.remove('open');
   document.querySelectorAll('.trigger.active').forEach(t => t.classList.remove('active'));
-  activeId = null;
-  driftPaused = false;
+  activeId = null; driftPaused = false;
 }
 
-// ─── INIT ───────────────────────────────────────────────────────────────────
 document.getElementById('close-btn').addEventListener('click', closePanel);
-
-// rebuild field on resize (debounced)
-let resizeTimer;
-let lastWidth = window.innerWidth;
+let resizeTimer, lastWidth = window.innerWidth;
 window.addEventListener('resize', () => {
-  const currentWidth = window.innerWidth;
-  if (currentWidth === lastWidth) return; // height-only change, ignore
-  lastWidth = currentWidth;
+  const w = window.innerWidth;
+  if (w === lastWidth) return;
+  lastWidth = w;
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => buildField(entries), 250);
 });
-
-// close on outside click
 document.addEventListener('click', e => {
   const wrap = document.getElementById('panel-wrap');
-  if (activeId !== null && !wrap.contains(e.target) && !e.target.classList.contains('trigger')) {
-    closePanel();
-  }
+  if (activeId !== null && !wrap.contains(e.target) && !e.target.classList.contains('trigger')) closePanel();
 });
 
 async function init() {
@@ -380,17 +310,43 @@ async function init() {
     const text = await res.text();
     entries = parseCSV(text);
     if (entries.length) buildField(entries);
-  } catch (e) {
-    console.error(e);
-  }
+  } catch(e) { console.error(e); }
 }
 
-// build field immediately with symbols
 buildField([]);
 startDrift();
-// fetch entries in background
 init();
+</script>
 
+<!-- ABOUT OVERLAY -->
+<div id="about-overlay" style="display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2rem 1.5rem 4rem;">
+  <div style="max-width:560px;margin:0 auto;">
+    <button id="about-close" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:#777;cursor:pointer;padding:0;margin-bottom:2rem;display:block;">close ×</button>
+    <p style="font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;font-weight:normal;margin:0 0 1.8rem 0;color:#111;font-style:normal;">about</p>
+    <div style="font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.9rem;color:#777;line-height:1.85;letter-spacing:0.01em;">
+      <p style="margin-bottom:1.4rem;">το μανταρίνι είναι ένα διεπιστημονικό ψηφιακό περιοδικό που ξεφλουδίζει τη σύγχρονη εμπειρία ανάμεσα στον εσωτερικό και τον δικτυωμένο κόσμο.</p>
+      <p style="margin-bottom:1.4rem;">Η θεωρία δεν καταφέρνει πολλά όταν αναμασιέται σε ακαδημαϊκά τραπέζια, αλλά ούτε και το βίωμα είναι αρκετό μόνο όταν εξομολογείται. Αυτός ο χώρος λειτουργεί ως ένα πολυφωνικό αρχείο παρατηρήσεων για το τι σημαίνει να είσαι άνθρωπος σήμερα.</p>
+      <p style="margin-bottom:1.4rem;">Φιλοξενεί επώνυμα και ανώνυμα θραύσματα σκέψεων, δοκίμια και στοχασμούς που αγγίζουν κάτω από την επιφάνεια της καθημερινότητας.</p>
+      <p style="margin-bottom:1.4rem;font-family:'Courier New',monospace;font-size:0.65rem;color:#ccc;font-style:normal;">·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·..·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.·:·.</p>
+      <p style="margin-bottom:1.4rem;">το μανταρίνι is a curated online magazine that peels back contemporary experience across the internal and the networked.</p>
+      <p style="margin-bottom:1.4rem;">Theory achieves little when it remains trapped in academic circles, just as lived experience is not enough when it is limited to confession. This space functions as a polyphonic archive of observations on what it means to be human today.</p>
+      <p style="margin-bottom:0;">It hosts both signed and anonymous fragments of thought, essays, and reflections that probe beneath the surface of the everyday.</p>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+document.getElementById('nav-about').addEventListener('click',()=>{
+  document.getElementById('about-overlay').style.display='block';
+});
+document.getElementById('about-close').addEventListener('click',()=>{
+  document.getElementById('about-overlay').style.display='none';
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape') document.getElementById('about-overlay').style.display='none';
+});
 </script>
 </body>
 </html>

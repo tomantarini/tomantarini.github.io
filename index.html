@@ -287,8 +287,8 @@ function openPanel(idx) {
     body.appendChild(p);
   }
   // signature + keywords at bottom
-  const hasName = entry.name && entry.credited === 'yes';
-  const hasIG = entry.instagram;
+  const hasName = entry.name && entry.credited.startsWith('yes');
+  const hasIG = entry.instagram && entry.credited.startsWith('yes');
   const hasKeywords = entry.keywords;
   if (hasName || hasIG || hasKeywords) {
     const meta = document.createElement('div');

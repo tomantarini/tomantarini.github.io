@@ -13,6 +13,7 @@
   --bg:#ffffff;--ink:#1c1510;--faint:#d0c8be;--mid:#8a7a6a;--mark:#2a1a0a;
 }
 
+button,a,input,select,label{touch-action:manipulation;}
 html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Courier Prime',monospace;}
 
 #shell{display:flex;flex-direction:column;min-height:100vh;}
@@ -58,6 +59,7 @@ html,body{min-height:100%;background:#ffffff;color:var(--ink);font-family:'Couri
     -webkit-overflow-scrolling:touch;
     transform:translateY(100%);
     transition:transform 0.32s cubic-bezier(0.32,0.72,0,1);
+    will-change:transform;
   }
   #settings-panel.open{
     display:flex;
@@ -123,8 +125,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 #meta-links{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;}
 #btn-about,#btn-glossary{background:none;border:none;color:var(--faint);font-family:'IM Fell English',serif;font-style:italic;font-size:0.78rem;letter-spacing:0.04em;cursor:pointer;padding:0;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
 #btn-about:hover,#btn-glossary:hover{color:var(--mid);}
-#btn-reset{background:none;border:1px solid var(--faint);color:var(--mid);font-family:'Courier Prime',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.3rem 0.7rem;cursor:pointer;min-height:30px;-webkit-tap-highlight-color:transparent;transition:all 0.1s;}
-#btn-reset:active{border-color:var(--ink);color:var(--ink);}
+#btn-reset:active,#btn-pin:active{border-color:var(--ink);color:var(--ink);}
 .meta-sep{color:var(--faint);font-size:0.65rem;font-family:'Courier Prime',monospace;}
 
 #about-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(255,255,255,0.97);overflow-y:auto;-webkit-overflow-scrolling:touch;padding:2rem 1.5rem 4rem;}
@@ -190,7 +191,6 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   #controls::-webkit-scrollbar-thumb{background:var(--faint);}
   .ctrl-top{flex-direction:column;align-items:center;margin-bottom:0.8rem;gap:0;}
   #meta-links{align-self:center;margin-bottom:0.3rem;}
-  #btn-reset{align-self:center;}
   .ctrl-title-block{margin-bottom:1rem;align-self:center;}
   .ctrl-buttons{flex-direction:column;width:100%;}
   #btn-gen{width:100%;flex:none;min-height:36px;font-size:0.6rem;padding:0.35rem 0.7rem;}
@@ -234,7 +234,10 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
         <span class="meta-sep">·</span>
         <button id="btn-glossary">glossary</button>
       </div>
-      <button class="btn-sm" id="btn-reset">reset settings</button>
+      <div style="display:flex;flex-direction:row;align-items:center;justify-content:center;gap:0.4rem;margin-bottom:0.3rem;">
+        <button class="btn-sm" id="btn-pin" style="flex:1;">pin seed</button>
+        <button class="btn-sm" id="btn-reset" style="flex:1;">reset settings</button>
+      </div>
 
       <div id="kentima-section">
         <span class="s-lbl" style="margin-top:0;">mode <button class="lock-btn" id="lock-mode">lock</button></span>
@@ -338,8 +341,8 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 
       <div>
         <span class="s-lbl" style="cursor:pointer;" id="params-toggle-lbl">
-          <span>parameters <button class="lock-btn" id="lock-params">lock</button></span>
-          <span id="params-arrow" style="font-size:0.55rem;letter-spacing:0.05em;color:var(--faint);">show ↓</span>
+          <span>parameters <span id="params-arrow" style="font-size:0.55rem;letter-spacing:0.05em;color:var(--faint);margin-left:0.3rem;">(show)</span></span>
+          <button class="lock-btn" id="lock-params">lock</button>
         </span>
         <div id="params-body" style="display:none;">
           <div class="sl-row"><span class="sl-lbl">complexity</span><input type="range" id="sl-cx" min="1" max="10" value="6"><span class="sl-val" id="v-cx">6</span></div>
@@ -369,7 +372,6 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
         <button class="btn-sm" id="btn-img">save .png</button>
         <button class="btn-sm" id="btn-svg">save .svg</button>
         <button class="btn-sm" id="btn-invert">invert</button>
-        <button class="btn-sm" id="btn-pin">pin seed</button>
       </div>
 
     </div>
@@ -397,7 +399,6 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 
     <div class="g-section">
       <div class="g-section-head">mode</div>
-      <div class="g-entry"><span class="g-term">none</span><span class="g-def">no mode active. the field is mapped directly to characters through the selected charset.</span></div>
       <div class="g-entry"><span class="g-term">kentima</span><span class="g-def">transforms the field into a counted-thread textile surface. quantized to three levels; each cell biases toward its diagonal predecessor in a fixed warp direction, creating visible stitch runs. isolated marks are absorbed into neighbours. charset switches to stitch marks.</span></div>
       <div class="g-entry"><span class="g-term">stipple</span><span class="g-def">each 4x4 cell receives a cluster of marks growing from center outward, proportional to the cell's average value. higher value = denser cluster. result: dot density engraving, like copper stipple or Ben-Day.</span></div>
       <div class="g-entry"><span class="g-term">dither</span><span class="g-def">Floyd-Steinberg error diffusion (Bell Labs, 1976). binary quantization: each cell is 0 or 1. rounding error propagates to neighbours with fixed weights (7/16, 5/16, 3/16, 1/16). produces the diagonal grain of early 1-bit printing.</span></div>
@@ -450,10 +451,18 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     </div>
 
     <div class="g-section">
+      <div class="g-section-head">size + orientation</div>
+      <div class="g-entry"><span class="g-term">XS / S / M / L / XL</span><span class="g-def">controls the number of characters in the grid. larger = more detail.</span></div>
+      <div class="g-entry"><span class="g-term">landscape / portrait / square</span><span class="g-def">aspect ratio of the output. landscape is wide, portrait is tall, square is visually square given character proportions.</span></div>
+    </div>
+
+    <div class="g-section">
       <div class="g-section-head">other controls</div>
-      <div class="g-entry"><span class="g-term">random</span><span class="g-def">randomises algorithm, layer, charset, all sliders, mode, and border, then generates. locked sections are skipped.</span></div>
-      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the random seed so generate keeps the same underlying structure. useful for comparing how settings transform the same form.</span></div>
+      <div class="g-entry"><span class="g-term">randomise</span><span class="g-def">randomises algorithm, layer, charset, all sliders, mode, and border, then generates. locked sections are skipped.</span></div>
+      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the random seed so generate keeps the same underlying structure. useful for comparing how different settings transform the same form.</span></div>
       <div class="g-entry"><span class="g-term">lock</span><span class="g-def">appears next to each section label. when locked, that section is skipped by the randomiser.</span></div>
+      <div class="g-entry"><span class="g-term">flow smear</span><span class="g-def">shifts characters slightly along the field gradient. gives the image a sense of directionality. on by default.</span></div>
+      <div class="g-entry"><span class="g-term">tile repeat</span><span class="g-def">mirrors the field into a 2x2 grid. any image becomes a seamless repeating pattern.</span></div>
     </div>
 
   </div>
@@ -531,7 +540,7 @@ function getGrid(size, orient){
 // ── STATE ─────────────────────────────────────────────────────────────
 const st={
   algo:'perlin', layer:'none', blendMode:'add',
-  charset:'density', size: window.innerWidth>=680 ? 'lg' : 'md', orient: window.innerWidth>=680 ? 'landscape' : 'portrait',
+  charset:'density', size: window.innerWidth>=680 ? 'xl' : 'md', orient: window.innerWidth>=680 ? 'landscape' : 'portrait',
   cx:6, dn:5, ct:5, sy:0, zm:5, ox:50, oy:50,
   smear:true, tile:false,
   kentima:false, border:false, borderMotif:'line',
@@ -1429,13 +1438,13 @@ document.getElementById('sheet-backdrop').addEventListener('click', closeSheet);
   p.addEventListener('touchmove',e=>{
     const dy=e.touches[0].clientY-startY;
     if(dy>0 && p.scrollTop<=0){
-      p.style.transform='translateY('+Math.min(dy*0.5,120)+'px)';
+      p.style.transform='translateY('+Math.max(0,dy)+'px)';
     }
   },{passive:true});
   p.addEventListener('touchend',e=>{
     const dy=e.changedTouches[0].clientY-startY;
     p.style.transform='';
-    if(dy>80 && p.scrollTop<=0) closeSheet();
+    if(dy>60 && p.scrollTop<=0) closeSheet();
   },{passive:true});
 })();
 
@@ -1543,12 +1552,12 @@ document.getElementById('btn-pin').addEventListener('click',()=>{
   const body = document.getElementById('params-body');
   const arrow = document.getElementById('params-arrow');
   // open by default on desktop
-  if(!_MOBILE){ body.style.display='block'; arrow.textContent='hide ↑'; }
+  if(!_MOBILE){ body.style.display='block'; arrow.textContent='(hide)'; }
   lbl.addEventListener('click', e => {
     if(e.target.classList.contains('lock-btn')) return; // don't intercept lock click
     const open = body.style.display !== 'none';
     body.style.display = open ? 'none' : 'block';
-    arrow.textContent = open ? 'show ↓' : 'hide ↑';
+    arrow.textContent = open ? '(show)' : '(hide)';
   });
 })();
 

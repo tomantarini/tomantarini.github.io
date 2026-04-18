@@ -2,248 +2,108 @@
 <html lang="el">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>το χωλ · το μανταρίνι</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#000;
-  --fg:#d4c4a8;
-  --faint:#222;
-  --mid:#8a7458;
-  --amber:#c8922a;
-  --dim:#444;
-}
-html,body{height:100%;overflow:hidden;background:#000;color:var(--fg);font-family:'Courier New',Courier,monospace;}
+html,body{height:100%;overflow:hidden;background:#000;color:#d4c4a8;font-family:'Courier New',Courier,monospace;}
 
-#cave{position:fixed;inset:0;z-index:1;pointer-events:none;user-select:none;overflow:hidden;}
-#hall{
-  position:fixed;
-  top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  z-index:0;
-  pointer-events:none;
-  user-select:none;
-  white-space:pre;
-  font-family:'Courier New',monospace;
-  font-size:clamp(7px,1.1vw,13px);
-  line-height:1.45;
-  color:var(--fg);
-  opacity:0.07;
-  width:max-content;
-}
-#cave-left{
-  position:absolute;top:0;left:0;bottom:0;width:clamp(50px,7vw,100px);
-  font-size:clamp(7px,0.9vw,11px);line-height:1.3;color:var(--dim);opacity:0.45;
-  white-space:pre;padding-top:3rem;
-}
-#cave-right{
-  position:absolute;top:0;right:0;bottom:0;width:clamp(50px,7vw,100px);
-  font-size:clamp(7px,0.9vw,11px);line-height:1.3;color:var(--dim);opacity:0.45;
-  white-space:pre;text-align:right;padding-top:3rem;
-}
-#cave-ceil{
-  position:absolute;top:0;left:0;right:0;height:2.5rem;
-  font-size:clamp(6px,0.8vw,10px);line-height:1.2;color:var(--dim);opacity:0.25;
-  white-space:pre;text-align:center;overflow:hidden;
-}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none;}
 
-#top{
-  position:fixed;top:0;left:0;right:0;z-index:10;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0.75rem 1.6rem;
-  background:#000;
-  border-bottom:1px solid var(--faint);
-}
-#room-title{font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--mid);}
-#room-right{display:flex;align-items:center;gap:1.4rem;}
-#room-presence{font-size:0.56rem;color:var(--dim);letter-spacing:0.08em;font-style:italic;}
-#back-link{font-size:0.56rem;color:var(--dim);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s;}
-#back-link:hover{color:var(--amber);}
+/* top bar */
+#top{position:fixed;top:0;left:0;right:0;z-index:10;background:rgba(0,0,0,0.88);border-bottom:1px solid #1e1e1e;}
+#top-row1{display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1.4rem 0.3rem;}
+#room-title{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:#7a6448;}
+#top-controls{display:flex;align-items:center;gap:1.1rem;}
+#sound-btn{background:none;border:none;font-family:'Courier New',monospace;font-size:0.62rem;
+  color:#555;cursor:pointer;padding:0;letter-spacing:0.08em;text-transform:uppercase;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+#sound-btn.on{color:#c8922a;}
+#exit-link{font-size:0.62rem;color:#555;text-decoration:none;letter-spacing:0.1em;text-transform:uppercase;touch-action:manipulation;}
+#top-row2{padding:0.15rem 1.4rem 0.7rem;font-size:0.75rem;color:#a89878;letter-spacing:0.03em;min-height:1.6rem;}
 
-#messages{
-  position:fixed;
-  top:2.8rem;bottom:3.8rem;
-  left:clamp(50px,7vw,100px);right:clamp(50px,7vw,100px);
-  z-index:5;overflow-y:auto;
-  padding:1.2rem 1.8rem 0.5rem;
-  display:flex;flex-direction:column;gap:0.75rem;
-  scroll-behavior:smooth;
-}
+/* messages */
+#messages{position:fixed;top:5.4rem;bottom:5.2rem;left:0;right:0;z-index:5;
+  overflow-y:auto;padding:1rem 1.4rem;
+  display:flex;flex-direction:column;gap:0.85rem;scroll-behavior:smooth;}
 #messages::-webkit-scrollbar{width:2px;}
-#messages::-webkit-scrollbar-thumb{background:var(--faint);}
+#messages::-webkit-scrollbar-thumb{background:#1a1a1a;}
 
-.msg{
-  font-size:0.78rem;line-height:1.75;word-break:break-word;
-  color:var(--fg);opacity:0;
-  animation:fadeIn 0.9s ease forwards;
-}
-@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
-.msg .h{opacity:0.6;margin-right:0.5rem;}
-.msg.own{color:#ecdcbe;}.msg.own .h{opacity:0.85;}
-.msg.sys{
-  color:var(--dim);font-size:0.58rem;font-style:italic;
-  text-align:center;padding:0.2rem 0;letter-spacing:0.04em;
-}
+.msg{font-size:0.88rem;line-height:1.8;word-break:break-word;color:#d4c4a8;
+  animation:show 0.7s ease forwards;opacity:0;}
+@keyframes show{to{opacity:1;}}
+.h{margin-right:0.45rem;opacity:0.7;}
+.own .h{opacity:1;}
+.sys{color:#484848;font-size:0.64rem;font-style:italic;text-align:center;padding:0.1rem 0;}
+.msg a{color:#c8922a;text-decoration:underline;}
 
-#typing-indicator{
-  position:fixed;bottom:3.2rem;left:0;right:0;z-index:6;
-  text-align:center;font-size:0.65rem;color:var(--dim);
-  height:1rem;letter-spacing:0.08em;
-  transition:opacity 0.4s ease;
-}
+/* typing */
+#typing{position:fixed;bottom:4.95rem;left:0;right:0;z-index:6;
+  text-align:center;font-size:0.75rem;color:#3a3a3a;height:1.1rem;letter-spacing:0.1em;}
 
-#input-row{
-  position:fixed;bottom:0;left:0;right:0;z-index:10;
-  display:flex;align-items:center;
-  padding:0.8rem 1.6rem;
-  background:#000;border-top:1px solid var(--faint);
-  gap:0.6rem;
-}
-#cursor-dot{
-  font-size:0.85rem;color:var(--amber);opacity:0.55;
-  animation:blink 1.3s step-end infinite;flex-shrink:0;
-}
-@keyframes blink{0%,100%{opacity:0.55;}50%{opacity:0;}}
-#chat-input{
-  flex:1;background:transparent;border:none;outline:none;
-  font-family:'Courier New',monospace;font-size:0.78rem;
-  color:var(--fg);caret-color:var(--amber);min-width:0;
-}
-#chat-input::placeholder{color:var(--faint);}
-#hint{font-size:0.5rem;color:var(--faint);white-space:nowrap;letter-spacing:0.08em;}
+/* input */
+#input-wrap{position:fixed;bottom:0;left:0;right:0;z-index:10;
+  background:rgba(0,0,0,0.96);border-top:1px solid #1e1e1e;padding:0.9rem 1.4rem 1rem;}
+#input-row{display:flex;align-items:center;gap:0.8rem;max-width:700px;margin:0 auto;}
+#dot{color:#c8922a;opacity:0.55;animation:blink 1.4s step-end infinite;flex-shrink:0;font-size:1rem;}
+@keyframes blink{50%{opacity:0;}}
+#msg-input{flex:1;background:transparent;border:none;outline:none;
+  font-family:'Courier New',monospace;font-size:0.92rem;color:#d4c4a8;
+  caret-color:#c8922a;min-width:0;}
+#msg-input::placeholder{color:#2a2a2a;}
+#send{background:none;border:1px solid #2a2a2a;font-family:'Courier New',monospace;
+  font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;
+  cursor:pointer;padding:0.45rem 1rem;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+  min-height:38px;min-width:60px;transition:border-color 0.15s,color 0.15s;}
+#send:active{border-color:#c8922a;color:#c8922a;}
 
 @media(max-width:600px){
-  #cave-left,#cave-right{display:none;}
-  #messages{left:0;right:0;padding:1rem 1.2rem 0.5rem;}
-  #hint{display:none;}
-  #top{padding:0.65rem 1rem;}
-  #input-row{padding:0.7rem 1rem;}
-  .msg{font-size:0.82rem;}
+  #top-row1{padding:0.75rem 1rem 0.25rem;}
+  #top-row2{padding:0.1rem 1rem 0.6rem;font-size:0.72rem;}
+  #messages{top:5.2rem;bottom:5rem;padding:0.8rem 1rem;}
+  #input-wrap{padding:0.8rem 1rem 0.9rem;}
+  .msg{font-size:0.9rem;}
+  #typing{bottom:4.8rem;}
 }
 </style>
 </head>
 <body>
 
-<div id="hall">                                       ||                                       
-                                      \__/                                      
-                                     \    /                                     
-                                   \        /                                   
-                                  \          /                                  
-                                \:            :/                                
-                               \                /                               
-                             \                    /                             
-                            \                      /                            
-                          \                          /                          
-                         \:                          :/                         
-                       \                                /                       
-                      \                                  /                      
-                    \                                      /                    
-                   \                                        /                   
-                 \:                                          :/                 
-                \                                              /                
-              \                                                  /              
-             \                                                    /             
-           \                                                        /           
-          \:                                                        :/          
-        \                                                              /        
-       \________________________________________________________________/       
-     \____________________________________________________________________/     
-    \______________________________________________________________________/    
-  \__________________________________________________________________________/  
- \____________________________________________________________________________/ 
-\______________________________________________________________________________/</div>
-
-<div id="cave">
-  <div id="cave-ceil">___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___</div>
-  <div id="cave-left">  ,::'
- ,::::'
-,:::::
-|::::
-|:::::
- \::::
-  ':::
-   '::
-    ':
-     '
-    .:
-   .::
-  .::'
- ,:::'
-,::::'
-|:::::
- \::::
-  ':::
-   '::
-    ':
-     .
-    .:
-   .::'
-  ,:::'
- ,::::'
-|:::::
-|::::::
- \:::::
-  '::::
-   ':::
-    '::</div>
-  <div id="cave-right">     '::,
-    ':::,
-   '::::,
-  ':::::,
- '::::::,
-'::::::::
- '::::::
-  '::::
-   ':::
-    '::
-     ':
-      .
-     :'
-    ::',
-   :::'
-  ::::'
- :::::'
-::::::
- :::::
-  ':::
-   '::
-    ':
-     .
-    :'
-   ::'
-  :::'
- ::::'
-:::::,
- ::::,
-  :::,
-   '::</div>
-</div>
+<canvas id="bg"></canvas>
 
 <div id="top">
-  <span id="room-title">το χωλ</span>
-  <div id="room-right">
-    <span id="room-presence"></span>
-    <a id="back-link" href="index.html">← έξοδος</a>
+  <div id="top-row1">
+    <span id="room-title">το χωλ</span>
+    <div id="top-controls">
+      <button id="sound-btn" class="on">♪ on</button>
+      <a id="exit-link" href="index.html">← έξοδος</a>
+    </div>
   </div>
+  <div id="top-row2">·</div>
 </div>
 
 <div id="messages"></div>
-<div id="typing-indicator"></div>
+<div id="typing"></div>
 
-<div id="input-row">
-  <span id="cursor-dot">·</span>
-  <input id="chat-input" type="text" placeholder="..." maxlength="400" autocomplete="off" autocorrect="off" spellcheck="false">
-  <button id="send-btn" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--dim);cursor:pointer;padding:0;white-space:nowrap;transition:color 0.15s;-webkit-tap-highlight-color:transparent;">send</button>
+<div id="input-wrap">
+  <div id="input-row">
+    <span id="dot">·</span>
+    <input id="msg-input" type="text" placeholder="..." maxlength="400"
+      autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button id="send">send</button>
+  </div>
 </div>
 
 <script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
 <script>
+'use strict';
+
 var ABLY_KEY = 'Xu5R-Q.AmWohg:HXokYtIWRQAUWZdN4ReBRkhIRcxLw49-G2D8ZgK7u5w';
 var CHANNEL  = 'mantarini-xol';
 var MAX_MSGS = 120;
 
-// single-word handles — present but unnamed
+// ── HANDLES ─────────────────────────────────────────────────────────────
 var HANDLES = [
   'still','awake','passing','elsewhere','near','across','late','almost',
   'outside','inside','between','after','before','again','quietly','briefly',
@@ -253,214 +113,268 @@ var HANDLES = [
   'within','without','among','around','beneath','above','below','beyond',
   'through','during','since','until','while','though','unless','whether'
 ];
-
-var HANDLE_COLORS = [
-  '#c8922a','#b87e22','#d4a040','#a86e1a','#e0b060',
-  '#c09030','#b88828','#d49838','#aa7020','#be8c30'
-];
-function handleColor(h){
-  var n=0; for(var i=0;i<h.length;i++) n+=h.charCodeAt(i);
-  return HANDLE_COLORS[n % HANDLE_COLORS.length];
-}
-
+var HCOLORS = ['#c8922a','#b87e22','#d4a040','#a86e1a','#e0b060','#c09030','#d49838','#aa7020'];
+function hcolor(h){var n=0;for(var i=0;i<h.length;i++)n+=h.charCodeAt(i);return HCOLORS[n%HCOLORS.length];}
 function getHandle(){
-  var h = sessionStorage.getItem('xol_handle');
-  if(!h){ h = HANDLES[Math.floor(Math.random()*HANDLES.length)]; sessionStorage.setItem('xol_handle',h); }
+  var h=sessionStorage.getItem('xol_h');
+  if(!h){h=HANDLES[Math.floor(Math.random()*HANDLES.length)];sessionStorage.setItem('xol_h',h);}
   return h;
 }
 var handle = getHandle();
 
-var msgsEl   = document.getElementById('messages');
-var typingEl = document.getElementById('typing-indicator');
-var input    = document.getElementById('chat-input');
-var msgCount = 0;
+// ── SOUND ────────────────────────────────────────────────────────────────
+var soundOn = true;
+var aCtx = null;
 
-function addMsg(data, own, historical){
-  if(++msgCount > MAX_MSGS) msgsEl.firstChild && msgsEl.removeChild(msgsEl.firstChild);
-  var div = document.createElement('div');
-  if(data.sys){
-    div.className = 'msg sys';
-    div.textContent = data.text;
-  } else {
-    div.className = 'msg' + (own ? ' own' : '');
-    if(historical) div.style.opacity = '0.4';
-    var h = document.createElement('span');
-    h.className = 'h';
-    h.textContent = data.handle + ':';
-    h.style.color = handleColor(data.handle || '');
-    div.appendChild(h);
-    div.appendChild(document.createTextNode(' ' + data.text));
+function getACtx(){
+  if(!aCtx){
+    aCtx = new (window.AudioContext||window.webkitAudioContext)();
   }
-  msgsEl.appendChild(div);
-  msgsEl.scrollTop = msgsEl.scrollHeight;
+  if(aCtx.state === 'suspended') aCtx.resume();
+  return aCtx;
 }
 
-// typing indicator — just a dot, not a name
-var typingTimeout = null;
-var typingPublishTimeout = null;
-var someoneTyping = false;
-
-function showTyping(){
-  someoneTyping = true;
-  typingEl.textContent = '·';
-  typingEl.style.opacity = '1';
-  clearTimeout(typingTimeout);
-  typingTimeout = setTimeout(function(){
-    someoneTyping = false;
-    typingEl.textContent = '';
-    typingEl.style.opacity = '0';
-  }, 2500);
-}
-
-input.addEventListener('input', function(){
-  if(!connected || !channel) return;
-  clearTimeout(typingPublishTimeout);
-  typingPublishTimeout = setTimeout(function(){
-    channel.publish('typing', {handle: handle});
-  }, 300);
+document.getElementById('sound-btn').addEventListener('click', function(){
+  soundOn = !soundOn;
+  this.textContent = soundOn ? '♪ on' : '♪ off';
+  this.className = soundOn ? 'on' : '';
+  // create/resume context on this user gesture so iOS unlocks audio
+  try{ getACtx(); }catch(e){}
 });
 
-// silence stages
-var quietTimers = [];
-var silenceLevel = 0;
+// unlock audio on any first touch anywhere
+document.addEventListener('touchend', function unlock(){
+  try{ getACtx(); }catch(e){}
+  document.removeEventListener('touchend', unlock);
+}, {once:true});
 
-function setSilenceLevel(level){
-  silenceLevel = level;
-  var duration = level === 0 ? '0s' : '6s';
-  document.getElementById('messages').style.transition = 'opacity ' + duration + ' ease';
-  document.getElementById('top').style.transition = 'opacity ' + duration + ' ease';
-  document.getElementById('input-row').style.transition = 'opacity ' + duration + ' ease';
-  var cl = document.getElementById('cave-left');
-  var cr = document.getElementById('cave-right');
-  if(cl) cl.style.transition = 'opacity ' + duration + ' ease';
-  if(cr) cr.style.transition = 'opacity ' + duration + ' ease';
+function thud(){
+  if(!soundOn) return;
+  try{
+    var ctx = getACtx();
+    var o=ctx.createOscillator(), g=ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type='sine';
+    o.frequency.setValueAtTime(100,ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(38,ctx.currentTime+0.22);
+    g.gain.setValueAtTime(0.09,ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001,ctx.currentTime+0.22);
+    o.start(); o.stop(ctx.currentTime+0.22);
+  }catch(e){}
+}
 
-  if(level === 0){
-    document.getElementById('messages').style.opacity = '1';
-    document.getElementById('top').style.opacity = '1';
-    document.getElementById('input-row').style.opacity = '1';
-    if(cl) cl.style.opacity = '0.45';
-    if(cr) cr.style.opacity = '0.45';
-  } else if(level === 1){
-    document.getElementById('messages').style.opacity = '0.7';
-  } else if(level === 2){
-    document.getElementById('messages').style.opacity = '0.4';
-    document.getElementById('top').style.opacity = '0.4';
-    document.getElementById('input-row').style.opacity = '0.5';
-    if(cl){ cl.style.opacity = '0.15'; }
-    if(cr){ cr.style.opacity = '0.15'; }
-  } else if(level === 3){
-    document.getElementById('messages').style.opacity = '0.15';
-    document.getElementById('top').style.opacity = '0.2';
-    document.getElementById('input-row').style.opacity = '0.25';
-    if(cl){ cl.style.opacity = '0.05'; }
-    if(cr){ cr.style.opacity = '0.05'; }
+// ── BREATHING ASCII BACKGROUND ───────────────────────────────────────────
+var BG_CHARS = ['.','·',':','*','o','°','+','∘','◦','˙','`',"'"];
+var bgCV, bgCTX, bgP = [];
+
+// init canvas once DOM is ready
+bgCV = document.getElementById('bg');
+bgCTX = bgCV.getContext('2d');
+
+function makeBg(){
+  bgCV.width  = window.innerWidth;
+  bgCV.height = window.innerHeight;
+  bgP = [];
+  var W=bgCV.width, H=bgCV.height;
+  var FS=12, LH=18;
+  var cols=Math.floor(W/FS*1.6), rows=Math.floor(H/LH);
+  var n = Math.floor(cols*rows*0.045);
+
+  // random cluster centers
+  var nc = 5 + Math.floor(Math.random()*7);
+  var centers = [];
+  for(var i=0;i<nc;i++){
+    centers.push({
+      cx: 0.05+Math.random()*0.9,
+      cy: 0.05+Math.random()*0.9,
+      rx: 0.05+Math.random()*0.18,
+      ry: 0.04+Math.random()*0.12
+    });
+  }
+
+  for(var p=0;p<n;p++){
+    var x, y;
+    if(Math.random()<0.72){
+      var c = centers[Math.floor(Math.random()*centers.length)];
+      var a = Math.random()*Math.PI*2;
+      var dr = Math.random();
+      x = (c.cx + Math.cos(a)*c.rx*dr) * W;
+      y = (c.cy + Math.sin(a)*c.ry*dr) * H;
+    } else {
+      x = Math.random()*W;
+      y = Math.random()*H;
+    }
+    bgP.push({
+      x: x, y: y,
+      ch: BG_CHARS[Math.floor(Math.random()*BG_CHARS.length)],
+      ph: Math.random()*Math.PI*2,          // random start phase
+      spd: 0.25 + Math.random()*0.35,       // radians/sec → 18–25s per cycle
+      base: 0.1  + Math.random()*0.18,      // minimum opacity
+      amp:  0.09 + Math.random()*0.13,      // breathing range
+      r: 150+Math.floor(Math.random()*50),
+      g: 100+Math.floor(Math.random()*40),
+      b: 30 +Math.floor(Math.random()*35)
+    });
   }
 }
 
-function resetQuietTimer(){
-  quietTimers.forEach(function(t){ clearTimeout(t); });
-  quietTimers = [];
-  if(silenceLevel > 0) setSilenceLevel(0);
-  silenceLevel = 0;
-
-  quietTimers.push(setTimeout(function(){
-    addMsg({sys:true, text:'το χωλ είναι ήσυχο'});
-    setSilenceLevel(1);
-  }, 3 * 60 * 1000));
-
-  quietTimers.push(setTimeout(function(){
-    addMsg({sys:true, text:'κανείς δεν ήρθε απόψε'});
-    setSilenceLevel(2);
-  }, 10 * 60 * 1000));
-
-  quietTimers.push(setTimeout(function(){
-    setSilenceLevel(3); // no message — just darkness
-  }, 30 * 60 * 1000));
+// animation loop — declared at top scope so it's always reachable
+function bgDraw(ts){
+  requestAnimationFrame(bgDraw);
+  var t = ts * 0.001; // seconds
+  bgCTX.clearRect(0,0,bgCV.width,bgCV.height);
+  bgCTX.font = '12px "Courier New",monospace';
+  bgCTX.textBaseline = 'top';
+  for(var i=0;i<bgP.length;i++){
+    var p=bgP[i];
+    var op = p.base + Math.sin(t*p.spd + p.ph)*p.amp;
+    if(op<0.01) op=0.01;
+    if(op>0.55) op=0.55;
+    bgCTX.fillStyle='rgba('+p.r+','+p.g+','+p.b+','+op+')';
+    bgCTX.fillText(p.ch, p.x, p.y);
+  }
 }
 
-// ably
-var channel = null, connected = false;
-var ably = new Ably.Realtime({key: ABLY_KEY, clientId: handle});
+makeBg();
+requestAnimationFrame(bgDraw); // start loop immediately
 
-ably.connection.on('connected', function(){
-  connected = true;
-  channel = ably.channels.get(CHANNEL);
+window.addEventListener('resize', makeBg);
+setInterval(makeBg, 60000); // new pattern every minute
 
-  channel.history({limit:30}, function(err, page){
-    if(!err && page && page.items.length > 0){
-      var items = page.items.reverse();
-      items.forEach(function(item){
-        if(item.name === 'msg') addMsg(item.data, item.data.handle === handle, true);
+// ── MESSAGES ─────────────────────────────────────────────────────────────
+var msgsEl  = document.getElementById('messages');
+var typingEl = document.getElementById('typing');
+var inp     = document.getElementById('msg-input');
+var msgN    = 0;
+
+function esc(t){return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function linkify(t){return t.replace(/(https?:\/\/\S+)/g,'<a href="$1" target="_blank" rel="noopener">$1</a>');}
+
+function addMsg(data, own, hist){
+  if(++msgN > MAX_MSGS && msgsEl.firstChild) msgsEl.removeChild(msgsEl.firstChild);
+  var d = document.createElement('div');
+  if(data.sys){
+    d.className='msg sys'; d.textContent=data.text;
+  } else {
+    d.className='msg'+(own?' own':'');
+    if(hist) d.style.animationDuration='0s';
+    var h=document.createElement('span');
+    h.className='h'; h.textContent=data.handle+':';
+    h.style.color=hcolor(data.handle||'');
+    d.appendChild(h);
+    var s=document.createElement('span');
+    s.innerHTML=' '+linkify(esc(data.text));
+    d.appendChild(s);
+    if(!own && !hist) thud();
+  }
+  msgsEl.appendChild(d);
+  msgsEl.scrollTop=msgsEl.scrollHeight;
+}
+
+// ── TYPING ───────────────────────────────────────────────────────────────
+var tT=null, tP=null;
+function showTyping(){
+  typingEl.textContent='·';
+  clearTimeout(tT);
+  tT=setTimeout(function(){typingEl.textContent='';},2500);
+}
+inp.addEventListener('input',function(){
+  if(!connected||!ch) return;
+  clearTimeout(tP);
+  tP=setTimeout(function(){ch.publish('typing',{h:handle});},400);
+});
+
+// ── SILENCE ──────────────────────────────────────────────────────────────
+var qT=[], sLv=0;
+function silence(lv){
+  sLv=lv;
+  var fade = lv===0 ? 'none' : 'opacity 7s ease';
+  var ops = lv===0?[1,1,1]: lv===1?[0.75,1,1]: lv===2?[0.4,0.45,0.5]:[0.12,0.18,0.18];
+  var ids = ['messages','top','input-wrap'];
+  ids.forEach(function(id,i){
+    var el=document.getElementById(id);
+    if(el){el.style.transition=fade;el.style.opacity=ops[i];}
+  });
+}
+function resetQ(){
+  qT.forEach(clearTimeout); qT=[];
+  if(sLv>0) silence(0); sLv=0;
+  qT.push(setTimeout(function(){addMsg({sys:true,text:'το χωλ είναι ήσυχο'});silence(1);},3*60*1000));
+  qT.push(setTimeout(function(){addMsg({sys:true,text:'κανείς δεν ήρθε απόψε'});silence(2);},10*60*1000));
+  qT.push(setTimeout(function(){silence(3);},30*60*1000));
+}
+
+// ── PRESENCE ─────────────────────────────────────────────────────────────
+var presEl = document.getElementById('top-row2');
+function updatePresence(){
+  if(!ch) return;
+  ch.presence.get(function(err,members){
+    if(err){presEl.textContent='·';return;}
+    var n=members.length;
+    presEl.textContent = n===1 ? '1 άτομο εδώ' : n+' άτομα εδώ';
+  });
+}
+
+// ── ABLY ─────────────────────────────────────────────────────────────────
+var ch=null, connected=false;
+var ably=new Ably.Realtime({key:ABLY_KEY, clientId:handle});
+
+ably.connection.on('connected',function(){
+  connected=true;
+  ch=ably.channels.get(CHANNEL);
+
+  ch.history({limit:30},function(err,page){
+    if(!err && page && page.items.length>0){
+      page.items.reverse().forEach(function(item){
+        if(item.name==='msg') addMsg(item.data, item.data.handle===handle, true);
       });
-      addMsg({sys:true, text:'· · ·'});
+      addMsg({sys:true,text:'· · ·'});
     }
   });
 
-  channel.subscribe('msg', function(m){
-    if(m.data.handle !== handle){
-      addMsg(m.data, false, false);
-      resetQuietTimer();
-    }
+  ch.subscribe('msg',function(m){
+    if(m.data.handle!==handle){addMsg(m.data,false,false);resetQ();}
+  });
+  ch.subscribe('typing',function(m){
+    if(m.data.h!==handle) showTyping();
   });
 
-  channel.subscribe('typing', function(m){
-    if(m.data.handle !== handle) showTyping();
-  });
-
-  channel.presence.enter({handle: handle});
-  channel.presence.subscribe(function(msg){
-    if(msg.clientId === handle) return;
-    if(msg.action === 'enter'){
-      addMsg({sys:true, text:'κάποιος μπήκε στο χωλ'});
-      resetQuietTimer();
-    } else if(msg.action === 'leave'){
-      addMsg({sys:true, text:'κάποιος έφυγε'});
-    }
+  ch.presence.enter({handle:handle});
+  ch.presence.subscribe(function(msg){
+    if(msg.clientId===handle) return;
+    if(msg.action==='enter'){addMsg({sys:true,text:'κάποιος μπήκε στο χωλ'});resetQ();}
+    else if(msg.action==='leave') addMsg({sys:true,text:'κάποιος έφυγε'});
     updatePresence();
   });
   updatePresence();
-  resetQuietTimer();
+  resetQ();
 });
 
-ably.connection.on('disconnected', function(){
-  connected = false;
-  addMsg({sys:true, text:'αποσυνδέθηκες'});
-  document.getElementById('room-presence').textContent = '';
+ably.connection.on('disconnected',function(){
+  connected=false; presEl.textContent='·';
+  addMsg({sys:true,text:'αποσυνδέθηκες'});
 });
-ably.connection.on('failed', function(){
-  addMsg({sys:true, text:'αδυναμία σύνδεσης'});
-});
+ably.connection.on('failed',function(){addMsg({sys:true,text:'αδυναμία σύνδεσης'});});
 
-function updatePresence(){
-  channel.presence.get(function(err, members){
-    if(err) return;
-    var others = members.filter(function(m){ return m.clientId !== handle; }).length;
-    var el = document.getElementById('room-presence');
-    if(others === 0) el.textContent = 'μόνος σου εδώ';
-    else if(others === 1) el.textContent = '1 ακόμα εδώ';
-    else el.textContent = others + ' ακόμα εδώ';
-  });
-}
-
+// ── SEND ─────────────────────────────────────────────────────────────────
 function send(){
-  var text = input.value.trim();
-  if(!text || !connected) return;
-  var data = {handle: handle, text: text};
-  channel.publish('msg', data);
-  addMsg(data, true, false);
-  resetQuietTimer();
-  input.value = '';
-  clearTimeout(typingPublishTimeout);
+  var t=inp.value.trim();
+  if(!t||!connected) return;
+  var data={handle:handle,text:t};
+  ch.publish('msg',data);
+  addMsg(data,true,false);
+  resetQ();
+  inp.value='';
+  clearTimeout(tP);
 }
-
-document.getElementById('send-btn').addEventListener('click', send);
-input.addEventListener('keydown', function(e){
-  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+document.getElementById('send').addEventListener('click',send);
+inp.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}
 });
-input.focus();
-document.addEventListener('click', function(e){
-  if(e.target !== input) input.focus();
+inp.focus();
+document.addEventListener('click',function(e){
+  var id=e.target.id;
+  if(id!=='msg-input'&&id!=='send') inp.focus();
 });
 </script>
 </body>

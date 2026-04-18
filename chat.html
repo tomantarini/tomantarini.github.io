@@ -16,7 +16,7 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 }
 #top-row1{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0.6rem 1.3rem 0.2rem;
+  padding:0.7rem 1.3rem;
 }
 #title{font-size:0.7rem;letter-spacing:0.04em;color:#7a6448;}
 #controls{display:flex;align-items:center;gap:1rem;}
@@ -26,13 +26,10 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
   letter-spacing:0.05em;
   touch-action:manipulation;padding:0.2rem 0;min-height:32px;display:flex;align-items:center;
 }
-#presence{
-  padding:0.05rem 1.3rem 0.5rem;
-  font-size:0.72rem;color:#a08868;letter-spacing:0.02em;min-height:1.4rem;
-}
+#presence{font-size:0.65rem;color:#6a5840;letter-spacing:0.02em;text-align:center;flex:1;}
 
 #msgs{
-  position:fixed;top:4.6rem;bottom:5.4rem;left:0;right:0;z-index:5;
+  position:fixed;top:3.2rem;bottom:5.4rem;left:0;right:0;z-index:5;
   overflow-y:auto;padding:1rem 1.3rem;
   display:flex;flex-direction:column;gap:0.9rem;scroll-behavior:smooth;
 }
@@ -88,11 +85,11 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 <div id="top">
   <div id="top-row1">
     <span id="title">το χωλ</span>
+    <span id="presence">·</span>
     <div id="controls">
       <a id="exit" href="index.html">← έξοδος</a>
     </div>
   </div>
-  <div id="presence">·</div>
 </div>
 
 <div id="msgs"></div>
@@ -329,11 +326,11 @@ function resetQ(){
 // ── PRESENCE ─────────────────────────────────────────────────────────────
 var presEl = document.getElementById('presence');
 function updPres(){
-  if(!ch) return;
+  if(!ch) { presEl.textContent = 'no channel'; return; }
   ch.presence.get(function(err,members){
-    if(err) return;
-    var n=members.length;
-    presEl.textContent = n===1?'1 άτομο εδώ':n+' άτομα εδώ';
+    if(err){ presEl.textContent = 'err:'+err.message; return; }
+    var n = members ? members.length : 0;
+    presEl.textContent = n===0 ? '·' : n===1 ? '(1 εδώ)' : '('+n+' εδώ)';
   });
 }
 
@@ -343,6 +340,7 @@ var ably=new Ably.Realtime({key:KEY, clientId:me});
 
 ably.connection.on('connected',function(){
   conn=true;
+  presEl.textContent = '·';
   ch=ably.channels.get(CH);
 
   ch.history({limit:30},function(err,page){
@@ -362,8 +360,10 @@ ably.connection.on('connected',function(){
   });
 
   ch.presence.enter({handle:me}, function(){
-    // called when our own enter is confirmed by server
-    updPres();
+    // confirmed entered — now fetch
+    setTimeout(updPres, 300);
+    setTimeout(updPres, 1500);
+    setTimeout(updPres, 4000);
   });
   ch.presence.subscribe(function(msg){
     if(msg.clientId===me) return;
@@ -371,10 +371,6 @@ ably.connection.on('connected',function(){
     else if(msg.action==='leave') addMsg({sys:true,text:'κάποιος έφυγε'});
     updPres();
   });
-  // belt and braces — retry after delays in case presence sync is slow
-  setTimeout(updPres, 500);
-  setTimeout(updPres, 2000);
-  setTimeout(updPres, 5000);
   resetQ();
 });
 

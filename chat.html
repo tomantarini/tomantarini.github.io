@@ -361,15 +361,20 @@ ably.connection.on('connected',function(){
     if(m.data.h!==me) showTyp();
   });
 
-  ch.presence.enter({handle:me});
+  ch.presence.enter({handle:me}, function(){
+    // called when our own enter is confirmed by server
+    updPres();
+  });
   ch.presence.subscribe(function(msg){
     if(msg.clientId===me) return;
     if(msg.action==='enter'){addMsg({sys:true,text:'κάποιος μπήκε στο χωλ'});resetQ();}
     else if(msg.action==='leave') addMsg({sys:true,text:'κάποιος έφυγε'});
     updPres();
   });
-  // wait for own presence to register
-  setTimeout(updPres, 1000);
+  // belt and braces — retry after delays in case presence sync is slow
+  setTimeout(updPres, 500);
+  setTimeout(updPres, 2000);
+  setTimeout(updPres, 5000);
   resetQ();
 });
 

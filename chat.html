@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>το χωλ · το μανταρίνι</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#000;
+  --fg:#d4c4a8;
+  --faint:#222;
+  --mid:#8a7458;
+  --amber:#c8922a;
+  --dim:#444;
+}
+html,body{height:100%;overflow:hidden;background:#000;color:var(--fg);font-family:'Courier New',Courier,monospace;}
+:root{transition:--fg 6s ease,--mid 6s ease,--dim 6s ease,--faint 6s ease;}
+
+#cave{position:fixed;inset:0;z-index:1;pointer-events:none;user-select:none;overflow:hidden;}
+#cave-left{
+  position:absolute;top:0;left:0;bottom:0;width:clamp(50px,7vw,100px);
+  font-size:clamp(7px,0.9vw,11px);line-height:1.3;color:var(--dim);opacity:0.45;
+  white-space:pre;padding-top:3rem;
+}
+#cave-right{
+  position:absolute;top:0;right:0;bottom:0;width:clamp(50px,7vw,100px);
+  font-size:clamp(7px,0.9vw,11px);line-height:1.3;color:var(--dim);opacity:0.45;
+  white-space:pre;text-align:right;padding-top:3rem;
+}
+#cave-ceil{
+  position:absolute;top:0;left:0;right:0;height:2.5rem;
+  font-size:clamp(6px,0.8vw,10px);line-height:1.2;color:var(--dim);opacity:0.25;
+  white-space:pre;text-align:center;overflow:hidden;
+}
+
+#top{
+  position:fixed;top:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0.75rem 1.6rem;
+  background:#000;
+  border-bottom:1px solid var(--faint);
+}
+#room-title{font-size:0.68rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--mid);}
+#room-right{display:flex;align-items:center;gap:1.4rem;}
+#room-presence{font-size:0.56rem;color:var(--dim);letter-spacing:0.08em;font-style:italic;}
+#room-time{font-size:0.56rem;color:var(--dim);letter-spacing:0.1em;font-variant-numeric:tabular-nums;}
+#back-link{font-size:0.56rem;color:var(--dim);text-decoration:none;letter-spacing:0.12em;text-transform:uppercase;transition:color 0.2s;}
+#back-link:hover{color:var(--amber);}
+
+#messages{
+  position:fixed;
+  top:2.8rem;bottom:3.6rem;
+  left:clamp(50px,7vw,100px);right:clamp(50px,7vw,100px);
+  z-index:5;overflow-y:auto;
+  padding:0.8rem 1.6rem 0.5rem;
+  display:flex;flex-direction:column;gap:0.4rem;
+  scroll-behavior:smooth;
+}
+#messages::-webkit-scrollbar{width:2px;}
+#messages::-webkit-scrollbar-thumb{background:var(--faint);}
+
+.msg{font-size:0.78rem;line-height:1.65;word-break:break-word;color:var(--fg);opacity:0;animation:fadeIn 0.7s ease forwards;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+.msg .h{opacity:0.72;margin-right:0.45rem;}
+.msg.own{color:#ecdcbe;}.msg.own .h{opacity:1;}
+.msg.sys{color:var(--dim);font-size:0.6rem;font-style:italic;text-align:center;padding:0.35rem 0;letter-spacing:0.04em;}
+.msg .ts{font-size:0.5rem;color:var(--faint);margin-left:0.5rem;opacity:0;transition:opacity 0.2s;vertical-align:middle;}
+.msg:hover .ts{opacity:1;}
+
+#typing-bar{
+  min-height:1.1rem;font-size:0.58rem;color:var(--dim);font-style:italic;
+  letter-spacing:0.04em;padding:0 1.6rem;text-align:center;
+  position:fixed;bottom:3.0rem;left:0;right:0;z-index:6;
+}
+
+#input-row{
+  position:fixed;bottom:0;left:0;right:0;z-index:10;
+  display:flex;align-items:center;
+  padding:0.7rem 1.6rem;
+  background:#000;border-top:1px solid var(--faint);
+  gap:0.6rem;
+}
+#cursor-dot{font-size:0.85rem;color:var(--amber);opacity:0.55;animation:blink 1.3s step-end infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:0.55;}50%{opacity:0;}}
+#chat-input{
+  flex:1;background:transparent;border:none;outline:none;
+  font-family:'Courier New',monospace;font-size:0.78rem;
+  color:var(--fg);caret-color:var(--amber);min-width:0;
+}
+#chat-input::placeholder{color:var(--faint);}
+#hint{font-size:0.5rem;color:var(--faint);white-space:nowrap;letter-spacing:0.08em;}
+
+@media(max-width:600px){
+  #cave-left,#cave-right{display:none;}
+  #messages{left:0;right:0;top:4.4rem;padding:0.8rem 1rem 0.5rem;}
+  #typing-bar{padding:0 1rem;}
+  #hint{display:none;}
+  #top{padding:0.65rem 1rem;}
+  #input-row{padding:0.65rem 1rem;}
+  #handle-bar{padding:0.28rem 1rem;}
+  .msg{font-size:0.82rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="cave">
+  <div id="cave-ceil">___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___/\/\___</div>
+  <div id="cave-left">  ,::'
+ ,::::'
+,:::::
+|::::
+|:::::
+ \::::
+  ':::
+   '::
+    ':
+     '
+    .:
+   .::
+  .::'
+ ,:::'
+,::::'
+|:::::
+ \::::
+  ':::
+   '::
+    ':
+     .
+    .:
+   .::'
+  ,:::'
+ ,::::'
+|:::::
+|::::::
+ \:::::
+  '::::
+   ':::
+    '::</div>
+  <div id="cave-right">     '::,
+    ':::,
+   '::::,
+  ':::::,
+ '::::::,
+'::::::::
+ '::::::
+  '::::
+   ':::
+    '::
+     ':
+      .
+     :'
+    ::',
+   :::'
+  ::::'
+ :::::'
+::::::
+ :::::
+  ':::
+   '::
+    ':
+     .
+    :'
+   ::'
+  :::'
+ ::::'
+:::::,
+ ::::,
+  :::,
+   '::</div>
+</div>
+
+<div id="top">
+  <span id="room-title">το χωλ</span>
+  <div id="room-right">
+    <span id="room-presence"></span>
+    <span id="room-time"></span>
+    <a id="back-link" href="index.html">← έξοδος</a>
+  </div>
+</div>
+
+<div id="messages"></div>
+<div id="typing-bar"></div>
+
+<div id="input-row">
+  <span id="cursor-dot">·</span>
+  <input id="chat-input" type="text" placeholder="γράψε κάτι..." maxlength="400" autocomplete="off" autocorrect="off" spellcheck="false">
+  <span id="hint">enter ↵</span>
+</div>
+
+<script src="https://cdn.ably.com/lib/ably.min-2.js"></script>
+<script>
+const ABLY_KEY = 'Xu5R-Q.AmWohg:HXokYtIWRQAUWZdN4ReBRkhIRcxLw49-G2D8ZgK7u5w';
+const CHANNEL  = 'mantarini-xol';
+const MAX_MSGS = 120;
+
+const HANDLES = [
+  'porous_self','scattered_attention','latent_observer','networked_ghost',
+  'oblique_trace','drifting_signifier','fragmented_now','embodied_static',
+  'digital_flaneur','ambient_theorist','tender_apparatus','surplus_meaning',
+  'quiet_surplus','errant_signal','soft_interference','unnamed_presence',
+  'residual_self','slow_frequency','peripheral_gaze','suspended_now',
+  'minor_key','diffuse_subject','half_remembered','hollow_structure',
+  'leaking_archive','background_noise','unnamed_reader','thin_place',
+  'unstable_ground','borrowed_time','dissolved_border','noise_floor',
+  'adjacent_possible','liminal_static','second_attention','loose_end',
+  'recursive_self','open_circuit','slow_dissolve','pattern_seeker',
+  'threshold_keeper','gap_listener','echo_chamber_escapee','tender_friction',
+  'unresolved_thread','soft_topology','ambient_grief','latent_heat',
+  'fractured_now','signal_remainder','unnamed_current','passive_witness',
+  'interior_weather','dispersed_subject','low_signal','deep_focus',
+  'idle_frequency','suspended_reader','hollow_echo','parallel_processing',
+  'faint_trace','uncertain_ground'
+];
+
+const HANDLE_COLORS = [
+  '#c8922a','#b87e22','#d4a040','#a86e1a','#e0b060',
+  '#c09030','#b88828','#d49838','#aa7020','#be8c30'
+];
+function handleColor(h){
+  let n=0; for(let i=0;i<h.length;i++) n+=h.charCodeAt(i);
+  return HANDLE_COLORS[n % HANDLE_COLORS.length];
+}
+
+function getHandle(){
+  let h = sessionStorage.getItem('xol_handle');
+  if(!h){ h = HANDLES[Math.floor(Math.random()*HANDLES.length)]; sessionStorage.setItem('xol_handle',h); }
+  return h;
+}
+const handle = getHandle();
+function tick(){
+  document.getElementById('room-time').textContent =
+    new Date().toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+}
+tick(); setInterval(tick,1000);
+
+const msgsEl   = document.getElementById('messages');
+const typingEl = document.getElementById('typing-bar');
+const input    = document.getElementById('chat-input');
+let msgCount = 0;
+
+// soft chime on incoming message
+let audioCtx = null;
+function chime(){
+  try {
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.type = 'sine'; osc.frequency.value = 880;
+    gain.gain.setValueAtTime(0, audioCtx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.04, audioCtx.currentTime + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.4);
+    osc.start(); osc.stop(audioCtx.currentTime + 0.4);
+  } catch(e){}
+}
+
+function addMsg(data, own, historical){
+  if(++msgCount > MAX_MSGS) msgsEl.firstChild && msgsEl.removeChild(msgsEl.firstChild);
+  const div = document.createElement('div');
+  if(data.sys){
+    div.className = 'msg sys';
+    div.textContent = data.text;
+  } else {
+    div.className = 'msg' + (own ? ' own' : '');
+    if(historical) div.style.opacity = '0.45';
+    const h = document.createElement('span');
+    h.className = 'h';
+    h.textContent = data.handle + ':';
+    h.style.color = handleColor(data.handle || '');
+    div.appendChild(h);
+    div.appendChild(document.createTextNode(' ' + data.text));
+    const ts = document.createElement('span');
+    ts.className = 'ts';
+    const d = data.timestamp ? new Date(data.timestamp) : new Date();
+    ts.textContent = d.toLocaleTimeString('el-GR',{hour:'2-digit',minute:'2-digit'});
+    div.appendChild(ts);
+  }
+  msgsEl.appendChild(div);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+  if(!own && !historical && !data.sys) chime();
+}
+
+// typing indicator
+let typingPublishTimeout = null;
+const typing = {};
+function updateTypingBar(){
+  const others = Object.keys(typing).filter(function(h){ return h !== handle; });
+  if(others.length === 0){ typingEl.textContent = ''; return; }
+  if(others.length === 1) typingEl.textContent = others[0] + ' γράφει...';
+  else typingEl.textContent = others.slice(0,-1).join(', ') + ' και ' + others[others.length-1] + ' γράφουν...';
+}
+input.addEventListener('input', function(){
+  if(!connected) return;
+  clearTimeout(typingPublishTimeout);
+  typingPublishTimeout = setTimeout(function(){
+    if(channel) channel.publish('typing', {handle: handle});
+  }, 300);
+});
+
+// staged silence system
+var quietTimers = [];
+var silenceLevel = 0;
+
+var SILENCE_STAGES = [
+  {
+    delay: 3 * 60 * 1000,     // 3 min
+    msg: 'το χωλ είναι ήσυχο',
+    fn: function(){ setSilenceLevel(1); }
+  },
+  {
+    delay: 10 * 60 * 1000,    // 10 min
+    msg: 'κανείς δεν ήρθε απόψε',
+    fn: function(){ setSilenceLevel(2); }
+  },
+  {
+    delay: 30 * 60 * 1000,    // 30 min
+    msg: null,                 // no message, just darkness
+    fn: function(){ setSilenceLevel(3); }
+  }
+];
+
+function setSilenceLevel(level){
+  silenceLevel = level;
+  var root = document.documentElement;
+  if(level === 0){
+    // normal
+    root.style.setProperty('--fg', '#d4c4a8');
+    root.style.setProperty('--mid', '#8a7458');
+    root.style.setProperty('--dim', '#444');
+    root.style.setProperty('--faint', '#222');
+    document.getElementById('messages').style.opacity = '1';
+    document.getElementById('top').style.opacity = '1';
+    document.getElementById('input-row').style.opacity = '1';
+    document.getElementById('cave-left') && (document.getElementById('cave-left').style.opacity = '0.45');
+    document.getElementById('cave-right') && (document.getElementById('cave-right').style.opacity = '0.45');
+  } else if(level === 1){
+    // slightly dimmer
+    root.style.setProperty('--fg', '#b8a888');
+    root.style.setProperty('--mid', '#6a5840');
+    root.style.setProperty('--dim', '#333');
+  } else if(level === 2){
+    // noticeably darker
+    root.style.setProperty('--fg', '#907860');
+    root.style.setProperty('--mid', '#503c28');
+    root.style.setProperty('--dim', '#282828');
+    root.style.setProperty('--faint', '#181818');
+    document.getElementById('messages').style.transition = 'opacity 4s ease';
+    document.getElementById('messages').style.opacity = '0.6';
+  } else if(level === 3){
+    // deep dark — room almost gone
+    root.style.setProperty('--fg', '#504030');
+    root.style.setProperty('--mid', '#302818');
+    root.style.setProperty('--dim', '#1a1a1a');
+    root.style.setProperty('--faint', '#111');
+    document.getElementById('messages').style.transition = 'opacity 8s ease';
+    document.getElementById('messages').style.opacity = '0.25';
+    document.getElementById('top').style.transition = 'opacity 8s ease';
+    document.getElementById('top').style.opacity = '0.3';
+    document.getElementById('input-row').style.transition = 'opacity 8s ease';
+    document.getElementById('input-row').style.opacity = '0.4';
+    var cl = document.getElementById('cave-left');
+    var cr = document.getElementById('cave-right');
+    if(cl){ cl.style.transition = 'opacity 8s ease'; cl.style.opacity = '0.1'; }
+    if(cr){ cr.style.transition = 'opacity 8s ease'; cr.style.opacity = '0.1'; }
+  }
+}
+
+function resetQuietTimer(){
+  // clear all pending silence timers
+  quietTimers.forEach(function(t){ clearTimeout(t); });
+  quietTimers = [];
+  // restore if we were in silence
+  if(silenceLevel > 0) setSilenceLevel(0);
+  silenceLevel = 0;
+  // schedule each stage
+  SILENCE_STAGES.forEach(function(stage){
+    var t = setTimeout(function(){
+      if(stage.msg) addMsg({sys:true, text: stage.msg});
+      stage.fn();
+    }, stage.delay);
+    quietTimers.push(t);
+  });
+}
+
+// cave wall drift
+var wallChars = [',',':','.',';','`','|','\\','/'];
+function driftWall(){
+  ['cave-left','cave-right'].forEach(function(id){
+    var el = document.getElementById(id);
+    if(!el) return;
+    var t = el.textContent;
+    if(t.length < 3) return;
+    var pos = 1 + Math.floor(Math.random() * (t.length - 2));
+    if(t[pos] === '\n' || t[pos] === ' ') return;
+    var nc = wallChars[Math.floor(Math.random() * wallChars.length)];
+    el.textContent = t.slice(0,pos) + nc + t.slice(pos+1);
+  });
+}
+setInterval(driftWall, 4000 + Math.random() * 3000);
+
+// message aging
+function ageMessages(){
+  var all = msgsEl.querySelectorAll('.msg:not(.sys):not(.own)');
+  var total = all.length;
+  all.forEach(function(m, i){
+    var age = total - i;
+    if(age > 15) m.style.opacity = '0.35';
+    else if(age > 8) m.style.opacity = '0.6';
+    else if(!m.style.opacity || m.style.opacity === '0.35' || m.style.opacity === '0.6') m.style.opacity = '1';
+  });
+}
+
+// Ably
+var channel = null, connected = false;
+var ably = new Ably.Realtime({key: ABLY_KEY, clientId: handle});
+
+ably.connection.on('connected', function(){
+  connected = true;
+  channel = ably.channels.get(CHANNEL);
+
+  // fetch history if persistence enabled in Ably dashboard
+  channel.history({limit: 30}, function(err, page){
+    if(!err && page && page.items.length > 0){
+      var items = page.items.reverse();
+      items.forEach(function(item){
+        if(item.name === 'msg') addMsg(item.data, item.data.handle === handle, true);
+      });
+      addMsg({sys:true, text:'· · ·'});
+    }
+  });
+
+  channel.subscribe('msg', function(m){
+    if(m.data.handle !== handle){
+      addMsg(m.data, false, false);
+      ageMessages();
+      resetQuietTimer();
+    }
+  });
+
+  channel.subscribe('typing', function(m){
+    if(m.data.handle === handle) return;
+    clearTimeout(typing[m.data.handle]);
+    typing[m.data.handle] = setTimeout(function(){
+      delete typing[m.data.handle];
+      updateTypingBar();
+    }, 2500);
+    updateTypingBar();
+  });
+
+  channel.presence.enter({handle: handle});
+  channel.presence.subscribe(updatePresence);
+  updatePresence();
+  resetQuietTimer();
+});
+
+ably.connection.on('disconnected', function(){
+  connected = false;
+  addMsg({sys:true, text:'αποσυνδέθηκες'});
+  document.getElementById('room-presence').textContent = '';
+});
+ably.connection.on('failed', function(){
+  addMsg({sys:true, text:'αδυναμία σύνδεσης'});
+});
+
+function updatePresence(){
+  channel.presence.get(function(err, members){
+    if(err) return;
+    var others = members.filter(function(m){ return m.clientId !== handle; }).length;
+    var el = document.getElementById('room-presence');
+    if(others === 0) el.textContent = 'μόνος σου εδώ';
+    else if(others === 1) el.textContent = '1 ακόμα εδώ';
+    else el.textContent = others + ' ακόμα εδώ';
+  });
+}
+
+function send(){
+  var text = input.value.trim();
+  if(!text || !connected) return;
+  var data = {handle: handle, text: text, timestamp: Date.now()};
+  channel.publish('msg', data);
+  addMsg(data, true, false);
+  ageMessages();
+  resetQuietTimer();
+  input.value = '';
+  clearTimeout(typingPublishTimeout);
+}
+
+input.addEventListener('keydown', function(e){
+  if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); send(); }
+});
+input.focus();
+document.addEventListener('click', function(e){
+  if(e.target !== input) input.focus();
+});
+</script>
+</body>
+</html>

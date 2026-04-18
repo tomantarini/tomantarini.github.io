@@ -16,30 +16,23 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 }
 #top-row1{
   display:flex;align-items:center;justify-content:space-between;
-  padding:0.85rem 1.3rem 0.3rem;
+  padding:0.6rem 1.3rem 0.2rem;
 }
-#title{font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;color:#7a6448;}
+#title{font-size:0.7rem;letter-spacing:0.04em;color:#7a6448;}
 #controls{display:flex;align-items:center;gap:1rem;}
-#snd{
-  background:none;border:none;font-family:'Courier New',monospace;
-  font-size:0.65rem;cursor:pointer;padding:0.2rem 0;
-  letter-spacing:0.08em;text-transform:uppercase;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-  color:#c8922a;min-width:44px;min-height:32px;
-}
-#snd.off{color:#444;}
+
 #exit{
   font-size:0.65rem;color:#555;text-decoration:none;
-  letter-spacing:0.1em;text-transform:uppercase;
+  letter-spacing:0.05em;
   touch-action:manipulation;padding:0.2rem 0;min-height:32px;display:flex;align-items:center;
 }
 #presence{
-  padding:0.1rem 1.3rem 0.7rem;
-  font-size:0.78rem;color:#a08868;letter-spacing:0.02em;min-height:1.8rem;
+  padding:0.05rem 1.3rem 0.5rem;
+  font-size:0.72rem;color:#a08868;letter-spacing:0.02em;min-height:1.4rem;
 }
 
 #msgs{
-  position:fixed;top:5.6rem;bottom:5.4rem;left:0;right:0;z-index:5;
+  position:fixed;top:4.6rem;bottom:5.4rem;left:0;right:0;z-index:5;
   overflow-y:auto;padding:1rem 1.3rem;
   display:flex;flex-direction:column;gap:0.9rem;scroll-behavior:smooth;
 }
@@ -75,7 +68,7 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
 #inp::placeholder{color:#252525;}
 #sbtn{
   background:none;border:1px solid #252525;font-family:'Courier New',monospace;
-  font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:#555;
+  font-size:0.62rem;letter-spacing:0.05em;color:#555;
   cursor:pointer;padding:0.45rem 1rem;white-space:nowrap;
   -webkit-tap-highlight-color:transparent;touch-action:manipulation;
   min-height:40px;min-width:64px;transition:border-color 0.15s,color 0.15s;
@@ -96,7 +89,6 @@ canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
   <div id="top-row1">
     <span id="title">το χωλ</span>
     <div id="controls">
-      <button id="snd">♪ on</button>
       <a id="exit" href="index.html">← έξοδος</a>
     </div>
   </div>
@@ -123,54 +115,73 @@ var CH  = 'mantarini-xol';
 var MAX = 120;
 
 // ── HANDLE ──────────────────────────────────────────────────────────────
-var HH = ['still','awake','passing','elsewhere','near','across','late','almost',
-  'outside','inside','between','after','before','again','quietly','briefly',
-  'barely','half','just','here','there','once','maybe','nearly','softly',
-  'dimly','slowly','always','never','often','seldom','tonight','already',
-  'further','closer','apart','along','behind','ahead','away','back',
-  'within','without','among','around','beneath','above','below','beyond',
-  'through','during','since','until','while','though','unless','whether'];
+var HH = [
+  'before','after','since','until','already','yet','still','once','again','soon',
+  'lately','recently','formerly','eventually','finally','initially','presently',
+  'almost','nearly','barely','hardly','scarcely','just','merely','quite',
+  'somewhat','slightly','partly','briefly','momentarily','temporarily','fleetingly',
+  'instantly','gradually','slowly','steadily','endlessly','continuously',
+  'occasionally','rarely','seldom','often','always','never','early','late',
+  'now','then','meanwhile','previously','suddenly','abruptly','perpetually',
+  'intermittently','immediately','simultaneously','ultimately','anymore','otherwise'
+];
 var HC = ['#c8922a','#b87e22','#d4a040','#a86e1a','#e0b060','#c09030','#d49838','#aa7020'];
-function hc(h){var n=0;for(var i=0;i<h.length;i++)n+=h.charCodeAt(i);return HC[n%HC.length];}
-var me = sessionStorage.getItem('xol_h') || (function(){
-  var h=HH[Math.floor(Math.random()*HH.length)];
-  sessionStorage.setItem('xol_h',h); return h;
+
+function hc(h){
+  var n=0; for(var i=0;i<h.length;i++) n+=h.charCodeAt(i);
+  return HC[n%HC.length];
+}
+
+var me = (function(){
+  var h = sessionStorage.getItem('xol_h');
+  if(!h){
+    var word = HH[Math.floor(Math.random()*HH.length)];
+    var num  = String(Math.floor(100 + Math.random()*900)); // always 3 digits
+    h = word + '_' + num;
+    sessionStorage.setItem('xol_h', h);
+  }
+  return h;
 })();
 
 // ── SOUND ────────────────────────────────────────────────────────────────
-var SND = true;
-var AC  = null;
-var sndBtn = document.getElementById('snd');
+var AC = null;
+var audioReady = false;
 
 function unlockAudio(){
-  if(!AC) try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
-  if(AC && AC.state==='suspended') AC.resume();
+  if(audioReady) return;
+  try{
+    AC = new (window.AudioContext||window.webkitAudioContext)();
+    // play a very brief audible tone to confirm unlock worked
+    var o = AC.createOscillator();
+    var g = AC.createGain();
+    o.connect(g); g.connect(AC.destination);
+    o.type = 'sine';
+    o.frequency.value = 440;
+    g.gain.setValueAtTime(0.05, AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime + 0.15);
+    o.start(); o.stop(AC.currentTime + 0.15);
+    audioReady = true;
+  }catch(e){}
 }
 
-// unlock on first interaction
+// fire on first touchstart — earliest possible gesture on iOS
 document.addEventListener('touchstart', unlockAudio, {once:true, passive:true});
-document.addEventListener('click',      unlockAudio, {once:true});
-
-sndBtn.addEventListener('click', function(e){
-  e.stopPropagation();
-  SND = !SND;
-  sndBtn.textContent = SND ? '♪ on' : '♪ off';
-  sndBtn.className   = SND ? '' : 'off';
-  unlockAudio();
-});
+document.addEventListener('mousedown',  unlockAudio, {once:true});
 
 function thud(){
-  if(!SND || !AC) return;
-  if(AC.state==='suspended'){ AC.resume(); return; }
+  if(!AC || !audioReady) return;
   try{
-    var o=AC.createOscillator(), g=AC.createGain();
-    o.connect(g); g.connect(AC.destination);
-    o.type='sine';
+    var o = AC.createOscillator();
+    var g = AC.createGain();
+    o.connect(g);
+    g.connect(AC.destination);
+    o.type = 'sine';
     o.frequency.setValueAtTime(100, AC.currentTime);
-    o.frequency.exponentialRampToValueAtTime(38, AC.currentTime+0.22);
+    o.frequency.exponentialRampToValueAtTime(38, AC.currentTime + 0.22);
     g.gain.setValueAtTime(0.09, AC.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime+0.22);
-    o.start(); o.stop(AC.currentTime+0.22);
+    g.gain.exponentialRampToValueAtTime(0.0001, AC.currentTime + 0.22);
+    o.start();
+    o.stop(AC.currentTime + 0.22);
   }catch(e){}
 }
 
@@ -194,8 +205,8 @@ function startBg(){
 function buildBg(){
   bgP = [];
   var W=cv.width, H=cv.height;
-  var n = Math.floor(W * H * 0.00022); // density
-  var nc = 5 + Math.floor(Math.random()*7);
+  var n = Math.floor(W * H * 0.00035); // density
+  var nc = 4 + Math.floor(Math.random()*4);
   var centers = [];
   for(var i=0;i<nc;i++) centers.push({
     x: (0.05+Math.random()*0.9)*W,
@@ -205,7 +216,7 @@ function buildBg(){
   });
   for(var p=0;p<n;p++){
     var x,y;
-    if(Math.random()<0.72){
+    if(Math.random()<0.85){
       var c=centers[Math.floor(Math.random()*centers.length)];
       var a=Math.random()*Math.PI*2, d=Math.random();
       x = c.x + Math.cos(a)*c.rw*d;
@@ -218,12 +229,12 @@ function buildBg(){
       x:x, y:y,
       ch: BC[Math.floor(Math.random()*BC.length)],
       ph: Math.random()*Math.PI*2,
-      spd: 0.2 + Math.random()*0.3,  // full cycle: 20–30s
-      base: 0.1 + Math.random()*0.18,
-      amp:  0.08+ Math.random()*0.12,
-      r: 145+Math.floor(Math.random()*55),
-      g: 95 +Math.floor(Math.random()*45),
-      b: 25 +Math.floor(Math.random()*40)
+      spd: 0.4 + Math.random()*0.5,  // full cycle: 10–15s
+      base: 0.18 + Math.random()*0.22,
+      amp:  0.14 + Math.random()*0.18,
+      r: 180+Math.floor(Math.random()*40),
+      g: 110+Math.floor(Math.random()*25),
+      b: 20 +Math.floor(Math.random()*20)
     });
   }
 }
@@ -237,7 +248,7 @@ function drawBg(ts){
   for(var i=0;i<bgP.length;i++){
     var p=bgP[i];
     var op = p.base + Math.sin(t*p.spd+p.ph)*p.amp;
-    op = op<0.01?0.01: op>0.55?0.55:op;
+    op = op<0.01?0.01: op>0.75?0.75:op;
     ctx2.fillStyle='rgba('+p.r+','+p.g+','+p.b+','+op+')';
     ctx2.fillText(p.ch,p.x,p.y);
   }
@@ -278,7 +289,7 @@ function addMsg(d, own, hist){
     var s=document.createElement('span');
     s.innerHTML=' '+lnk(esc(d.text));
     el.appendChild(s);
-    if(!own && !hist) thud();
+    if(!hist) thud();
   }
   msgsEl.appendChild(el);
   msgsEl.scrollTop=msgsEl.scrollHeight;

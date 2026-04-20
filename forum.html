@@ -16,11 +16,11 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
   padding:0.75rem 1.4rem;
   display:flex;align-items:center;justify-content:space-between;
 }
-#top-left{display:flex;align-items:baseline;gap:1rem;}
+#top-left{display:flex;flex-direction:column;gap:0.02rem;align-items:flex-start;}
 #site-link{font-size:1rem;font-weight:normal;font-style:normal;color:#111;text-decoration:none;font-family:Georgia,serif;letter-spacing:0.01em;}
-#page-title{font-size:0.72rem;font-style:italic;color:#aaa;font-family:Georgia,serif;}
+#page-title{font-size:0.72rem;color:#999;font-family:Georgia,'Times New Roman',serif;font-style:italic;letter-spacing:0.01em;line-height:1;}
 #top-right{display:flex;align-items:center;gap:1rem;}
-#username-display{font-family:'Courier New',monospace;font-size:0.62rem;color:#bbb;cursor:pointer;letter-spacing:0.04em;}
+#username-display{font-family:'Courier New',monospace;font-size:0.62rem;color:#bbb;cursor:pointer;letter-spacing:0.04em;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 #username-display:hover{color:#888;}
 #new-post-btn{
   background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
@@ -82,12 +82,12 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 .form-btns button.primary{border-color:#111;color:#111;}
 
 /* ── POSTS ── */
-.post{border-bottom:1px solid var(--faint);padding:1.6rem 0;}
+.post{border-bottom:1px solid var(--faint);padding:2.2rem 0;}
 .post:last-child{border-bottom:none;}
 .post-meta{font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;margin-bottom:0.5rem;letter-spacing:0.03em;}
-.post-meta .author{color:#888;}
-.post-title{font-size:1.05rem;font-weight:normal;color:#111;margin-bottom:0.6rem;line-height:1.4;cursor:pointer;}
-.post-title:hover{color:var(--amber);}
+.post-meta .author{color:var(--amber);}
+.post-title{font-size:1.15rem;font-weight:normal;color:#111;margin-bottom:0.7rem;line-height:1.35;padding-bottom:0.6rem;border-bottom:1px solid var(--faint);}
+
 .post-body{font-size:1rem;line-height:1.8;color:#333;margin-bottom:1rem;white-space:pre-wrap;}
 .post-actions{display:flex;gap:1rem;align-items:center;}
 .reply-toggle{
@@ -95,7 +95,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
   font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;
   color:#ccc;cursor:pointer;padding:0;transition:color 0.15s;
 }
-.reply-toggle:hover{color:#888;}
+.reply-toggle:hover{color:var(--amber);}
 .reply-count{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;letter-spacing:0.04em;}
 
 /* ── REPLIES ── */
@@ -103,8 +103,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 .replies.open{display:block;}
 .reply{padding:0.9rem 0;border-bottom:1px solid #f5f5f5;}
 .reply:last-child{border-bottom:none;}
-.reply-meta{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;margin-bottom:0.3rem;}
-.reply-meta .author{color:#aaa;}
+.reply-meta{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;margin-bottom:0.4rem;display:block;}
+.reply-meta .author{color:var(--amber);}
 .reply-body{font-size:0.95rem;line-height:1.75;color:#444;white-space:pre-wrap;}
 
 /* reply form */
@@ -119,13 +119,37 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 }
 .reply-form textarea::placeholder{color:#ccc;font-style:italic;}
 
+.delete-btn{
+  background:none;border:none;font-family:'Courier New',monospace;
+  font-size:0.55rem;color:#ddd;cursor:pointer;padding:0;
+  letter-spacing:0.06em;text-transform:uppercase;transition:color 0.15s;
+  margin-left:auto;
+}
+.delete-btn:hover{color:#c0392b;}
 /* empty state */
 #empty{text-align:center;padding:4rem 0;font-style:italic;color:#ccc;font-size:0.9rem;}
 
 @media(max-width:600px){
-  #top{padding:0.65rem 1rem;}
-  #main{padding:1.4rem 1rem 4rem;}
+  #top{padding:0.65rem 1rem;flex-wrap:wrap;gap:0.5rem;}
+  #top-right{flex-wrap:wrap;}
+  #main{padding:1.4rem 1rem 5rem;}
   #post-form{padding:1rem;}
+  #new-post-btn{font-size:0.55rem;padding:0.3rem 0.6rem;}
+  #fab{display:flex;}
+  .post{padding:1.6rem 0;}
+  .form-btns button{min-height:40px;padding:0.5rem 1rem;}
+  .reply-toggle{min-height:36px;padding:0.2rem 0;}
+  .modal{padding:1.5rem 1.2rem;}
+  .modal input{font-size:1rem;padding:0.6rem 0;}
+}
+#fab{
+  display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:20;
+  width:48px;height:48px;border-radius:50%;
+  background:#111;border:none;color:#fff;
+  font-size:1.4rem;cursor:pointer;
+  align-items:center;justify-content:center;
+  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+  -webkit-tap-highlight-color:transparent;
 }
 </style>
 </head>
@@ -137,7 +161,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
     <span id="page-title">forum</span>
   </div>
   <div id="top-right">
-    <span id="username-display">···</span>
+    <span id="username-display">anon</span>
     <button id="new-post-btn">+ new post</button>
   </div>
 </div>
@@ -147,6 +171,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
     <h3>new post</h3>
     <input id="pf-title" type="text" placeholder="title (optional)">
     <textarea id="pf-body" placeholder="what are you thinking..."></textarea>
+    <div id="posting-as" style="font-family:'Courier New',monospace;font-size:0.58rem;color:#bbb;margin-bottom:0.7rem;"></div>
     <div class="form-btns">
       <button id="pf-cancel">cancel</button>
       <button id="pf-submit" class="primary">post</button>
@@ -154,7 +179,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
   </div>
   <div id="loading" style="text-align:center;padding:3rem 0;font-style:italic;color:#ccc;font-size:0.9rem;">loading...</div>
   <div id="posts-list"></div>
-  <div id="empty" style="display:none;">nothing yet. be the first.</div>
+  <div id="empty" style="display:none;"><hr style="border:none;border-top:1px solid #eee;margin-bottom:2rem;">nothing yet. be the first.</div>
 </div>
 
 <!-- username modal -->
@@ -171,8 +196,12 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, set, serverTimestamp }
+import { getDatabase, ref, push, onValue, set, serverTimestamp, remove }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+// ── ADMIN ───────────────────────────────────────────────────────────────
+const ADMIN_KEY = 'rn3B31l9jOMp346euC7flQ';
+const isAdmin = new URLSearchParams(window.location.search).get('admin') === ADMIN_KEY;
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6FxPzTqCuI4PjhcE7dc8kfORVTf5V0kw",
@@ -196,7 +225,7 @@ var unInput   = document.getElementById('un-input');
 function setUsername(name){
   username = name.trim();
   localStorage.setItem('forum_username', username);
-  unDisplay.textContent = username ? username : 'set name';
+  unDisplay.textContent = username ? username : 'anon';
 }
 
 function showUsernameModal(){
@@ -205,8 +234,7 @@ function showUsernameModal(){
   setTimeout(function(){ unInput.focus(); }, 50);
 }
 
-setUsername(username);
-if(!username) showUsernameModal();
+setUsername(username || '');
 
 unDisplay.addEventListener('click', showUsernameModal);
 document.getElementById('un-save').addEventListener('click', function(){
@@ -224,9 +252,27 @@ unInput.addEventListener('keydown', function(e){
 
 // ── NEW POST FORM ───────────────────────────────────────────────────────
 var postForm = document.getElementById('post-form');
+document.getElementById('fab') && document.getElementById('fab').addEventListener('click', function(){
+  if(!username){ showUsernameModal(); return; }
+  postForm.classList.toggle('open');
+  if(postForm.classList.contains('open')){
+    postForm.scrollIntoView({behavior:'smooth'});
+    var pa = document.getElementById('posting-as');
+    if(pa) pa.innerHTML = username ? 'posting as <strong>'+esc(username)+'</strong> · <span style="cursor:pointer;text-decoration:underline;" id="pa-change">change</span>' : '<span style="cursor:pointer;color:var(--amber);text-decoration:underline;" id="pa-change">set a name to post</span>';
+    var pac = document.getElementById('pa-change');
+    if(pac) pac.addEventListener('click', showUsernameModal);
+  }
+});
 document.getElementById('new-post-btn').addEventListener('click', function(){
   if(!username){ showUsernameModal(); return; }
   postForm.classList.toggle('open');
+  if(postForm.classList.contains('open')){
+    postForm.scrollIntoView({behavior:'smooth'});
+    var pa = document.getElementById('posting-as');
+    if(pa) pa.innerHTML = username ? 'posting as <strong>'+esc(username)+'</strong> · <span style="cursor:pointer;text-decoration:underline;" id="pa-change">change</span>' : '<span style="cursor:pointer;color:var(--amber);text-decoration:underline;" id="pa-change">set a name to post</span>';
+    var pac = document.getElementById('pa-change');
+    if(pac) pac.addEventListener('click', showUsernameModal);
+  }
 });
 document.getElementById('pf-cancel').addEventListener('click', function(){
   postForm.classList.remove('open');
@@ -238,7 +284,15 @@ document.getElementById('pf-submit').addEventListener('click', function(){
   var body  = document.getElementById('pf-body').value.trim();
   if(!body) return;
   if(body.length > 1500){ alert('Post too long (max 1500 characters)'); return; }
-  if(!username){ showUsernameModal(); return; }
+  if(!username){
+    showUsernameModal();
+    // after modal saves, re-submit
+    document.getElementById('un-save').addEventListener('click', function once(){
+      document.getElementById('un-save').removeEventListener('click', once);
+      document.getElementById('pf-submit').click();
+    });
+    return;
+  }
   push(ref(db,'posts'), {
     title: title,
     body:  body,
@@ -283,7 +337,14 @@ function makeReplyForm(postId){
     var body = ta.value.trim();
     if(!body) return;
     if(body.length > 800){ alert('Reply too long (max 800 characters)'); return; }
-    if(!username){ showUsernameModal(); return; }
+    if(!username){
+      showUsernameModal();
+      document.getElementById('un-save').addEventListener('click', function once(){
+        document.getElementById('un-save').removeEventListener('click', once);
+        submit.click();
+      });
+      return;
+    }
     push(ref(db,'replies/'+postId), {
       body: body,
       author: username,
@@ -338,6 +399,18 @@ function renderPost(postId, post, replies){
 
   actions.appendChild(replyToggle);
   actions.appendChild(replyCountEl);
+  if(isAdmin){
+    var delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn';
+    delBtn.textContent = '× delete';
+    delBtn.addEventListener('click', function(){
+      if(confirm('Delete this post and all its replies?')){
+        remove(ref(db,'posts/'+postId));
+        remove(ref(db,'replies/'+postId));
+      }
+    });
+    actions.appendChild(delBtn);
+  }
   el.appendChild(actions);
 
   // replies section
@@ -358,6 +431,19 @@ function renderPost(postId, post, replies){
         rbody.textContent = r.body;
         rdiv.appendChild(rmeta);
         rdiv.appendChild(rbody);
+        if(isAdmin){
+          var rDel = document.createElement('button');
+          rDel.className = 'delete-btn';
+          rDel.textContent = '× delete';
+          rDel.style.display = 'block';
+          rDel.style.marginTop = '0.3rem';
+          rDel.addEventListener('click', (function(pid, rid){
+            return function(){
+              if(confirm('Delete this reply?')) remove(ref(db,'replies/'+pid+'/'+rid));
+            };
+          })(postId, entry[0]));
+          rdiv.appendChild(rDel);
+        }
         repliesEl.appendChild(rdiv);
       });
   }
@@ -411,14 +497,48 @@ function rerender(){
   });
 }
 
+// show error if Firebase doesn't respond in 8 seconds
+var loadTimeout = setTimeout(function(){
+  var loading = document.getElementById('loading');
+  if(loading && loading.style.display !== 'none'){
+    loading.textContent = 'could not connect to database. check firebase rules.';
+    loading.style.color = '#e74c3c';
+  }
+}, 8000);
+
+var postsLoaded = false, repliesLoaded = false;
+function checkBothLoaded(){
+  if(postsLoaded && repliesLoaded){
+    clearTimeout(loadTimeout);
+    rerender();
+  }
+}
+
 onValue(ref(db,'posts'), function(snap){
   postsData = snap.val() || {};
-  rerender();
+  postsLoaded = true;
+  checkBothLoaded();
+  if(postsLoaded && repliesLoaded) rerender();
+}, function(err){
+  var loading = document.getElementById('loading');
+  if(loading) { loading.textContent = 'error: ' + err.message; loading.style.color='#e74c3c'; }
 });
+
 onValue(ref(db,'replies'), function(snap){
   repliesData = snap.val() || {};
-  rerender();
+  repliesLoaded = true;
+  checkBothLoaded();
+  if(postsLoaded && repliesLoaded) rerender();
+}, function(err){
+  console.error('replies error', err);
 });
+</script>
+<button id="fab" aria-label="new post">+</button>
+<div id="admin-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;font-family:'Courier New',monospace;font-size:0.58rem;text-align:center;padding:0.4rem;letter-spacing:0.08em;z-index:50;">admin mode</div>
+<script>
+if(new URLSearchParams(window.location.search).get('admin') === 'rn3B31l9jOMp346euC7flQ'){
+  document.getElementById('admin-bar').style.display='block';
+}
 </script>
 </body>
 </html>

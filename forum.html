@@ -18,17 +18,23 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 }
 #top-left{display:flex;flex-direction:column;gap:0.02rem;align-items:flex-start;}
 #site-link{font-size:1rem;font-weight:normal;font-style:normal;color:#111;text-decoration:none;font-family:Georgia,serif;letter-spacing:0.01em;}
+#site-symbol{font-size:0.85rem;color:#bbb;letter-spacing:0.01em;}
+#site-link:hover{text-decoration:underline;text-underline-offset:3px;}
 #page-title{font-size:0.72rem;color:#999;font-family:Georgia,'Times New Roman',serif;font-style:italic;letter-spacing:0.01em;line-height:1;}
+@media(max-width:600px){#site-link{font-size:1rem;}}
 #top-right{display:flex;align-items:center;gap:1rem;}
-#username-display{font-family:'Courier New',monospace;font-size:0.62rem;color:#bbb;cursor:pointer;letter-spacing:0.04em;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-#username-display:hover{color:#888;}
+#username-display{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.78rem;color:#aaa;cursor:pointer;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#username-display:hover{color:#555;}
+
 #new-post-btn{
-  background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
-  font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;
-  color:#888;cursor:pointer;padding:0.35rem 0.8rem;
-  transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+  background:none;border:none;font-family:Georgia,'Times New Roman',serif;
+  font-style:italic;font-size:0.78rem;
+  color:#aaa;cursor:pointer;padding:0;
+  transition:color 0.15s;-webkit-tap-highlight-color:transparent;
 }
-#new-post-btn:hover{border-color:#888;color:#333;}
+#new-post-btn:hover{color:#333;}
+#back-link{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.78rem;color:#aaa;text-decoration:none;white-space:nowrap;}
+#back-link:hover{color:#555;}
 
 /* ── MAIN ── */
 #main{max-width:680px;margin:0 auto;padding:2rem 1.4rem 4rem;}
@@ -82,8 +88,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 .form-btns button.primary{border-color:#111;color:#111;}
 
 /* ── POSTS ── */
-.post{border-bottom:1px solid var(--faint);padding:2.2rem 0;}
-.post:last-child{border-bottom:none;}
+.post{padding:2.2rem 0;}
+.post-sep{font-family:'Courier New',monospace;font-size:0.62rem;color:#ddd;letter-spacing:0.05em;overflow:hidden;white-space:nowrap;margin:0;user-select:none;line-height:1.4;}
 .post-meta{font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;margin-bottom:0.5rem;letter-spacing:0.03em;}
 .post-meta .author{color:var(--amber);}
 .post-title{font-size:1.15rem;font-weight:normal;color:#111;margin-bottom:0.7rem;line-height:1.35;padding-bottom:0.6rem;border-bottom:1px solid var(--faint);}
@@ -134,7 +140,7 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
   #top-right{flex-wrap:wrap;}
   #main{padding:1.4rem 1rem 5rem;}
   #post-form{padding:1rem;}
-  #new-post-btn{font-size:0.55rem;padding:0.3rem 0.6rem;}
+  #new-post-btn{font-size:0.78rem;}
   #fab{display:flex;}
   .post{padding:1.6rem 0;}
   .form-btns button{min-height:40px;padding:0.5rem 1rem;}
@@ -157,12 +163,13 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 
 <div id="top">
   <div id="top-left">
-    <a id="site-link" href="index.html">το μανταρίνι</a>
+    <div id="site-link">το μανταρίνι <a href="ascii.html" class="orbit-link" style="text-decoration:none;color:#111;">(((◌)))</a></div>
     <span id="page-title">forum</span>
   </div>
   <div id="top-right">
-    <span id="username-display">anon</span>
-    <button id="new-post-btn">+ new post</button>
+    <span id="username-display">set name</span>
+    <button id="new-post-btn">+ write</button>
+    <a href="index.html" id="back-link">← back</a>
   </div>
 </div>
 
@@ -206,7 +213,7 @@ const isAdmin = new URLSearchParams(window.location.search).get('admin') === ADM
 const firebaseConfig = {
   apiKey: "AIzaSyB6FxPzTqCuI4PjhcE7dc8kfORVTf5V0kw",
   authDomain: "tomantarini-25865.firebaseapp.com",
-  databaseURL: "https://tomantarini-25865-default-rtdb.firebaseio.com",
+  databaseURL: "https://tomantarini-25865-default-rtdb.europe-west1.firebasedatabase.app",
   projectId: "tomantarini-25865",
   storageBucket: "tomantarini-25865.firebasestorage.app",
   messagingSenderId: "1033497517437",
@@ -225,7 +232,7 @@ var unInput   = document.getElementById('un-input');
 function setUsername(name){
   username = name.trim();
   localStorage.setItem('forum_username', username);
-  unDisplay.textContent = username ? username : 'anon';
+  unDisplay.textContent = username ? username : 'set name';
 }
 
 function showUsernameModal(){
@@ -359,6 +366,24 @@ function makeReplyForm(postId){
   return form;
 }
 
+
+// ── ASCII SEPARATORS ──────────────────────────────────────────────────────
+var SEP_CHARS = ['·',':','.','-','~','=','+','|','·:·','=·=','-·-','·:·.','.:.',':·:'];
+function makeSep(){
+  var chars = ['.','·',':','-','~','=','+','|','·'];
+  var patterns = ['·:·.','·:·','=·=','-·-','.:.',':·:','~·~','.:.','·.·'];
+  var out = '';
+  var len = 60 + Math.floor(Math.random()*20);
+  while(out.length < len){
+    if(Math.random() < 0.3){
+      out += patterns[Math.floor(Math.random()*patterns.length)];
+    } else {
+      out += chars[Math.floor(Math.random()*chars.length)];
+    }
+  }
+  return out.slice(0,len);
+}
+
 function renderPost(postId, post, replies){
   var el = document.createElement('div');
   el.className = 'post';
@@ -368,7 +393,8 @@ function renderPost(postId, post, replies){
   var meta = document.createElement('div');
   meta.className = 'post-meta';
   var replyCount = replies ? Object.keys(replies).length : 0;
-  meta.innerHTML = '<span class="author">'+esc(post.author)+'</span> · '+timeAgo(post.ts);
+  var pinnedMark = post.pinned ? '<span style="color:var(--amber);margin-right:0.4rem;">★</span>' : '';
+  meta.innerHTML = pinnedMark+'<span class="author">'+esc(post.author)+'</span> · '+timeAgo(post.ts);
   el.appendChild(meta);
 
   // title
@@ -400,6 +426,14 @@ function renderPost(postId, post, replies){
   actions.appendChild(replyToggle);
   actions.appendChild(replyCountEl);
   if(isAdmin){
+    var pinBtn = document.createElement('button');
+    pinBtn.className = 'delete-btn';
+    pinBtn.style.color = post.pinned ? 'var(--amber)' : '#ddd';
+    pinBtn.textContent = post.pinned ? '★ unpin' : '☆ pin';
+    pinBtn.addEventListener('click', function(){
+      set(ref(db,'posts/'+postId+'/pinned'), !post.pinned);
+    });
+    actions.appendChild(pinBtn);
     var delBtn = document.createElement('button');
     delBtn.className = 'delete-btn';
     delBtn.textContent = '× delete';
@@ -490,10 +524,25 @@ function rerender(){
   });
 
   list.innerHTML='';
-  ids.forEach(function(id){
+  // pinned posts first
+  ids.sort(function(a,b){
+    var pa = postsData[a].pinned ? 1 : 0;
+    var pb = postsData[b].pinned ? 1 : 0;
+    if(pb !== pa) return pb - pa;
+    return (postsData[b].ts||0)-(postsData[a].ts||0);
+  });
+
+  ids.forEach(function(id, i){
     var el = renderPost(id, postsData[id], repliesData[id]);
     if(openIds[id]) el.querySelector('.replies').classList.add('open');
     list.appendChild(el);
+    // ASCII separator between posts (not after last)
+    if(i < ids.length - 1){
+      var sep = document.createElement('div');
+      sep.className = 'post-sep';
+      sep.textContent = makeSep();
+      list.appendChild(sep);
+    }
   });
 }
 

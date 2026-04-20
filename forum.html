@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>forum · το μανταρίνι</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#fff;--text:#111;--mid:#888;--faint:#e8e8e8;--amber:#c8922a;--border:#ddd;}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;}
+
+/* ── HEADER ── */
+#top{
+  position:sticky;top:0;z-index:10;background:#fff;
+  border-bottom:1px solid var(--faint);
+  padding:0.75rem 1.4rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+#top-left{display:flex;align-items:baseline;gap:1rem;}
+#site-link{font-size:1rem;font-weight:normal;font-style:normal;color:#111;text-decoration:none;font-family:Georgia,serif;letter-spacing:0.01em;}
+#page-title{font-size:0.72rem;font-style:italic;color:#aaa;font-family:Georgia,serif;}
+#top-right{display:flex;align-items:center;gap:1rem;}
+#username-display{font-family:'Courier New',monospace;font-size:0.62rem;color:#bbb;cursor:pointer;letter-spacing:0.04em;}
+#username-display:hover{color:#888;}
+#new-post-btn{
+  background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
+  font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:#888;cursor:pointer;padding:0.35rem 0.8rem;
+  transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+}
+#new-post-btn:hover{border-color:#888;color:#333;}
+
+/* ── MAIN ── */
+#main{max-width:680px;margin:0 auto;padding:2rem 1.4rem 4rem;}
+
+/* ── USERNAME MODAL ── */
+.modal-bg{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(255,255,255,0.96);
+  align-items:center;justify-content:center;
+}
+.modal-bg.open{display:flex;}
+.modal{width:min(400px,90vw);padding:2rem;}
+.modal h2{font-size:0.9rem;font-weight:normal;font-style:italic;color:#555;margin-bottom:1.2rem;}
+.modal input{
+  width:100%;border:none;border-bottom:1px solid #ddd;
+  font-family:'Courier New',monospace;font-size:0.88rem;
+  padding:0.4rem 0;outline:none;background:transparent;
+  color:#111;margin-bottom:1.2rem;
+}
+.modal input::placeholder{color:#ccc;}
+.modal-btns{display:flex;gap:0.8rem;}
+.modal button{
+  background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
+  font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:#888;cursor:pointer;padding:0.4rem 0.9rem;transition:all 0.15s;
+}
+.modal button.primary{border-color:#111;color:#111;}
+.modal button:hover{border-color:#888;color:#333;}
+
+/* ── NEW POST FORM ── */
+#post-form{
+  display:none;border:1px solid var(--faint);padding:1.4rem;margin-bottom:2rem;
+}
+#post-form.open{display:block;}
+#post-form h3{font-size:0.72rem;font-style:italic;color:#aaa;font-weight:normal;margin-bottom:1rem;font-family:'Courier New',monospace;letter-spacing:0.06em;text-transform:uppercase;}
+#post-form input,#post-form textarea{
+  width:100%;border:none;border-bottom:1px solid #eee;
+  font-family:Georgia,serif;font-size:0.92rem;
+  padding:0.4rem 0;outline:none;background:transparent;
+  color:#111;display:block;resize:none;
+}
+#post-form input{margin-bottom:0.8rem;}
+#post-form input::placeholder,#post-form textarea::placeholder{color:#ccc;font-style:italic;}
+#post-form textarea{min-height:80px;margin-bottom:1.2rem;line-height:1.65;}
+.form-btns{display:flex;gap:0.7rem;justify-content:flex-end;}
+.form-btns button{
+  background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
+  font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:#888;cursor:pointer;padding:0.38rem 0.8rem;transition:all 0.15s;
+}
+.form-btns button.primary{border-color:#111;color:#111;}
+
+/* ── POSTS ── */
+.post{border-bottom:1px solid var(--faint);padding:1.6rem 0;}
+.post:last-child{border-bottom:none;}
+.post-meta{font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;margin-bottom:0.5rem;letter-spacing:0.03em;}
+.post-meta .author{color:#888;}
+.post-title{font-size:1.05rem;font-weight:normal;color:#111;margin-bottom:0.6rem;line-height:1.4;cursor:pointer;}
+.post-title:hover{color:var(--amber);}
+.post-body{font-size:1rem;line-height:1.8;color:#333;margin-bottom:1rem;white-space:pre-wrap;}
+.post-actions{display:flex;gap:1rem;align-items:center;}
+.reply-toggle{
+  background:none;border:none;font-family:'Courier New',monospace;
+  font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;
+  color:#ccc;cursor:pointer;padding:0;transition:color 0.15s;
+}
+.reply-toggle:hover{color:#888;}
+.reply-count{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;letter-spacing:0.04em;}
+
+/* ── REPLIES ── */
+.replies{display:none;margin-top:1rem;border-left:1px solid #ccc;padding-left:1.2rem;}
+.replies.open{display:block;}
+.reply{padding:0.9rem 0;border-bottom:1px solid #f5f5f5;}
+.reply:last-child{border-bottom:none;}
+.reply-meta{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;margin-bottom:0.3rem;}
+.reply-meta .author{color:#aaa;}
+.reply-body{font-size:0.95rem;line-height:1.75;color:#444;white-space:pre-wrap;}
+
+/* reply form */
+.reply-form{margin-top:0.8rem;display:none;}
+.reply-form.open{display:block;}
+.reply-form textarea{
+  width:100%;border:none;border-bottom:1px solid #eee;
+  font-family:Georgia,serif;font-size:0.88rem;
+  padding:0.3rem 0;outline:none;background:transparent;
+  color:#111;resize:none;min-height:60px;line-height:1.65;
+  margin-bottom:0.7rem;
+}
+.reply-form textarea::placeholder{color:#ccc;font-style:italic;}
+
+/* empty state */
+#empty{text-align:center;padding:4rem 0;font-style:italic;color:#ccc;font-size:0.9rem;}
+
+@media(max-width:600px){
+  #top{padding:0.65rem 1rem;}
+  #main{padding:1.4rem 1rem 4rem;}
+  #post-form{padding:1rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <div id="top-left">
+    <a id="site-link" href="index.html">το μανταρίνι</a>
+    <span id="page-title">forum</span>
+  </div>
+  <div id="top-right">
+    <span id="username-display">···</span>
+    <button id="new-post-btn">+ new post</button>
+  </div>
+</div>
+
+<div id="main">
+  <div id="post-form">
+    <h3>new post</h3>
+    <input id="pf-title" type="text" placeholder="title (optional)">
+    <textarea id="pf-body" placeholder="what are you thinking..."></textarea>
+    <div class="form-btns">
+      <button id="pf-cancel">cancel</button>
+      <button id="pf-submit" class="primary">post</button>
+    </div>
+  </div>
+  <div id="loading" style="text-align:center;padding:3rem 0;font-style:italic;color:#ccc;font-size:0.9rem;">loading...</div>
+  <div id="posts-list"></div>
+  <div id="empty" style="display:none;">nothing yet. be the first.</div>
+</div>
+
+<!-- username modal -->
+<div class="modal-bg" id="username-modal">
+  <div class="modal">
+    <h2>choose a name to post as</h2>
+    <input id="un-input" type="text" placeholder="your name or pseudonym" maxlength="40">
+    <div class="modal-btns">
+      <button id="un-cancel">cancel</button>
+      <button id="un-save" class="primary">save</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, push, onValue, set, serverTimestamp }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyB6FxPzTqCuI4PjhcE7dc8kfORVTf5V0kw",
+  authDomain: "tomantarini-25865.firebaseapp.com",
+  databaseURL: "https://tomantarini-25865-default-rtdb.firebaseio.com",
+  projectId: "tomantarini-25865",
+  storageBucket: "tomantarini-25865.firebasestorage.app",
+  messagingSenderId: "1033497517437",
+  appId: "1:1033497517437:web:4259c9a200447d9c1c8014"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ── USERNAME ────────────────────────────────────────────────────────────
+var username = localStorage.getItem('forum_username') || '';
+var unDisplay = document.getElementById('username-display');
+var unModal   = document.getElementById('username-modal');
+var unInput   = document.getElementById('un-input');
+
+function setUsername(name){
+  username = name.trim();
+  localStorage.setItem('forum_username', username);
+  unDisplay.textContent = username ? username : 'set name';
+}
+
+function showUsernameModal(){
+  unInput.value = username;
+  unModal.classList.add('open');
+  setTimeout(function(){ unInput.focus(); }, 50);
+}
+
+setUsername(username);
+if(!username) showUsernameModal();
+
+unDisplay.addEventListener('click', showUsernameModal);
+document.getElementById('un-save').addEventListener('click', function(){
+  var v = unInput.value.trim();
+  if(!v) return;
+  setUsername(v);
+  unModal.classList.remove('open');
+});
+document.getElementById('un-cancel').addEventListener('click', function(){
+  unModal.classList.remove('open');
+});
+unInput.addEventListener('keydown', function(e){
+  if(e.key==='Enter'){ document.getElementById('un-save').click(); }
+});
+
+// ── NEW POST FORM ───────────────────────────────────────────────────────
+var postForm = document.getElementById('post-form');
+document.getElementById('new-post-btn').addEventListener('click', function(){
+  if(!username){ showUsernameModal(); return; }
+  postForm.classList.toggle('open');
+});
+document.getElementById('pf-cancel').addEventListener('click', function(){
+  postForm.classList.remove('open');
+  document.getElementById('pf-title').value='';
+  document.getElementById('pf-body').value='';
+});
+document.getElementById('pf-submit').addEventListener('click', function(){
+  var title = document.getElementById('pf-title').value.trim();
+  var body  = document.getElementById('pf-body').value.trim();
+  if(!body) return;
+  if(body.length > 1500){ alert('Post too long (max 1500 characters)'); return; }
+  if(!username){ showUsernameModal(); return; }
+  push(ref(db,'posts'), {
+    title: title,
+    body:  body,
+    author: username,
+    ts: serverTimestamp()
+  });
+  document.getElementById('pf-title').value='';
+  document.getElementById('pf-body').value='';
+  postForm.classList.remove('open');
+});
+
+// ── RENDER POSTS ────────────────────────────────────────────────────────
+function timeAgo(ts){
+  if(!ts) return '';
+  var diff = Date.now() - ts;
+  var m = Math.floor(diff/60000);
+  if(m<1) return 'μόλις τώρα';
+  if(m<60) return 'πριν '+m+' λ';
+  var h = Math.floor(m/60);
+  if(h<24) return 'πριν '+h+' ω';
+  var d = Math.floor(h/24);
+  if(d===1) return 'χθες';
+  if(d<7) return 'πριν '+d+' μέρες';
+  return 'πριν '+Math.floor(d/7)+' εβδ';
+}
+
+function makeReplyForm(postId){
+  var form = document.createElement('div');
+  form.className = 'reply-form';
+  var ta = document.createElement('textarea');
+  ta.placeholder = 'reply...';
+  form.appendChild(ta);
+  var btns = document.createElement('div');
+  btns.className = 'form-btns';
+  var cancel = document.createElement('button');
+  cancel.textContent = 'cancel';
+  cancel.addEventListener('click', function(){ form.classList.remove('open'); ta.value=''; });
+  var submit = document.createElement('button');
+  submit.className = 'primary';
+  submit.textContent = 'reply';
+  submit.addEventListener('click', function(){
+    var body = ta.value.trim();
+    if(!body) return;
+    if(body.length > 800){ alert('Reply too long (max 800 characters)'); return; }
+    if(!username){ showUsernameModal(); return; }
+    push(ref(db,'replies/'+postId), {
+      body: body,
+      author: username,
+      ts: serverTimestamp()
+    });
+    ta.value='';
+    form.classList.remove('open');
+  });
+  btns.appendChild(cancel);
+  btns.appendChild(submit);
+  form.appendChild(btns);
+  return form;
+}
+
+function renderPost(postId, post, replies){
+  var el = document.createElement('div');
+  el.className = 'post';
+  el.dataset.id = postId;
+
+  // meta
+  var meta = document.createElement('div');
+  meta.className = 'post-meta';
+  var replyCount = replies ? Object.keys(replies).length : 0;
+  meta.innerHTML = '<span class="author">'+esc(post.author)+'</span> · '+timeAgo(post.ts);
+  el.appendChild(meta);
+
+  // title
+  if(post.title){
+    var title = document.createElement('div');
+    title.className = 'post-title';
+    title.textContent = post.title;
+    el.appendChild(title);
+  }
+
+  // body
+  var body = document.createElement('div');
+  body.className = 'post-body';
+  body.textContent = post.body;
+  el.appendChild(body);
+
+  // actions
+  var actions = document.createElement('div');
+  actions.className = 'post-actions';
+
+  var replyToggle = document.createElement('button');
+  replyToggle.className = 'reply-toggle';
+  replyToggle.textContent = 'reply';
+
+  var replyCountEl = document.createElement('span');
+  replyCountEl.className = 'reply-count';
+  replyCountEl.textContent = replyCount > 0 ? replyCount + (replyCount===1?' reply':' replies') : '';
+
+  actions.appendChild(replyToggle);
+  actions.appendChild(replyCountEl);
+  el.appendChild(actions);
+
+  // replies section
+  var repliesEl = document.createElement('div');
+  repliesEl.className = 'replies';
+  if(replies){
+    Object.entries(replies)
+      .sort(function(a,b){ return (a[1].ts||0)-(b[1].ts||0); })
+      .forEach(function(entry){
+        var r = entry[1];
+        var rdiv = document.createElement('div');
+        rdiv.className = 'reply';
+        var rmeta = document.createElement('div');
+        rmeta.className = 'reply-meta';
+        rmeta.innerHTML = '<span class="author">'+esc(r.author)+'</span> · '+timeAgo(r.ts);
+        var rbody = document.createElement('div');
+        rbody.className = 'reply-body';
+        rbody.textContent = r.body;
+        rdiv.appendChild(rmeta);
+        rdiv.appendChild(rbody);
+        repliesEl.appendChild(rdiv);
+      });
+  }
+
+  var replyForm = makeReplyForm(postId);
+  repliesEl.appendChild(replyForm);
+  el.appendChild(repliesEl);
+
+  // toggle replies + reply form
+  replyToggle.addEventListener('click', function(){
+    repliesEl.classList.toggle('open');
+    replyForm.classList.toggle('open');
+  });
+
+  return el;
+}
+
+function esc(t){ return t ? t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+// ── LIVE DATA ───────────────────────────────────────────────────────────
+var postsData = {};
+var repliesData = {};
+
+function rerender(){
+  var list = document.getElementById('posts-list');
+  var empty = document.getElementById('empty');
+  var loading = document.getElementById('loading');
+  if(loading) loading.style.display='none';
+  var ids = Object.keys(postsData);
+  if(ids.length === 0){
+    list.innerHTML=''; empty.style.display='block'; return;
+  }
+  empty.style.display='none';
+
+  // sort newest first
+  ids.sort(function(a,b){
+    return (postsData[b].ts||0)-(postsData[a].ts||0);
+  });
+
+  // preserve open reply sections
+  var openIds = {};
+  list.querySelectorAll('.post').forEach(function(el){
+    if(el.querySelector('.replies.open')) openIds[el.dataset.id]=true;
+  });
+
+  list.innerHTML='';
+  ids.forEach(function(id){
+    var el = renderPost(id, postsData[id], repliesData[id]);
+    if(openIds[id]) el.querySelector('.replies').classList.add('open');
+    list.appendChild(el);
+  });
+}
+
+onValue(ref(db,'posts'), function(snap){
+  postsData = snap.val() || {};
+  rerender();
+});
+onValue(ref(db,'replies'), function(snap){
+  repliesData = snap.val() || {};
+  rerender();
+});
+</script>
+</body>
+</html>

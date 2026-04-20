@@ -123,7 +123,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 .btn-sm:active{border-color:var(--ink);color:var(--ink);}
 
 #meta-links{display:flex;align-items:center;gap:0.4rem;margin-bottom:0.5rem;}
-#btn-about,#btn-glossary{background:none;border:none;color:var(--faint);font-family:'IM Fell English',serif;font-style:italic;font-size:0.78rem;letter-spacing:0.04em;cursor:pointer;padding:0;transition:color 0.15s;-webkit-tap-highlight-color:transparent;}
+#btn-about,#btn-glossary{background:none;border:none;color:var(--faint);font-family:'IM Fell English',serif;font-style:italic;font-size:0.95rem;letter-spacing:0.03em;cursor:pointer;padding:0.2rem 0;min-height:36px;transition:color 0.15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
 #btn-about:hover,#btn-glossary:hover{color:var(--mid);}
 #btn-reset:active,#btn-pin:active{border-color:var(--ink);color:var(--ink);}
 .meta-sep{color:var(--faint);font-size:0.65rem;font-family:'Courier Prime',monospace;}
@@ -134,7 +134,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 #about-close{background:none;border:none;font-family:'Courier Prime',monospace;font-size:0.72rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);cursor:pointer;padding:0;margin-bottom:2rem;display:block;margin-left:auto;}
 #about-close:hover{color:var(--ink);}
 .about-title{font-family:Georgia,'Times New Roman',serif;font-size:1.4rem;font-weight:normal;margin-bottom:1.8rem;color:var(--ink);}
-.about-body{font-family:'IM Fell English',serif;font-style:italic;font-size:0.9rem;color:var(--mid);line-height:1.85;letter-spacing:0.01em;}
+.about-body{font-family:'IM Fell English',serif;font-style:italic;font-size:1.05rem;color:var(--mid);line-height:1.9;letter-spacing:0.01em;}
 .about-body p{margin-bottom:1.4rem;}
 .about-body p:last-child{margin-bottom:0;}
 .about-body a{color:var(--mid);text-decoration:underline;text-underline-offset:2px;text-decoration-color:var(--faint);}
@@ -147,10 +147,10 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
 #glossary-close:hover{color:var(--ink);}
 .g-title{font-family:'IM Fell English',serif;font-size:1.2rem;font-weight:normal;margin-bottom:1.6rem;color:var(--ink);}
 .g-section{margin-bottom:1.8rem;}
-.g-section-head{font-family:'Courier Prime',monospace;font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--faint);margin-bottom:0.8rem;padding-bottom:0.3rem;border-bottom:1px solid var(--faint);}
+.g-section-head{font-family:'Courier Prime',monospace;font-size:0.7rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--faint);margin-bottom:0.8rem;padding-bottom:0.3rem;border-bottom:1px solid var(--faint);}
 .g-entry{margin-bottom:0.9rem;}
-.g-term{font-family:'Courier Prime',monospace;font-size:0.7rem;letter-spacing:0.08em;color:var(--ink);display:inline;}
-.g-def{font-family:'IM Fell English',serif;font-style:italic;font-size:0.88rem;color:var(--mid);line-height:1.7;display:block;margin-top:0.2rem;}
+.g-term{font-family:'Courier Prime',monospace;font-size:0.78rem;letter-spacing:0.06em;color:var(--ink);display:inline;}
+.g-def{font-family:'IM Fell English',serif;font-style:italic;font-size:1rem;color:var(--mid);line-height:1.75;display:block;margin-top:0.25rem;}
 
 /* STAGE */
 #stage{flex:1;background:#ffffff;display:flex;flex-direction:column;align-items:center;padding:0.8rem 0.4rem 3rem;overflow-x:hidden;overflow-y:auto;}
@@ -190,7 +190,7 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
   #controls::-webkit-scrollbar{width:3px;}
   #controls::-webkit-scrollbar-thumb{background:var(--faint);}
   .ctrl-top{flex-direction:column;align-items:center;margin-bottom:0.8rem;gap:0;}
-  #meta-links{align-self:center;margin-bottom:0.3rem;}
+  #meta-links{align-self:center;margin-bottom:0.3rem;justify-content:center;width:100%;}
   .ctrl-title-block{margin-bottom:1rem;align-self:center;}
   .ctrl-buttons{flex-direction:column;width:100%;}
   #btn-gen{width:100%;flex:none;min-height:36px;font-size:0.6rem;padding:0.35rem 0.7rem;}
@@ -398,71 +398,65 @@ input[type=range]{flex:1;accent-color:var(--ink);cursor:pointer;height:2px;min-w
     <p class="g-title">glossary</p>
 
     <div class="g-section">
+      <div class="g-section-head">controls</div>
+      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the current image structure. generate again with different settings and the underlying form stays the same — only the rendering changes. tap again to release.</span></div>
+      <div class="g-entry"><span class="g-term">reset settings</span><span class="g-def">clears mode, border, layer, charset, and all sliders back to defaults. keeps the current algorithm and seed.</span></div>
+      <div class="g-entry"><span class="g-term">lock</span><span class="g-def">appears next to each section label. when locked, that section is skipped by randomise.</span></div>
+      <div class="g-entry"><span class="g-term">randomise</span><span class="g-def">randomises algorithm, layer, charset, sliders, mode, and border, then generates. locked sections are skipped.</span></div>
+      <div class="g-entry"><span class="g-term">flow smear</span><span class="g-def">shifts characters slightly along the field gradient, giving the image a sense of directionality. on by default.</span></div>
+      <div class="g-entry"><span class="g-term">tile repeat</span><span class="g-def">mirrors the field into a 2x2 grid, making any image a seamless repeating pattern.</span></div>
+    </div>
+
+    <div class="g-section">
       <div class="g-section-head">mode</div>
       <div class="g-entry"><span class="g-term">kentima</span><span class="g-def">transforms the field into a counted-thread textile surface. quantized to three levels; each cell biases toward its diagonal predecessor in a fixed warp direction, creating visible stitch runs. isolated marks are absorbed into neighbours. charset switches to stitch marks.</span></div>
       <div class="g-entry"><span class="g-term">stipple</span><span class="g-def">each 4x4 cell receives a cluster of marks growing from center outward, proportional to the cell's average value. higher value = denser cluster. result: dot density engraving, like copper stipple or Ben-Day.</span></div>
-      <div class="g-entry"><span class="g-term">dither</span><span class="g-def">Floyd-Steinberg error diffusion (Bell Labs, 1976). binary quantization: each cell is 0 or 1. rounding error propagates to neighbours with fixed weights (7/16, 5/16, 3/16, 1/16). produces the diagonal grain of early 1-bit printing.</span></div>
-      <div class="g-entry"><span class="g-term">planographic</span><span class="g-def">hard posterization into 5 flat tonal bands. no gradient within a band; each region carries one value. result: flat tones with sharp boundaries, like a reduction linocut or silkscreen.</span></div>
+      <div class="g-entry"><span class="g-term">dither</span><span class="g-def">Floyd-Steinberg error diffusion (Bell Labs, 1976). binary quantization: each cell is 0 or 1. rounding error propagates to neighbours with fixed weights. produces the diagonal grain of early 1-bit printing.</span></div>
+      <div class="g-entry"><span class="g-term">planographic</span><span class="g-def">hard posterization into 5 flat tonal bands; each region carries one value. flat tones with sharp boundaries, like a reduction linocut or silkscreen.</span></div>
     </div>
 
     <div class="g-section">
       <div class="g-section-head">border</div>
-      <div class="g-entry"><span class="g-term">border</span><span class="g-def">overwrites edge cells with a repeating motif, framing the output as a bounded object. corners are resolved separately. starts on when kentima is enabled but can be toggled off.</span></div>
-      <div class="g-entry"><span class="g-term">frame / rhythm / step / grid</span><span class="g-def">four border motif types. frame is a solid line. rhythm alternates marks. step is a meander pattern. grid is a cross-hatch.</span></div>
+      <div class="g-entry"><span class="g-term">border</span><span class="g-def">overwrites edge cells with a repeating motif. starts on when kentima is enabled.</span></div>
+      <div class="g-entry"><span class="g-term">frame / rhythm / step / grid</span><span class="g-def">frame is a solid line. rhythm alternates marks. step is a meander. grid is a cross-hatch.</span></div>
     </div>
 
     <div class="g-section">
       <div class="g-section-head">algorithm</div>
-      <div class="g-entry"><span class="g-term">flow field</span><span class="g-def">smooth, drifting clouds. organic and fluid. Perlin noise stacked at multiple frequencies.</span></div>
-      <div class="g-entry"><span class="g-term">domain warp</span><span class="g-def">folded, twisted, geological. noise bent through itself repeatedly. like wood grain or bent smoke.</span></div>
-      <div class="g-entry"><span class="g-term">julia set</span><span class="g-def">crystalline fractal edges. each pixel is a point in the complex plane tested for escape under iteration.</span></div>
-      <div class="g-entry"><span class="g-term">reaction</span><span class="g-def">spots, stripes, or labyrinths. Gray-Scott reaction-diffusion: two chemicals activating and inhibiting each other.</span></div>
-      <div class="g-entry"><span class="g-term">voronoi</span><span class="g-def">cellular regions with visible boundaries. every point assigned to its nearest seed. like cracked mud or a dragonfly wing.</span></div>
-      <div class="g-entry"><span class="g-term">waves</span><span class="g-def">interference rings and ripple patterns. sum of multiple sine waves at different origins and phases.</span></div>
-      <div class="g-entry"><span class="g-term">rorschach</span><span class="g-def">bilaterally mirrored noise. any pattern becomes an inkblot.</span></div>
-      <div class="g-entry"><span class="g-term">l-system</span><span class="g-def">branching structures: ferns, trees, roots. a rewriting grammar applied repeatedly then drawn as turtle graphics.</span></div>
-      <div class="g-entry"><span class="g-term">automata</span><span class="g-def">grid-based growth from simple birth and survival rules. can be organic, crystalline, or chaotic.</span></div>
-      <div class="g-entry"><span class="g-term">clifford</span><span class="g-def">wispy orbital trails. density of millions of iterated attractor points forms the image.</span></div>
-      <div class="g-entry"><span class="g-term">dla</span><span class="g-def">lightning bolts, snowflakes, coral. particles walk randomly and stick on contact with the growing cluster.</span></div>
+      <div class="g-entry"><span class="g-term">flow field</span><span class="g-def">smooth, drifting clouds. Perlin noise stacked at multiple frequencies.</span></div>
+      <div class="g-entry"><span class="g-term">domain warp</span><span class="g-def">folded, geological. noise bent through itself repeatedly.</span></div>
+      <div class="g-entry"><span class="g-term">julia set</span><span class="g-def">crystalline fractal edges. each point tested for escape under complex iteration.</span></div>
+      <div class="g-entry"><span class="g-term">reaction</span><span class="g-def">spots, stripes, labyrinths. Gray-Scott model: two chemicals activating and inhibiting each other.</span></div>
+      <div class="g-entry"><span class="g-term">voronoi</span><span class="g-def">cellular regions. every point assigned to its nearest seed. like cracked mud or a dragonfly wing.</span></div>
+      <div class="g-entry"><span class="g-term">waves</span><span class="g-def">interference patterns. sum of sine waves at different origins and phases.</span></div>
+      <div class="g-entry"><span class="g-term">rorschach</span><span class="g-def">bilaterally mirrored noise.</span></div>
+      <div class="g-entry"><span class="g-term">l-system</span><span class="g-def">branching structures: ferns, trees, roots. a rewriting grammar drawn as turtle graphics.</span></div>
+      <div class="g-entry"><span class="g-term">automata</span><span class="g-def">grid-based growth from birth and survival rules. organic, crystalline, or chaotic.</span></div>
+      <div class="g-entry"><span class="g-term">clifford</span><span class="g-def">wispy orbital trails. density of millions of iterated attractor points.</span></div>
+      <div class="g-entry"><span class="g-term">dla</span><span class="g-def">lightning, snowflakes, coral. particles walk randomly and stick on contact.</span></div>
     </div>
 
     <div class="g-section">
-      <div class="g-section-head">layer</div>
-      <div class="g-entry"><span class="g-term">layer</span><span class="g-def">generates a second field with a different algorithm and overlays it on the first. none means no overlay.</span></div>
-      <div class="g-entry"><span class="g-term">blend mode</span><span class="g-def">how the two layers combine. add and screen lighten. multiply darkens. max and min take the stronger or weaker value. difference creates edges where the two fields diverge most.</span></div>
+      <div class="g-section-head">layer + blend</div>
+      <div class="g-entry"><span class="g-term">layer</span><span class="g-def">generates a second field and overlays it on the first.</span></div>
+      <div class="g-entry"><span class="g-term">blend mode</span><span class="g-def">add and screen lighten. multiply darkens. max and min take the stronger or weaker value. difference creates edges where the two fields diverge.</span></div>
     </div>
 
     <div class="g-section">
       <div class="g-section-head">charset</div>
-      <div class="g-entry"><span class="g-term">density</span><span class="g-def">smooth gradient from empty to full. the most faithful rendering of the underlying field.</span></div>
-      <div class="g-entry"><span class="g-term">hi-contrast</span><span class="g-def">only five steps. very graphic, almost like a stamp or linocut.</span></div>
-      <div class="g-entry"><span class="g-term">grit</span><span class="g-def">characters picked for visual weight, not tonal order. rough texture regardless of the field.</span></div>
-      <div class="g-entry"><span class="g-term">sparse / alpha / binary / symbol / punct</span><span class="g-def">different character pools. combine with contrast and density sliders to find the right register.</span></div>
+      <div class="g-entry"><span class="g-term">density</span><span class="g-def">smooth gradient from empty to full. most faithful rendering of the field.</span></div>
+      <div class="g-entry"><span class="g-term">hi-contrast</span><span class="g-def">only five steps. very graphic.</span></div>
+      <div class="g-entry"><span class="g-term">grit</span><span class="g-def">characters picked for visual weight, not tonal order. rough regardless of the field.</span></div>
+      <div class="g-entry"><span class="g-term">sparse / alpha / binary / symbol / punct</span><span class="g-def">different character pools. combine with contrast and density sliders.</span></div>
     </div>
 
     <div class="g-section">
       <div class="g-section-head">parameters</div>
-      <div class="g-entry"><span class="g-term">complexity</span><span class="g-def">more iterations, more layers, more detail. higher values are slower to compute.</span></div>
-      <div class="g-entry"><span class="g-term">density</span><span class="g-def">biases output toward sparse (mostly empty) or full (mostly filled).</span></div>
-      <div class="g-entry"><span class="g-term">contrast</span><span class="g-def">low = milky and compressed. high = stark, few mid-tones.</span></div>
-      <div class="g-entry"><span class="g-term">symmetry</span><span class="g-def">0 = none. 1 = left-right mirror. 2 = top-bottom added. 3 = all four quadrants. 4 = rotational fold.</span></div>
-      <div class="g-entry"><span class="g-term">zoom</span><span class="g-def">zooms into the generated field. high zoom on julia set or clifford reveals very different structure.</span></div>
-      <div class="g-entry"><span class="g-term">offset x / y</span><span class="g-def">pans the view when zoomed in. explore a different region of the same seed.</span></div>
-    </div>
-
-    <div class="g-section">
-      <div class="g-section-head">size + orientation</div>
-      <div class="g-entry"><span class="g-term">XS / S / M / L / XL</span><span class="g-def">controls the number of characters in the grid. larger = more detail.</span></div>
-      <div class="g-entry"><span class="g-term">landscape / portrait / square</span><span class="g-def">aspect ratio of the output. landscape is wide, portrait is tall, square is visually square given character proportions.</span></div>
-    </div>
-
-    <div class="g-section">
-      <div class="g-section-head">other controls</div>
-      <div class="g-entry"><span class="g-term">randomise</span><span class="g-def">randomises algorithm, layer, charset, all sliders, mode, and border, then generates. locked sections are skipped.</span></div>
-      <div class="g-entry"><span class="g-term">pin seed</span><span class="g-def">locks the random seed so generate keeps the same underlying structure. useful for comparing how different settings transform the same form.</span></div>
-      <div class="g-entry"><span class="g-term">lock</span><span class="g-def">appears next to each section label. when locked, that section is skipped by the randomiser.</span></div>
-      <div class="g-entry"><span class="g-term">flow smear</span><span class="g-def">shifts characters slightly along the field gradient. gives the image a sense of directionality. on by default.</span></div>
-      <div class="g-entry"><span class="g-term">tile repeat</span><span class="g-def">mirrors the field into a 2x2 grid. any image becomes a seamless repeating pattern.</span></div>
+      <div class="g-entry"><span class="g-term">complexity</span><span class="g-def">more iterations, more detail. higher values are slower.</span></div>
+      <div class="g-entry"><span class="g-term">density</span><span class="g-def">biases output toward sparse or full.</span></div>
+      <div class="g-entry"><span class="g-term">contrast</span><span class="g-def">low = milky. high = stark, few mid-tones.</span></div>
+      <div class="g-entry"><span class="g-term">symmetry</span><span class="g-def">0 = none. 1 = left-right. 2 = top-bottom added. 3 = four quadrants. 4 = rotational fold.</span></div>
+      <div class="g-entry"><span class="g-term">zoom + offset</span><span class="g-def">zoom into the field; offset pans the view to explore a different region.</span></div>
     </div>
 
   </div>
@@ -1486,6 +1480,9 @@ function savePNG(btn){
   const cv=document.createElement('canvas');
   cv.width=W; cv.height=H;
   const ctx=cv.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  // match browser subpixel rendering as closely as possible
+  ctx.textRenderingHint = 'geometricPrecision';
   // white background
   ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,W,H);
   // render text

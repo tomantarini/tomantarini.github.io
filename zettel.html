@@ -167,47 +167,48 @@ function makeId(entry, index){
 }
 
 // ── CSV PARSE ──────────────────────────────────────────────────────────────
-function parseCSVLine(line){
-  const vals=[]; let cur='', inq=false;
-  for(let i=0;i<line.length;i++){
-    const ch=line[i];
-    if(ch==='"'){
-      if(inq && line[i+1]==='"'){ cur+='"'; i++; } // escaped quote
-      else inq=!inq;
-    } else if(ch===','&&!inq){ vals.push(cur); cur=''; }
-    else cur+=ch;
-  }
-  vals.push(cur);
-  return vals.map(v=>v.trim().replace(/^"|"$/g,''));
-}
-
 function parseCSV(text){
-  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-  if(!lines.length) return [];
-  const headers=parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''));
-  console.log('normalized headers:', headers);
   const rows=[];
-  for(let i=1;i<lines.length;i++){
-    if(!lines[i].trim()) continue;
-    const vals=parseCSVLine(lines[i]);
-    if(vals.length<2) continue;
+  let cur='', inQ=false, row=[];
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"'){
+      if(inQ&&text[i+1]==='"'){cur+='"';i++;}
+      else inQ=!inQ;
+    } else if(c===','&&!inQ){
+      row.push(cur);cur='';
+    } else if((c==='\n'||c==='\r')&&!inQ){
+      if(c==='\r'&&text[i+1]==='\n') i++;
+      row.push(cur);cur='';
+      if(row.some(v=>v.trim())) rows.push(row);
+      row=[];
+    } else { cur+=c; }
+  }
+  row.push(cur);
+  if(row.some(v=>v.trim())) rows.push(row);
+  if(rows.length<2) return [];
+
+  const headers=rows[0].map(h=>h.trim().toLowerCase().replace(/[\s\(\)\*\.]+/g,''));
+  console.log('headers:', headers);
+  const results=[];
+  for(let i=1;i<rows.length;i++){
     const obj={};
-    headers.forEach((h,j)=>{ obj[h]=vals[j]||''; });
+    headers.forEach((h,idx)=>{ obj[h]=(rows[i][idx]||'').trim(); });
     obj.label    = obj['title']||obj['label']||'';
     obj.body     = obj['content']||obj['body']||'';
     obj.link     = obj['linkoptional']||obj['link']||'';
-    obj.name     = obj['nameorpseudonym']||obj['name']||'';
-    obj.instagram= obj['instagramhandle']||obj['instagram']||'';
-    obj.credited = (obj['iwanttobepubliclycreditedformywork']||'').toLowerCase();
+    obj.name     = obj['nameorpseudonym']||obj['nameorpseudonymrequired']||obj['name']||'';
+    obj.instagram= obj['instagramhandle']||obj['instagramhandleoptional']||obj['instagram']||'';
+    obj.credited = (obj['iwanttobepubliclycreditedformywork']||obj['iwanttobepubliclycredited']||'').toLowerCase();
     obj.keywords = obj['keywords']||'';
     obj.responseto=obj['responseto']||obj['inresponseto']||obj['inresponsetoptional']||'';
     obj.id       = obj['id']||'';
     obj.type     = obj['typeofsubmission']||obj['type']||'submission';
     const pub=(obj['publish']||'').trim().toLowerCase();
-    console.log('row', i, 'label:', obj.label, 'publish raw:', obj['publish'], 'pub:', pub);
-    if(obj.label&&pub==='true') rows.push(obj);
+    console.log('row',i,'label:',obj.label,'publish:',pub);
+    if(obj.label&&pub==='true') results.push(obj);
   }
-  return rows;
+  return results;
 }
 
 // ── NODES + EDGES ──────────────────────────────────────────────────────────

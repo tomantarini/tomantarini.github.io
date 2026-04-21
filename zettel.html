@@ -328,10 +328,10 @@ function renderTranscript(){
         const label=(parts[1]?parts[0]:url).trim();
         const lk=document.createElement('a');
         lk.href=url; lk.target='_blank'; lk.rel='noopener';
-        lk.style.cssText='font-family:Courier New,monospace;font-size:0.6rem;color:#bbb;text-decoration:none;border-bottom:1px dotted #ddd;';
+        lk.style.cssText='font-family:Courier New,monospace;font-size:0.6rem;color:var(--amber);text-decoration:none;border-bottom:1px dotted var(--amber);';
         lk.textContent=label||'link →';
-        lk.onmouseover=()=>{lk.style.color='#c8922a';lk.style.borderBottomColor='#c8922a';};
-        lk.onmouseout=()=>{lk.style.color='#bbb';lk.style.borderBottomColor='#ddd';};
+        lk.onmouseover=()=>{lk.style.opacity='0.7';};
+        lk.onmouseout=()=>{lk.style.opacity='1';};
         meta.appendChild(lk);
       });
     }
@@ -411,32 +411,53 @@ function renderWeb(){
   // invisible larger hit area for mobile touch
   node.append('circle').attr('r', d=>nodeR(d)+8).attr('fill','transparent').attr('stroke','none');
 
-  // wrap text inside circle using tspans
+  // wrap text inside circle using actual SVG measurement
   const FONT_PX = isMobile ? 12 : 11;
-  const CHAR_W  = FONT_PX * 0.62;
-  const LINE_H  = FONT_PX * 1.4;
+  const LINE_H  = FONT_PX * 1.45;
+
+  // hidden measuring text element
+  const ruler = svg.append('text')
+    .attr('class','node-label')
+    .attr('visibility','hidden')
+    .attr('font-size', FONT_PX);
+
+  function measureW(str){
+    ruler.text(str);
+    return ruler.node().getComputedTextLength();
+  }
+
+  function wrapWords(label, r){
+    const maxW = (r - 8) * 1.85; // diameter minus padding
+    const words = label.split(' ');
+    const lines = [];
+    let cur = '';
+    words.forEach(w => {
+      const test = cur ? cur + ' ' + w : w;
+      if(measureW(test) > maxW && cur){
+        lines.push(cur); cur = w;
+      } else { cur = test; }
+    });
+    if(cur) lines.push(cur);
+    // max lines that fit vertically
+    const maxLines = Math.max(2, Math.floor((r * 1.7) / LINE_H));
+    if(lines.length > maxLines){
+      lines.splice(maxLines);
+      // trim last line to fit with ellipsis
+      let last = lines[maxLines-1];
+      while(measureW(last + '…') > maxW && last.length > 1){
+        last = last.slice(0, last.lastIndexOf(' ')) || last.slice(0,-1);
+      }
+      lines[maxLines-1] = last + '…';
+    }
+    return lines;
+  }
 
   node.append('text')
     .attr('class','node-label')
     .attr('text-anchor','middle')
     .each(function(d){
-      const r = nodeR(d) - 7;
-      const maxLineW = r * 1.7;
-      const words = (d.label || d.id).split(' ');
-      const lines = [];
-      let cur = '';
-      words.forEach(w => {
-        const test = cur ? cur + ' ' + w : w;
-        if(test.length * CHAR_W > maxLineW && cur){
-          lines.push(cur); cur = w;
-        } else { cur = test; }
-      });
-      if(cur) lines.push(cur);
-      const maxLines = Math.max(2, Math.floor((r * 1.8) / LINE_H));
-      if(lines.length > maxLines){
-        lines.splice(maxLines);
-        lines[maxLines-1] = lines[maxLines-1].replace(/\s*\S+$/, '…');
-      }
+      const r = nodeR(d);
+      const lines = wrapWords(d.label || d.id, r);
       const startY = -(lines.length - 1) * LINE_H / 2;
       lines.forEach((line, i) => {
         d3.select(this).append('tspan')
@@ -445,6 +466,8 @@ function renderWeb(){
           .text(line);
       });
     });
+
+  ruler.remove(); // clean up
 
   node.call(d3.drag()
     .on('start',(evt,d)=>{

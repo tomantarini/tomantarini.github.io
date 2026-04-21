@@ -87,7 +87,6 @@ body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times 
       <button class="nav-link" id="nav-about">about</button>
       <a class="nav-link" href="https://docs.google.com/forms/d/e/1FAIpQLSc3lK3i_TBO5ngj8lbK9UgMxF9PDjzDwHrZKoAPom8OnA-hUw/viewform?usp=sharing&ouid=112909486775798749016" target="_blank" rel="noopener noreferrer">submissions</a>
       <a class="nav-link" href="forum.html">forum</a>
-      <a class="nav-link" href="zettel.html">zettel</a>
     </nav>
   </div>
 
@@ -422,11 +421,11 @@ function openPanel(idx) {
     }
     body.appendChild(meta);
   }
-  // show entry ID + respond button
-  if(entry.id){
-    const idRow = document.createElement('div');
-    idRow.style.cssText = 'display:flex;align-items:center;gap:0.8rem;margin-top:1.2rem;';
+  // ID + respond button — always show respond, show ID if present
+  const idRow = document.createElement('div');
+  idRow.style.cssText = 'display:flex;align-items:center;gap:0.8rem;margin-top:1.2rem;';
 
+  if(entry.id){
     const idEl = document.createElement('span');
     idEl.style.cssText = "font-family:'Courier New',monospace;font-size:0.62rem;color:#aaa;letter-spacing:0.06em;cursor:pointer;user-select:all;";
     idEl.textContent = '#' + entry.id;
@@ -437,21 +436,20 @@ function openPanel(idx) {
       setTimeout(() => idEl.textContent = '#' + entry.id, 1200);
     });
     idRow.appendChild(idEl);
-
-    // respond to this button — links to form with id pre-filled
-    const FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSc3lK3i_TBO5ngj8lbK9UgMxF9PDjzDwHrZKoAPom8OnA-hUw/viewform?usp=pp_url&entry.789391214=';
-    const respondBtn = document.createElement('a');
-      respondBtn.href = FORM_BASE + encodeURIComponent(entry.id);
-      respondBtn.target = '_blank';
-      respondBtn.rel = 'noopener';
-      respondBtn.style.cssText = "font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;text-decoration:none;letter-spacing:0.06em;border-bottom:1px dotted #ddd;cursor:pointer;";
-      respondBtn.textContent = 'respond ↗';
-      respondBtn.onmouseover = () => { respondBtn.style.color='#c8922a'; respondBtn.style.borderBottomColor='#c8922a'; };
-      respondBtn.onmouseout  = () => { respondBtn.style.color='#bbb'; respondBtn.style.borderBottomColor='#ddd'; };
-    idRow.appendChild(respondBtn);
-
-    body.appendChild(idRow);
   }
+
+  const FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSc3lK3i_TBO5ngj8lbK9UgMxF9PDjzDwHrZKoAPom8OnA-hUw/viewform?usp=pp_url&entry.789391214=';
+  const respondBtn = document.createElement('a');
+  respondBtn.href = FORM_BASE + encodeURIComponent(entry.id || entry.label || '');
+  respondBtn.target = '_blank';
+  respondBtn.rel = 'noopener';
+  respondBtn.style.cssText = "font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;text-decoration:none;letter-spacing:0.06em;border-bottom:1px dotted #ddd;cursor:pointer;";
+  respondBtn.textContent = 'respond ↗';
+  respondBtn.onmouseover = () => { respondBtn.style.color='#c8922a'; respondBtn.style.borderBottomColor='#c8922a'; };
+  respondBtn.onmouseout  = () => { respondBtn.style.color='#bbb'; respondBtn.style.borderBottomColor='#ddd'; };
+  idRow.appendChild(respondBtn);
+  body.appendChild(idRow);
+
   document.getElementById('panel-shell').scrollTop = 0;
   document.getElementById('panel-wrap').classList.add('open');
 }
@@ -488,69 +486,8 @@ async function init() {
   } catch(e) { console.error(e); }
 }
 
-// ── DEMO ENTRIES (remove when real Sheet data is populated) ──────────────
-const DEMO = [
-  {
-    id: 'a1f', label: 'attention as a form of love',
-    content: 'Simone Weil wrote that attention is the rarest and purest form of generosity. To attend to something — really attend — is to suspend the self entirely. What does it mean to practice this in a world designed to fragment attention into smaller and smaller units, each one monetised?',
-    name: 'E.V.', credited: 'yes', keywords: 'attention, Weil, care, digital life', responseto: '', type: 'fragment'
-  },
-  {
-    id: 'b2k', label: 'the attention economy assumes ownership',
-    content: 'Before we can speak of an attention economy, we need to ask: was attention ever ours to give? The presupposition of ownership hides the prior capture. By the time we are offered the choice to pay attention, the infrastructure for extracting it is already in place.',
-    name: 'M.L.', credited: 'yes', keywords: 'attention, economy, infrastructure, capture', responseto: 'a1f', type: 'response'
-  },
-  {
-    id: 'c3m', label: 'the terms keep shifting mid-sentence',
-    content: 'What I notice is that the definitions change while you are still using them. Engagement. Community. Presence. Each word arrives with a meaning and leaves with a different one. We are always catching up to language that has already moved on.',
-    name: '', credited: 'no', keywords: 'language, digital life, meaning', responseto: 'b2k', type: 'fragment'
-  },
-  {
-    id: 'd4p', label: 'on being looked at',
-    content: 'There is a difference between being seen and being looked at. One requires the other to be present. The other only requires a surface. The self-portrait posted online is always already a surface — the act of posting flattens it.',
-    name: 'T.A.', credited: 'yes', keywords: 'identity, visibility, digital life, image', responseto: '', type: 'reflection'
-  },
-  {
-    id: 'e5r', label: 'the camera as a way of not seeing',
-    content: 'Susan Sontag argued that photography interposed an apparatus between the person and experience. The phone camera intensifies this: we document to prove we were there, which is a way of admitting we were not quite there.',
-    name: 'N.K.', credited: 'yes', keywords: 'photography, presence, Sontag, technology', responseto: 'd4p', type: 'essay'
-  },
-  {
-    id: 'f6s', label: 'what remains when the feed stops',
-    content: 'I came off social media for six weeks. The first week was noise — the compulsive checking of something that was no longer there. By the third week I noticed I had opinions I could not verify. By the sixth week I was not sure whether the silence felt like clarity or just absence.',
-    name: 'R.P.', credited: 'yes', keywords: 'social media, silence, withdrawal, attention', responseto: 'b2k', type: 'reflection'
-  },
-  {
-    id: 'g7t', label: 'fold',
-    content: 'A condition in which meaning collapses faster than it can stabilise. Not crisis — the wrong word implies resolution is possible. More like a sustained recursive failure: each attempt to name the condition uses the very language that the condition has compromised.',
-    name: '', credited: 'no', keywords: 'meaning, language, recursion, fold', responseto: 'c3m', type: 'fragment'
-  },
-  {
-    id: 'h8v', label: 'is legibility a form of violence',
-    content: 'To make something legible is to render it readable to a system that was not built for it. The question is whether legibility ever leaves the thing intact. Every time I try to explain my experience to an institution I feel the distortion happen in real time.',
-    name: 'C.M.', credited: 'yes', keywords: 'legibility, institutions, identity, bureaucracy', responseto: '', type: 'question'
-  },
-  {
-    id: 'i9w', label: 'the body keeps the score but no one reads it',
-    content: 'Van der Kolk\'s phrase has been metabolised into branding. Which is itself a form of legibility — extracting the usable fragment, discarding the context. What the body keeps is not a score. It is more like an unsent letter.',
-    name: 'A.D.', credited: 'yes', keywords: 'body, trauma, legibility, therapy', responseto: 'h8v', type: 'response'
-  },
-  {
-    id: 'j0x', label: 'on not finishing things',
-    content: 'There is a particular texture to the unfinished thing. Not failure — something more ambivalent. The essay that stalls. The thought that almost arrives. I have started to think of incompletion as a form of honesty about the nature of the thing itself.',
-    name: '', credited: 'no', keywords: 'incompletion, writing, process, form', responseto: 'g7t', type: 'fragment'
-  }
-];
-
-const demoEntries = DEMO.map(d => ({
-  ...d,
-  link: '', instagram: '', image: '', content: d.content
-}));
-
-buildField(demoEntries);
+buildField([]);
 startDrift();
-
-// try real data too — will override demo if Sheet has entries
 init();
 </script>
 

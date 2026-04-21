@@ -84,13 +84,6 @@ html,body{min-height:100%;background:#fff;color:#111;font-family:'Courier New',C
 }
 .reply-btn:hover{color:#c8922a;}
 
-/* separator */
-.sep{
-  font-size:0.65rem;color:#e0e0e0;
-  margin:2.4rem 0;
-  letter-spacing:0.1em;
-  user-select:none;
-}
 
 /* inline reply form */
 .reply-form{
@@ -339,12 +332,7 @@ function render(){
       doc.appendChild(re);
     });
 
-    // separator between posts (not after last)
-    if(i < ids.length-1){
-      const sep = document.createElement('div');
-      sep.className='sep'; sep.textContent=makeSep();
-      doc.appendChild(sep);
-    }
+
   });
 
   // admin bar

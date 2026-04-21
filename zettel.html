@@ -65,7 +65,7 @@ html,body{height:100%;background:#fff;color:#111;font-family:Georgia,"Times New 
 .about-text p:last-child{margin-bottom:0;}
 
 /* ENTRIES */
-.zt-entry{margin-bottom:0.8rem;position:relative;padding-right:1.4rem;}
+.zt-entry{margin-bottom:0.8rem;position:relative;}
 .zt-entry.branch-1{margin-left:1.4rem;border-left:1px solid #eee;padding-left:1rem;}
 .zt-entry.branch-2{margin-left:2.8rem;border-left:1px solid #eee;padding-left:1rem;}
 .zt-entry.branch-3{margin-left:4.2rem;border-left:1px solid #eee;padding-left:1rem;}
@@ -78,9 +78,7 @@ html,body{height:100%;background:#fff;color:#111;font-family:Georgia,"Times New 
 .zt-links-to a:hover{color:var(--amber);}
 .zt-title{font-size:1.1rem;font-weight:normal;color:#111;margin-bottom:0.5rem;line-height:1.35;}
 .zt-body{font-size:0.92rem;line-height:1.8;color:#333;white-space:pre-wrap;word-break:break-word;margin-bottom:0.6rem;}
-.zt-translate{position:absolute;top:0;right:0;font-family:'Courier New',monospace;font-size:0.7rem;color:#ddd;text-decoration:none;line-height:1;padding:2px;}
-.zt-translate:hover{color:var(--amber);}
-html.dark .zt-translate{color:#444;}
+
 .zt-meta{font-family:'Courier New',monospace;font-size:0.6rem;color:#ccc;letter-spacing:0.03em;display:flex;gap:0.8rem;flex-wrap:wrap;}
 .zt-meta .author{color:#bbb;}
 .zt-responses{margin-top:0.5rem;font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;letter-spacing:0.04em;}
@@ -91,8 +89,62 @@ html.dark .zt-translate{color:#444;}
 .zt-seealso a:hover{color:var(--amber);}
 .zt-sep{color:#bbb;font-family:'Courier New',monospace;font-size:0.65rem;margin:1rem 0;letter-spacing:0.04em;user-select:none;overflow:hidden;white-space:nowrap;}
 
-/* WEB */
-#web-svg{width:100%;height:100%;}
+/* WEB INTERACTIONS */
+.annotation-bubble{
+  position:absolute;pointer-events:none;
+  background:#fffde7;border:1px solid #f0e060;
+  border-radius:3px;padding:4px 7px;
+  font-family:'Courier New',monospace;font-size:10px;color:#555;
+  max-width:140px;word-break:break-word;line-height:1.4;
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+  transform:translate(-50%,-110%);
+}
+html.dark .annotation-bubble{background:#2a2818;border-color:#6a5a20;color:#b8a878;}
+.temp-link{stroke:var(--amber);stroke-width:1.5px;stroke-dasharray:6,3;fill:none;opacity:0.7;}
+.path-link{stroke:#e07040;stroke-width:2.5px;fill:none;opacity:0.8;}
+.node-circle.constellation{stroke:var(--amber);fill:#fff8f0;stroke-width:2px;}
+html.dark .node-circle.constellation{fill:#2a2218;}
+.node-circle.dimmed{opacity:0.15;}
+.node-circle.path-node{stroke:#e07040;stroke-width:2.5px;}
+#web-toolbar{
+  position:absolute;top:0.8rem;left:50%;transform:translateX(-50%);
+  display:flex;gap:0.5rem;z-index:10;
+  background:rgba(255,255,255,0.95);border:1px solid #eee;
+  padding:0.3rem 0.6rem;border-radius:2px;
+  font-family:'Courier New',monospace;font-size:0.6rem;
+}
+html.dark #web-toolbar{background:rgba(20,20,20,0.95);border-color:#333;}
+.tool-btn{
+  background:none;border:none;cursor:pointer;
+  font-family:'Courier New',monospace;font-size:0.6rem;
+  color:#aaa;padding:0.15rem 0.4rem;letter-spacing:0.04em;
+  border-radius:2px;transition:all 0.15s;-webkit-tap-highlight-color:transparent;
+  min-height:28px;min-width:36px;
+}
+.tool-btn:hover{color:#111;background:#f5f5f5;}
+.tool-btn.active{color:#111;background:#f0e8d8;border-color:var(--amber);}
+html.dark .tool-btn{color:#555;}
+html.dark .tool-btn:hover{color:#e8e4d8;background:#2a2a2a;}
+html.dark .tool-btn.active{color:#e8e4d8;background:#2a2218;}
+#constellation-bar{
+  position:absolute;bottom:3.5rem;left:50%;transform:translateX(-50%);
+  display:none;gap:0.5rem;z-index:10;
+  background:rgba(255,255,255,0.95);border:1px solid #eee;
+  padding:0.3rem 0.8rem;border-radius:2px;
+  font-family:'Courier New',monospace;font-size:0.6rem;color:#888;
+}
+html.dark #constellation-bar{background:rgba(20,20,20,0.95);border-color:#333;color:#666;}
+#constellation-bar button{background:none;border:none;cursor:pointer;font-family:'Courier New',monospace;font-size:0.6rem;color:#c8922a;padding:0 0.3rem;}
+#draw-hint{
+  position:absolute;top:3.5rem;left:50%;transform:translateX(-50%);
+  font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;
+  pointer-events:none;white-space:nowrap;display:none;
+}
+html.dark #draw-hint{color:#555;}
+/* handwriting canvas */
+#draw-canvas{position:absolute;inset:0;pointer-events:none;z-index:8;}
+#draw-canvas.active{pointer-events:all;cursor:crosshair;}
+
 .node-circle{fill:#fff;stroke:#111;stroke-width:1.5px;cursor:pointer;transition:stroke 0.15s;}
 .node-circle:hover,.node-circle.highlighted{stroke:var(--amber);fill:#fff8f0;}
 .node-label{font-family:Georgia,"Times New Roman",serif;font-size:11px;fill:#555;pointer-events:none;}
@@ -227,6 +279,22 @@ html.dark #mode-toggle:hover{border-color:#888;color:#aaa;}
 
 <div id="view-web">
   <svg id="web-svg"></svg>
+  <canvas id="draw-canvas"></canvas>
+  <div id="web-toolbar">
+    <button class="tool-btn active" id="tool-pan" title="pan & read">✦</button>
+    <button class="tool-btn" id="tool-annotate" title="annotate node">✎</button>
+    <button class="tool-btn" id="tool-connect" title="draw connection">⟷</button>
+    <button class="tool-btn" id="tool-path" title="find path">⟿</button>
+    <button class="tool-btn" id="tool-constellation" title="my constellation">◈</button>
+    <button class="tool-btn" id="tool-draw" title="freehand">✍</button>
+    <button class="tool-btn" id="tool-clear" title="clear all">✕</button>
+  </div>
+  <div id="draw-hint"></div>
+  <div id="constellation-bar">
+    <span id="constellation-count">0 selected</span>
+    <button id="constellation-share">share ↗</button>
+    <button id="constellation-clear">clear</button>
+  </div>
   <div id="web-hint">drag to move · pinch to zoom · tap to read</div>
 </div>
 
@@ -437,9 +505,7 @@ function renderTranscript(){
     if(node.label){ const tl=document.createElement('div'); tl.className='zt-title'; tl.textContent=node.label; el.appendChild(tl); }
     // body
     if(node.body){ const b=document.createElement('div'); b.className='zt-body'; b.textContent=node.body; el.appendChild(b); }
-    // translate
-    const gt=encodeURIComponent((node.label?node.label+'\n\n':'')+node.body);
-    const tlink=document.createElement('a'); tlink.className='zt-translate'; tlink.href='https://translate.google.com/?sl=auto&tl=en&text='+gt; tlink.target='_blank'; tlink.rel='noopener'; tlink.textContent='⇌'; tlink.title='translate'; el.appendChild(tlink);
+
     // meta
     const meta=document.createElement('div'); meta.className='zt-meta';
     if(node.name){ const s=document.createElement('span'); s.className='author'; s.textContent=node.name; meta.appendChild(s); }
@@ -507,6 +573,8 @@ function renderWeb(){
     linkS.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y).attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
     node.attr('transform',d=>`translate(${d.x},${d.y})`);
   });
+  svgGRef = g;
+  patchWebInteractions(d3nodes, node, g, linkR, linkS);
 }
 
 function highlightNode(d,linkR,linkS,node){
@@ -523,7 +591,266 @@ function clearHighlight(linkR,linkS,node){
   linkR.classed('highlighted',false); linkS.classed('highlighted',false);
 }
 
-// ── SIDE PANEL ──────────────────────────────────────────────────────────────
+// ── INTERACTIVE WEB MODES ───────────────────────────────────────────────────
+var currentTool = 'pan';
+var annotations = {}; // nodeId -> {text, el}
+var tempLinks = []; // [{sourceId, targetId}]
+var constellationSet = new Set();
+var connectSource = null;
+var pathNodes = []; // two nodes for path finding
+var drawingActive = false;
+var drawCtx = null;
+var lastDrawPoint = null;
+
+function setTool(t){
+  currentTool = t;
+  document.querySelectorAll('.tool-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tool-'+t).classList.add('active');
+  const canvas = document.getElementById('draw-canvas');
+  canvas.classList.toggle('active', t==='draw');
+  const hint = document.getElementById('draw-hint');
+  const hints = {
+    pan: '', annotate: 'tap a node to add a note',
+    connect: 'tap a node, then another to draw a connection',
+    path: 'tap two nodes to find the path between them',
+    constellation: 'tap nodes to build your constellation',
+    draw: 'draw freely · tap ✕ to clear'
+  };
+  hint.textContent = hints[t]||'';
+  hint.style.display = t==='pan'||t==='clear' ? 'none' : 'block';
+  if(t==='constellation'){
+    document.getElementById('constellation-bar').style.display='flex';
+  } else {
+    document.getElementById('constellation-bar').style.display='none';
+    if(t!=='pan') clearConstellation();
+  }
+  if(t==='connect') connectSource=null;
+  if(t==='path') pathNodes=[];
+}
+
+document.getElementById('tool-pan').addEventListener('click',()=>setTool('pan'));
+document.getElementById('tool-annotate').addEventListener('click',()=>setTool('annotate'));
+document.getElementById('tool-connect').addEventListener('click',()=>setTool('connect'));
+document.getElementById('tool-path').addEventListener('click',()=>setTool('path'));
+document.getElementById('tool-constellation').addEventListener('click',()=>setTool('constellation'));
+document.getElementById('tool-draw').addEventListener('click',()=>setTool('draw'));
+document.getElementById('tool-clear').addEventListener('click',()=>{
+  clearAnnotations(); clearTempLinks(); clearConstellation(); clearPath(); clearDrawCanvas();
+  setTool('pan');
+});
+
+// ── ANNOTATIONS ─────────────────────────────────────────────────────────────
+function addAnnotation(nodeData, svgG){
+  const existing = annotations[nodeData.id];
+  if(existing){ existing.el.remove(); delete annotations[nodeData.id]; }
+  const text = prompt('note for "'+nodeData.label.slice(0,30)+'":\n(session only, disappears on refresh)');
+  if(!text||!text.trim()) return;
+  // place as foreignObject in SVG g group
+  const fo = document.createElementNS('http://www.w3.org/2000/svg','foreignObject');
+  fo.setAttribute('width','160'); fo.setAttribute('height','80');
+  fo.setAttribute('x', nodeData.x - 80); fo.setAttribute('y', nodeData.y - nodeData._r - 90);
+  const div = document.createElement('div');
+  div.className = 'annotation-bubble';
+  div.style.cssText = 'transform:none;position:relative;pointer-events:auto;';
+  div.textContent = text;
+  div.addEventListener('click', ()=>{ fo.remove(); delete annotations[nodeData.id]; });
+  fo.appendChild(div);
+  svgG.node().appendChild(fo);
+  annotations[nodeData.id] = {text, el:fo};
+}
+function clearAnnotations(){ Object.values(annotations).forEach(a=>a.el.remove()); annotations={}; }
+
+// ── TEMP CONNECTIONS ─────────────────────────────────────────────────────────
+var svgGRef = null;
+function drawTempLink(a, b, svgG){
+  const line = svgG.append('line')
+    .attr('class','temp-link')
+    .attr('x1',a.x).attr('y1',a.y).attr('x2',b.x).attr('y2',b.y);
+  tempLinks.push({sourceId:a.id, targetId:b.id, el:line});
+  // offer to suggest
+  const form = `https://docs.google.com/forms/d/e/1FAIpQLSc3lK3i_TBO5ngj8lbK9UgMxF9PDjzDwHrZKoAPom8OnA-hUw/viewform?usp=pp_url&entry.789391214=${encodeURIComponent(b.id)}`;
+  if(confirm(`Connection drawn: #${a.id} → #${b.id}\nSuggest this as a real connection?`)){
+    window.open(form,'_blank');
+  }
+}
+function clearTempLinks(){ tempLinks.forEach(l=>l.el.remove()); tempLinks=[]; }
+
+// ── PATH FINDING ─────────────────────────────────────────────────────────────
+var pathEls = [];
+function findPath(startId, endId){
+  // BFS
+  const prev = {[startId]:null};
+  const queue = [startId];
+  const allEdgeIds = edges.map(e=>({a:e.source,b:e.target}));
+  while(queue.length){
+    const cur = queue.shift();
+    if(cur===endId) break;
+    allEdgeIds.forEach(({a,b})=>{
+      const nb = a===cur?b:b===cur?a:null;
+      if(nb&&prev[nb]===undefined){ prev[nb]=cur; queue.push(nb); }
+    });
+  }
+  if(prev[endId]===undefined){ alert('No path found between these two nodes.'); return; }
+  const path=[];
+  let c=endId; while(c!==null){path.unshift(c);c=prev[c];}
+  return path;
+}
+function highlightPath(path, d3nodes, svgG){
+  clearPath();
+  const idToD3={}; d3nodes.forEach(n=>idToD3[n.id]=n);
+  for(let i=0;i<path.length-1;i++){
+    const a=idToD3[path[i]], b=idToD3[path[i+1]];
+    if(!a||!b) continue;
+    const l=svgG.insert('line',':first-child').attr('class','path-link')
+      .attr('x1',a.x).attr('y1',a.y).attr('x2',b.x).attr('y2',b.y);
+    pathEls.push(l);
+  }
+  // highlight nodes
+  svgG.selectAll('.node-circle').classed('path-node', d=>path.includes(d.id));
+  pathEls.push({remove:()=>svgG.selectAll('.node-circle').classed('path-node',false)});
+}
+function clearPath(){ pathEls.forEach(e=>{try{e.remove();}catch(e){}}); pathEls=[]; pathNodes=[]; }
+
+// ── CONSTELLATION ────────────────────────────────────────────────────────────
+function toggleConstellation(nodeId, node){
+  if(constellationSet.has(nodeId)){
+    constellationSet.delete(nodeId);
+  } else {
+    constellationSet.add(nodeId);
+  }
+  node.select('.node-circle').classed('constellation', constellationSet.has(nodeId));
+  document.getElementById('constellation-count').textContent = constellationSet.size+' selected';
+}
+function clearConstellation(){
+  constellationSet.clear();
+  document.querySelectorAll('.node-circle.constellation').forEach(el=>el.classList.remove('constellation'));
+  document.getElementById('constellation-count').textContent='0 selected';
+}
+document.getElementById('constellation-share').addEventListener('click',()=>{
+  if(!constellationSet.size){ alert('Select some nodes first.'); return; }
+  const ids = [...constellationSet].join(',');
+  const url = window.location.href.split('?')[0]+'?nodes='+encodeURIComponent(ids);
+  navigator.clipboard&&navigator.clipboard.writeText(url);
+  alert('Link copied to clipboard:\n'+url);
+});
+document.getElementById('constellation-clear').addEventListener('click',clearConstellation);
+
+// ── FREEHAND DRAW ────────────────────────────────────────────────────────────
+function initDrawCanvas(){
+  const canvas = document.getElementById('draw-canvas');
+  const web = document.getElementById('view-web');
+  canvas.width = web.offsetWidth;
+  canvas.height = web.offsetHeight;
+  drawCtx = canvas.getContext('2d');
+  drawCtx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--amber').trim()||'#c8922a';
+  drawCtx.lineWidth = 2.5;
+  drawCtx.lineCap = 'round';
+  drawCtx.lineJoin = 'round';
+}
+function clearDrawCanvas(){
+  if(!drawCtx) return;
+  const canvas = document.getElementById('draw-canvas');
+  drawCtx.clearRect(0,0,canvas.width,canvas.height);
+}
+function getCanvasPos(e, canvas){
+  const r = canvas.getBoundingClientRect();
+  const touch = e.touches?e.touches[0]:e;
+  return { x: touch.clientX-r.left, y: touch.clientY-r.top };
+}
+document.getElementById('draw-canvas').addEventListener('mousedown', e=>{
+  if(currentTool!=='draw') return;
+  drawingActive=true;
+  const p=getCanvasPos(e,e.target);
+  drawCtx.beginPath(); drawCtx.moveTo(p.x,p.y);
+  lastDrawPoint=p;
+});
+document.getElementById('draw-canvas').addEventListener('mousemove', e=>{
+  if(!drawingActive||currentTool!=='draw') return;
+  const p=getCanvasPos(e,e.target);
+  drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+  lastDrawPoint=p;
+});
+document.getElementById('draw-canvas').addEventListener('mouseup', ()=>{ drawingActive=false; });
+document.getElementById('draw-canvas').addEventListener('touchstart', e=>{
+  if(currentTool!=='draw') return;
+  e.preventDefault(); drawingActive=true;
+  const p=getCanvasPos(e,e.target);
+  drawCtx.beginPath(); drawCtx.moveTo(p.x,p.y);
+  lastDrawPoint=p;
+},{passive:false});
+document.getElementById('draw-canvas').addEventListener('touchmove', e=>{
+  if(!drawingActive||currentTool!=='draw') return;
+  e.preventDefault();
+  const p=getCanvasPos(e,e.target);
+  drawCtx.lineTo(p.x,p.y); drawCtx.stroke();
+  lastDrawPoint=p;
+},{passive:false});
+document.getElementById('draw-canvas').addEventListener('touchend', ()=>{ drawingActive=false; });
+
+// ── INJECT INTO renderWeb ────────────────────────────────────────────────────
+// Patch node click to respect currentTool
+// This runs after renderWeb sets up node.on('click')
+function patchWebInteractions(d3nodes, node, svgG, linkR, linkS){
+  // store r on d3node for annotation placement
+  const isMobile=window.innerWidth<=768;
+  const BASE_R=isMobile?48:38, MAX_R=isMobile?75:62;
+  d3nodes.forEach(d=>{ d._r=Math.max(BASE_R,Math.min(MAX_R,BASE_R+edges.filter(e=>e.source===d.id||e.target===d.id).length*(isMobile?5:4))); });
+
+  node.on('click', null); // remove default
+  node.on('click',(e,d)=>{
+    e.stopPropagation();
+    if(currentTool==='pan'){
+      openSidePanel(d); highlightNode(d,linkR,linkS,node);
+    } else if(currentTool==='annotate'){
+      addAnnotation(d, svgG);
+    } else if(currentTool==='connect'){
+      if(!connectSource){ connectSource=d; node.select('.node-circle').classed('highlighted',n=>n.id===d.id); }
+      else if(connectSource.id!==d.id){
+        drawTempLink(connectSource, d, svgG);
+        connectSource=null;
+        clearHighlight(linkR,linkS,node);
+      }
+    } else if(currentTool==='path'){
+      pathNodes.push(d);
+      node.select('.node-circle').classed('highlighted',n=>pathNodes.some(p=>p.id===n.id));
+      if(pathNodes.length===2){
+        const path=findPath(pathNodes[0].id,pathNodes[1].id);
+        if(path) highlightPath(path,d3nodes,svgG);
+        pathNodes=[];
+      }
+    } else if(currentTool==='constellation'){
+      toggleConstellation(d.id, d3.select(e.currentTarget));
+    }
+  });
+
+  // touch long-press for annotate on mobile
+  let longPressTimer;
+  node.on('touchstart',(e,d)=>{
+    longPressTimer=setTimeout(()=>{
+      if(currentTool==='pan') addAnnotation(d,svgG);
+    },600);
+  }).on('touchend',()=>clearTimeout(longPressTimer))
+    .on('touchmove',()=>clearTimeout(longPressTimer));
+
+  // svg background click
+  svgG.select(function(){ return this.parentNode; }).on('click',()=>{
+    if(currentTool==='pan'){ closeSidePanel(); clearHighlight(linkR,linkS,node); }
+  });
+
+  // init canvas
+  initDrawCanvas();
+
+  // restore constellation from URL ?nodes=
+  const urlNodes=new URLSearchParams(window.location.search).get('nodes');
+  if(urlNodes){
+    const ids=urlNodes.split(',');
+    ids.forEach(id=>{ const n=node.filter(d=>d.id===id); if(!n.empty()){ constellationSet.add(id); n.select('.node-circle').classed('constellation',true); }});
+    document.getElementById('constellation-count').textContent=constellationSet.size+' selected';
+    setTool('constellation');
+  }
+}
+
+
 function openSidePanel(node){
   const c=document.getElementById('sp-content'); c.innerHTML='';
   // ID + type

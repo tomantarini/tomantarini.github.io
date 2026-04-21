@@ -40,6 +40,46 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:Georgia
 #view-transcript{display:none;position:fixed;top:3rem;bottom:0;left:0;right:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 #view-web{display:none;position:fixed;top:3rem;bottom:0;left:0;right:0;overflow:hidden;}
 
+/* ── TRANSCRIPT LAYOUT ── */
+#transcript-wrap{
+  display:flex;height:100%;
+}
+#about-col{
+  width:260px;flex-shrink:0;
+  padding:2.5rem 1.6rem 4rem 1.6rem;
+  border-right:1px solid var(--faint);
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+#entries-col{
+  flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+#transcript-inner{
+  max-width:580px;padding:2.5rem 1.6rem 6rem;
+}
+.about-heading{
+  font-family:'Courier New',monospace;font-size:0.58rem;
+  color:#ccc;letter-spacing:0.12em;text-transform:uppercase;
+  margin-bottom:1.2rem;display:block;
+}
+.about-text{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:0.82rem;line-height:1.85;color:#888;
+  font-style:italic;
+}
+.about-text p{margin-bottom:1.2rem;}
+.about-text p:last-child{margin-bottom:0;}
+.about-section{margin-bottom:2rem;}
+.about-label{
+  font-family:'Courier New',monospace;font-size:0.55rem;
+  color:#ccc;letter-spacing:0.1em;text-transform:uppercase;
+  display:block;margin-bottom:0.5rem;
+}
+@media(max-width:800px){
+  #about-col{display:none;}
+  #transcript-inner{max-width:640px;margin:0 auto;padding:2rem 1.2rem 6rem;}
+}
+
 /* ── TRANSCRIPT ── */
 #transcript-inner{max-width:640px;margin:0 auto;padding:2.5rem 1.4rem 6rem;}
 .zt-entry{margin-bottom:0.8rem;position:relative;}
@@ -130,7 +170,48 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:Georgia
 </div>
 
 <div id="loading">loading...</div>
-<div id="view-transcript"><div id="transcript-inner"></div></div>
+<div id="view-transcript">
+  <div id="transcript-wrap">
+    <div id="about-col">
+      <span class="about-heading">about</span>
+
+      <div class="about-section">
+        <span class="about-label">what this is</span>
+        <div class="about-text">
+          <p>A Zettelkasten is a system of connected notes. Each note is atomic — one idea, fully expressed. Notes link to other notes by ID, not by topic. The structure that emerges is not hierarchical but networked: a map of relations rather than a table of contents.</p>
+          <p>Luhmann kept 90,000 such cards over his career. He called it a conversation partner. It thought back.</p>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <span class="about-label">why here</span>
+        <div class="about-text">
+          <p>το μανταρίνι is not a magazine in the conventional sense. Its entries do not sit in isolation — they respond to each other, extend each other, contradict each other. The Zettelkasten makes those connections visible and navigable.</p>
+          <p>Every published entry is a node. Every response is an edge. The archive is not a list but a network that grows denser and more interesting over time.</p>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <span class="about-label">how to navigate</span>
+        <div class="about-text">
+          <p>Each entry carries an ID — a short code like <span style="font-family:'Courier New',monospace;color:#c8922a;">m001</span>. Click it to copy. If an entry responds to another, the connection is shown above the text.</p>
+          <p>To respond to an entry, open it on the main site and click <span style="font-family:'Courier New',monospace;color:#c8922a;">respond ↗</span>. Your submission will be linked to it when published.</p>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <span class="about-label">web view</span>
+        <div class="about-text">
+          <p>The web view renders the archive as a force graph. Each node is an entry. Lines between nodes are connections. Hubs — entries with many responses — appear larger. Click any node to read it. Drag to rearrange. Zoom to explore.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="entries-col">
+      <div id="transcript-inner"></div>
+    </div>
+  </div>
+</div>
 <div id="view-web">
   <svg id="web-svg"></svg>
   <div id="web-hint">drag to move · scroll to zoom · click to read</div>

@@ -167,19 +167,29 @@ function makeId(entry, index){
 }
 
 // ── CSV PARSE ──────────────────────────────────────────────────────────────
+function parseCSVLine(line){
+  const vals=[]; let cur='', inq=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"'){
+      if(inq && line[i+1]==='"'){ cur+='"'; i++; } // escaped quote
+      else inq=!inq;
+    } else if(ch===','&&!inq){ vals.push(cur); cur=''; }
+    else cur+=ch;
+  }
+  vals.push(cur);
+  return vals.map(v=>v.trim().replace(/^"|"$/g,''));
+}
+
 function parseCSV(text){
-  const lines=text.split('\n');
+  const lines=text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
   if(!lines.length) return [];
-  const headers=lines[0].split(',').map(h=>h.trim().toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''));
+  const headers=parseCSVLine(lines[0]).map(h=>h.trim().toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''));
+  console.log('normalized headers:', headers);
   const rows=[];
   for(let i=1;i<lines.length;i++){
-    const vals=[], line=lines[i]; let cur='', inq=false;
-    for(let c=0;c<line.length;c++){
-      if(line[c]==='"'){ inq=!inq; }
-      else if(line[c]===','&&!inq){ vals.push(cur.trim()); cur=''; }
-      else cur+=line[c];
-    }
-    vals.push(cur.trim());
+    if(!lines[i].trim()) continue;
+    const vals=parseCSVLine(lines[i]);
     if(vals.length<2) continue;
     const obj={};
     headers.forEach((h,j)=>{ obj[h]=vals[j]||''; });
@@ -190,10 +200,11 @@ function parseCSV(text){
     obj.instagram= obj['instagramhandle']||obj['instagram']||'';
     obj.credited = (obj['iwanttobepubliclycreditedformywork']||'').toLowerCase();
     obj.keywords = obj['keywords']||'';
-    obj.responseto=obj['responseto']||obj['inresponseto']||'';
-    obj.id=obj['id']||'';
+    obj.responseto=obj['responseto']||obj['inresponseto']||obj['inresponsetoptional']||'';
+    obj.id       = obj['id']||'';
     obj.type     = obj['typeofsubmission']||obj['type']||'submission';
-    const pub=(obj.publish||'').toLowerCase();
+    const pub=(obj['publish']||'').trim().toLowerCase();
+    console.log('row', i, 'label:', obj.label, 'publish raw:', obj['publish'], 'pub:', pub);
     if(obj.label&&pub==='true') rows.push(obj);
   }
   return rows;
@@ -529,6 +540,11 @@ async function init(){
       return;
     }
     loadingEl.style.display='none';
+    // debug — remove after fixing
+    const headers2=csv.split('\n')[0].split(',').map(h=>h.trim().toLowerCase().replace(/\s+/g,'').replace(/[^a-z0-9]/g,''));
+    console.log('headers:', headers2);
+    const firstRow=csv.split('\n')[1];
+    console.log('first data row:', firstRow);
     const entries = parseCSV(csv);
     if(entries.length===0){
       loadingEl.style.display='block';

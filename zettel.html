@@ -517,22 +517,36 @@ document.getElementById('btn-web').addEventListener('click',()=>showView('web'))
 const loadingEl=document.getElementById('loading');
 const timeout=setTimeout(()=>{ loadingEl.textContent='could not load data. check connection.'; loadingEl.style.color='#c00'; },8000);
 
-fetch(PROXY)
-  .then(r=>r.text())
-  .then(csv=>{
+async function init(){
+  try{
+    const proxy = 'https://corsproxy.io/?' + encodeURIComponent(CSV_URL);
+    const res = await fetch(proxy);
+    const csv = await res.text();
     clearTimeout(timeout);
+    if(!csv || csv.length < 10){
+      loadingEl.textContent = 'empty response from proxy. status: ' + res.status;
+      loadingEl.style.color='#c00';
+      return;
+    }
     loadingEl.style.display='none';
-    const entries=parseCSV(csv);
+    const entries = parseCSV(csv);
+    if(entries.length===0){
+      loadingEl.style.display='block';
+      loadingEl.textContent='no published entries found. check publish column says True.';
+      loadingEl.style.color='#aaa';
+      return;
+    }
     buildGraph(entries);
     renderTranscript();
     showView('transcript');
     document.getElementById('view-transcript').style.display='block';
-  })
-  .catch(err=>{
+  } catch(e){
     clearTimeout(timeout);
-    loadingEl.textContent='could not load: '+err.message;
+    loadingEl.textContent='could not load: '+e.message;
     loadingEl.style.color='#c00';
-  });
+  }
+}
+init();
 </script>
 </body>
 </html>

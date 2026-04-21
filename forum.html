@@ -6,157 +6,173 @@
 <title>forum · το μανταρίνι</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#fff;--text:#111;--mid:#888;--faint:#e8e8e8;--amber:#c8922a;--border:#ddd;}
-html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;}
+html,body{min-height:100%;background:#fff;color:#111;font-family:'Courier New',Courier,monospace;}
 
 /* ── HEADER ── */
 #top{
   position:sticky;top:0;z-index:10;background:#fff;
-  border-bottom:1px solid var(--faint);
-  padding:0.75rem 1.4rem;
+  border-bottom:1px solid #eee;
+  padding:0.7rem 1.6rem;
   display:flex;align-items:center;justify-content:space-between;
 }
-#top-left{display:flex;flex-direction:column;gap:0.02rem;align-items:flex-start;}
-#site-link{font-size:1rem;font-weight:normal;font-style:normal;color:#111;text-decoration:none;font-family:Georgia,serif;letter-spacing:0.01em;}
-#site-symbol{font-size:0.85rem;color:#bbb;letter-spacing:0.01em;}
-#site-link:hover{text-decoration:underline;text-underline-offset:3px;}
-#page-title{font-size:0.72rem;color:#999;font-family:Georgia,'Times New Roman',serif;font-style:italic;letter-spacing:0.01em;line-height:1;}
-@media(max-width:600px){#site-link{font-size:1rem;}}
-#top-right{display:flex;align-items:center;gap:1rem;}
-#username-display{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.78rem;color:#aaa;cursor:pointer;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#top-left{display:flex;flex-direction:column;gap:0.02rem;}
+#site-link{font-size:1.2rem;font-weight:normal;letter-spacing:.01em;font-family:Georgia,"Times New Roman",serif;line-height:1.3;color:#111;text-decoration:none;}
+.orbit-link{color:#111;text-decoration:none;font-style:normal;}
+.orbit-link:visited{color:#111;}
+.orbit-link:hover{color:#c8922a;}
+#page-title{font-size:0.72rem;color:#999;font-family:Georgia,"Times New Roman",serif;font-style:italic;}
+#top-right{display:flex;align-items:center;gap:1.2rem;}
+#username-display{font-size:0.72rem;color:#bbb;cursor:pointer;letter-spacing:0.04em;}
 #username-display:hover{color:#555;}
-
-#new-post-btn{
-  background:none;border:none;font-family:Georgia,'Times New Roman',serif;
-  font-style:italic;font-size:0.78rem;
-  color:#aaa;cursor:pointer;padding:0;
-  transition:color 0.15s;-webkit-tap-highlight-color:transparent;
-}
+#new-post-btn{background:none;border:none;font-family:'Courier New',monospace;font-size:0.72rem;color:#bbb;cursor:pointer;padding:0;letter-spacing:0.04em;-webkit-tap-highlight-color:transparent;}
 #new-post-btn:hover{color:#333;}
-#back-link{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:0.78rem;color:#aaa;text-decoration:none;white-space:nowrap;}
+#back-link{font-size:0.72rem;color:#bbb;text-decoration:none;letter-spacing:0.04em;}
 #back-link:hover{color:#555;}
-
-/* ── MAIN ── */
-#main{max-width:680px;margin:0 auto;padding:2rem 1.4rem 4rem;}
-
-/* ── USERNAME MODAL ── */
-.modal-bg{
-  display:none;position:fixed;inset:0;z-index:100;
-  background:rgba(255,255,255,0.96);
-  align-items:center;justify-content:center;
-}
-.modal-bg.open{display:flex;}
-.modal{width:min(400px,90vw);padding:2rem;}
-.modal h2{font-size:0.9rem;font-weight:normal;font-style:italic;color:#555;margin-bottom:1.2rem;}
-.modal input{
-  width:100%;border:none;border-bottom:1px solid #ddd;
-  font-family:'Courier New',monospace;font-size:0.88rem;
-  padding:0.4rem 0;outline:none;background:transparent;
-  color:#111;margin-bottom:1.2rem;
-}
-.modal input::placeholder{color:#ccc;}
-.modal-btns{display:flex;gap:0.8rem;}
-.modal button{
-  background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
-  font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;
-  color:#888;cursor:pointer;padding:0.4rem 0.9rem;transition:all 0.15s;
-}
-.modal button.primary{border-color:#111;color:#111;}
-.modal button:hover{border-color:#888;color:#333;}
-
-/* ── NEW POST FORM ── */
-#post-form{
-  display:none;border:1px solid var(--faint);padding:1.4rem;margin-bottom:2rem;
-}
-#post-form.open{display:block;}
-#post-form h3{font-size:0.72rem;font-style:italic;color:#aaa;font-weight:normal;margin-bottom:1rem;font-family:'Courier New',monospace;letter-spacing:0.06em;text-transform:uppercase;}
-#post-form input,#post-form textarea{
-  width:100%;border:none;border-bottom:1px solid #eee;
-  font-family:Georgia,serif;font-size:0.92rem;
-  padding:0.4rem 0;outline:none;background:transparent;
-  color:#111;display:block;resize:none;
-}
-#post-form input{margin-bottom:0.8rem;}
-#post-form input::placeholder,#post-form textarea::placeholder{color:#ccc;font-style:italic;}
-#post-form textarea{min-height:80px;margin-bottom:1.2rem;line-height:1.65;}
-.form-btns{display:flex;gap:0.7rem;justify-content:flex-end;}
-.form-btns button{
-  background:none;border:1px solid #ddd;font-family:'Courier New',monospace;
-  font-size:0.58rem;letter-spacing:0.08em;text-transform:uppercase;
-  color:#888;cursor:pointer;padding:0.38rem 0.8rem;transition:all 0.15s;
-}
-.form-btns button.primary{border-color:#111;color:#111;}
-
-/* ── POSTS ── */
-.post{padding:2.2rem 0;}
-.post-sep{font-family:'Courier New',monospace;font-size:0.62rem;color:#ddd;letter-spacing:0.05em;overflow:hidden;white-space:nowrap;margin:0;user-select:none;line-height:1.4;}
-.post-meta{font-family:'Courier New',monospace;font-size:0.6rem;color:#bbb;margin-bottom:0.5rem;letter-spacing:0.03em;}
-.post-meta .author{color:var(--amber);}
-.post-title{font-size:1.15rem;font-weight:normal;color:#111;margin-bottom:0.7rem;line-height:1.35;padding-bottom:0.6rem;border-bottom:1px solid var(--faint);}
-
-.post-body{font-size:1rem;line-height:1.8;color:#333;margin-bottom:1rem;white-space:pre-wrap;}
-.post-actions{display:flex;gap:1rem;align-items:center;}
-.reply-toggle{
-  background:none;border:none;font-family:'Courier New',monospace;
-  font-size:0.58rem;letter-spacing:0.06em;text-transform:uppercase;
-  color:#ccc;cursor:pointer;padding:0;transition:color 0.15s;
-}
-.reply-toggle:hover{color:var(--amber);}
-.reply-count{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;letter-spacing:0.04em;}
-
-/* ── REPLIES ── */
-.replies{display:none;margin-top:1rem;border-left:1px solid #ccc;padding-left:1.2rem;}
-.replies.open{display:block;}
-.reply{padding:0.9rem 0;border-bottom:1px solid #f5f5f5;}
-.reply:last-child{border-bottom:none;}
-.reply-meta{font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;margin-bottom:0.4rem;display:block;}
-.reply-meta .author{color:var(--amber);}
-.reply-body{font-size:0.95rem;line-height:1.75;color:#444;white-space:pre-wrap;}
-
-/* reply form */
-.reply-form{margin-top:0.8rem;display:none;}
-.reply-form.open{display:block;}
-.reply-form textarea{
-  width:100%;border:none;border-bottom:1px solid #eee;
-  font-family:Georgia,serif;font-size:0.88rem;
-  padding:0.3rem 0;outline:none;background:transparent;
-  color:#111;resize:none;min-height:60px;line-height:1.65;
-  margin-bottom:0.7rem;
-}
-.reply-form textarea::placeholder{color:#ccc;font-style:italic;}
-
-.delete-btn{
-  background:none;border:none;font-family:'Courier New',monospace;
-  font-size:0.55rem;color:#ddd;cursor:pointer;padding:0;
-  letter-spacing:0.06em;text-transform:uppercase;transition:color 0.15s;
-  margin-left:auto;
-}
-.delete-btn:hover{color:#c0392b;}
-/* empty state */
-#empty{text-align:center;padding:4rem 0;font-style:italic;color:#ccc;font-size:0.9rem;}
-
 @media(max-width:600px){
-  #top{padding:0.65rem 1rem;flex-wrap:wrap;gap:0.5rem;}
-  #top-right{flex-wrap:wrap;}
-  #main{padding:1.4rem 1rem 5rem;}
-  #post-form{padding:1rem;}
-  #new-post-btn{font-size:0.78rem;}
-  #fab{display:flex;}
-  .post{padding:1.6rem 0;}
-  .form-btns button{min-height:40px;padding:0.5rem 1rem;}
-  .reply-toggle{min-height:36px;padding:0.2rem 0;}
-  .modal{padding:1.5rem 1.2rem;}
-  .modal input{font-size:1rem;padding:0.6rem 0;}
+  #site-link{font-size:1rem;}
+  #top{padding:0.65rem 1rem;}
+  #top-right{gap:0.8rem;}
+  #username-display,#new-post-btn,#back-link{font-size:0.65rem;}
 }
-#fab{
-  display:none;position:fixed;bottom:1.5rem;right:1.5rem;z-index:20;
-  width:48px;height:48px;border-radius:50%;
-  background:#111;border:none;color:#fff;
-  font-size:1.4rem;cursor:pointer;
-  align-items:center;justify-content:center;
-  box-shadow:0 2px 12px rgba(0,0,0,0.15);
+
+/* ── DOCUMENT ── */
+#doc{
+  max-width:640px;
+  margin:0 auto;
+  padding:3rem 1.6rem 8rem;
+}
+@media(max-width:600px){#doc{padding:2rem 1.2rem 6rem;}}
+
+/* each contribution */
+.entry{
+  margin-bottom:2.8rem;
+  position:relative;
+}
+.entry-handle{
+  font-size:0.72rem;color:#bbb;
+  margin-bottom:0.5rem;
+  letter-spacing:0.04em;
+  display:flex;align-items:baseline;gap:0.6rem;
+}
+.entry-handle .handle{color:#c8922a;}
+.entry-handle .in-response{color:#ddd;font-size:0.65rem;}
+.entry-handle .time{color:#ddd;font-size:0.65rem;}
+.entry-body{
+  font-size:0.95rem;line-height:1.85;color:#222;
+  white-space:pre-wrap;word-break:break-word;
+  font-family:Georgia,"Times New Roman",serif;
+  cursor:pointer;
+}
+.entry-body:hover{color:#111;}
+.entry.reply{
+  margin-left:1.8rem;
+  margin-bottom:1.8rem;
+}
+.entry.reply .entry-body{color:#555;font-size:0.9rem;}
+
+/* reply hint on hover */
+.entry-actions{
+  display:none;
+  margin-top:0.5rem;
+}
+.entry:hover .entry-actions{display:flex;}
+.reply-btn{
+  background:none;border:none;font-family:'Courier New',monospace;
+  font-size:0.62rem;color:#ccc;cursor:pointer;padding:0;
+  letter-spacing:0.06em;transition:color 0.15s;
   -webkit-tap-highlight-color:transparent;
 }
+.reply-btn:hover{color:#c8922a;}
+
+/* separator */
+.sep{
+  font-size:0.65rem;color:#e0e0e0;
+  margin:2.4rem 0;
+  letter-spacing:0.1em;
+  user-select:none;
+}
+
+/* inline reply form */
+.reply-form{
+  display:none;
+  margin-top:0.8rem;
+  margin-left:1.8rem;
+  border-left:1px solid #eee;
+  padding-left:1rem;
+}
+.reply-form.open{display:block;}
+.reply-form textarea{
+  width:100%;border:none;outline:none;
+  font-family:Georgia,serif;font-size:0.9rem;
+  color:#111;background:transparent;
+  resize:none;min-height:80px;line-height:1.75;
+  caret-color:#c8922a;
+}
+.reply-form textarea::placeholder{color:#ddd;font-style:italic;}
+.reply-form-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:0.4rem;
+}
+.reply-form-meta .posting-as{font-size:0.6rem;color:#ccc;letter-spacing:0.04em;}
+.reply-form-meta .form-btns{display:flex;gap:0.5rem;}
+.reply-form-meta button{
+  background:none;border:none;font-family:'Courier New',monospace;
+  font-size:0.6rem;color:#bbb;cursor:pointer;padding:0;
+  letter-spacing:0.06em;transition:color 0.15s;
+}
+.reply-form-meta button.submit:hover{color:#111;}
+.reply-form-meta button.cancel:hover{color:#999;}
+
+/* new post form — fullscreen overlay */
+#post-overlay{
+  display:none;position:fixed;inset:0;z-index:50;
+  background:#fff;
+  padding:3rem 1.6rem;
+  overflow-y:auto;
+}
+#post-overlay.open{display:block;}
+#post-overlay-inner{max-width:640px;margin:0 auto;}
+#post-overlay h2{font-size:0.65rem;color:#bbb;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1.8rem;font-family:'Courier New',monospace;font-weight:normal;}
+#post-overlay textarea{
+  width:100%;border:none;outline:none;
+  font-family:Georgia,serif;font-size:1rem;
+  color:#111;background:transparent;
+  resize:none;min-height:200px;line-height:1.85;
+  caret-color:#c8922a;
+}
+#post-overlay textarea::placeholder{color:#ddd;font-style:italic;}
+#post-overlay-meta{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:1.4rem;
+  padding-top:1rem;
+  border-top:1px solid #eee;
+}
+#post-overlay-meta .posting-as{font-size:0.62rem;color:#ccc;letter-spacing:0.04em;}
+#post-overlay-meta .btns{display:flex;gap:0.8rem;}
+#post-overlay-meta button{
+  background:none;border:none;font-family:'Courier New',monospace;
+  font-size:0.62rem;color:#bbb;cursor:pointer;padding:0;
+  letter-spacing:0.08em;transition:color 0.15s;
+}
+#post-overlay-meta button#po-submit:hover{color:#111;}
+
+/* username modal */
+.modal-bg{display:none;position:fixed;inset:0;z-index:100;background:rgba(255,255,255,0.97);align-items:center;justify-content:center;}
+.modal-bg.open{display:flex;}
+.modal{width:min(400px,90vw);padding:2rem;}
+.modal h2{font-size:0.85rem;font-weight:normal;font-style:italic;color:#555;margin-bottom:1.4rem;font-family:Georgia,serif;}
+.modal input{width:100%;border:none;border-bottom:1px solid #eee;font-family:'Courier New',monospace;font-size:0.88rem;padding:0.4rem 0;outline:none;background:transparent;color:#111;margin-bottom:1.4rem;}
+.modal input::placeholder{color:#ddd;}
+.modal-btns{display:flex;gap:0.8rem;}
+.modal-btns button{background:none;border:none;font-family:'Courier New',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;color:#bbb;cursor:pointer;padding:0;transition:color 0.15s;}
+.modal-btns button.primary{color:#111;}
+
+/* loading / empty */
+#status{padding:3rem 0;font-size:0.85rem;color:#ddd;font-style:italic;text-align:center;}
+
+/* admin */
+.admin-del{background:none;border:none;font-family:'Courier New',monospace;font-size:0.55rem;color:#eee;cursor:pointer;padding:0;margin-left:0.5rem;transition:color 0.15s;}
+.admin-del:hover{color:#c00;}
 </style>
 </head>
 <body>
@@ -173,27 +189,31 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
   </div>
 </div>
 
-<div id="main">
-  <div id="post-form">
-    <h3>new post</h3>
-    <input id="pf-title" type="text" placeholder="title (optional)">
-    <textarea id="pf-body" placeholder="what are you thinking..."></textarea>
-    <div id="posting-as" style="font-family:'Courier New',monospace;font-size:0.58rem;color:#bbb;margin-bottom:0.7rem;"></div>
-    <div class="form-btns">
-      <button id="pf-cancel">cancel</button>
-      <button id="pf-submit" class="primary">post</button>
+<!-- the transcript -->
+<div id="doc">
+  <div id="status">loading...</div>
+</div>
+
+<!-- new post overlay -->
+<div id="post-overlay">
+  <div id="post-overlay-inner">
+    <h2>new entry</h2>
+    <textarea id="po-body" placeholder="a fragment, a question, an observation..."></textarea>
+    <div id="post-overlay-meta">
+      <span class="posting-as" id="po-posting-as"></span>
+      <div class="btns">
+        <button id="po-cancel">cancel</button>
+        <button id="po-submit">post ↵</button>
+      </div>
     </div>
   </div>
-  <div id="loading" style="text-align:center;padding:3rem 0;font-style:italic;color:#ccc;font-size:0.9rem;">loading...</div>
-  <div id="posts-list"></div>
-  <div id="empty" style="display:none;"><hr style="border:none;border-top:1px solid #eee;margin-bottom:2rem;">nothing yet. be the first.</div>
 </div>
 
 <!-- username modal -->
 <div class="modal-bg" id="username-modal">
   <div class="modal">
-    <h2>choose a name to post as</h2>
-    <input id="un-input" type="text" placeholder="your name or pseudonym" maxlength="40">
+    <h2>choose a name</h2>
+    <input id="un-input" type="text" placeholder="name or pseudonym" maxlength="40">
     <div class="modal-btns">
       <button id="un-cancel">cancel</button>
       <button id="un-save" class="primary">save</button>
@@ -203,12 +223,8 @@ html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:Geo
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, set, serverTimestamp, remove }
+import { getDatabase, ref, push, onValue, set, remove, serverTimestamp }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-// ── ADMIN ───────────────────────────────────────────────────────────────
-const ADMIN_KEY = 'rn3B31l9jOMp346euC7flQ';
-const isAdmin = new URLSearchParams(window.location.search).get('admin') === ADMIN_KEY;
 
 const firebaseConfig = {
   apiKey: "AIzaSyB6FxPzTqCuI4PjhcE7dc8kfORVTf5V0kw",
@@ -219,375 +235,274 @@ const firebaseConfig = {
   messagingSenderId: "1033497517437",
   appId: "1:1033497517437:web:4259c9a200447d9c1c8014"
 };
-
 const app = initializeApp(firebaseConfig);
 const db  = getDatabase(app);
 
-// ── USERNAME ────────────────────────────────────────────────────────────
-var username = localStorage.getItem('forum_username') || '';
-var unDisplay = document.getElementById('username-display');
-var unModal   = document.getElementById('username-modal');
-var unInput   = document.getElementById('un-input');
+const ADMIN_KEY = 'rn3B31l9jOMp346euC7flQ';
+const isAdmin = new URLSearchParams(window.location.search).get('admin') === ADMIN_KEY;
+
+// ── USERNAME ──────────────────────────────────────────────────────────────
+let username = localStorage.getItem('forum_username') || '';
+const unDisplay = document.getElementById('username-display');
+const unModal   = document.getElementById('username-modal');
+const unInput   = document.getElementById('un-input');
 
 function setUsername(name){
   username = name.trim();
   localStorage.setItem('forum_username', username);
-  unDisplay.textContent = username ? username : 'set name';
+  unDisplay.textContent = username || 'set name';
 }
+setUsername(username);
 
-function showUsernameModal(){
+function showUsernameModal(cb){
   unInput.value = username;
   unModal.classList.add('open');
-  setTimeout(function(){ unInput.focus(); }, 50);
+  setTimeout(()=> unInput.focus(), 50);
+  if(cb) unModal._cb = cb;
 }
-
-setUsername(username || '');
-
-unDisplay.addEventListener('click', showUsernameModal);
-document.getElementById('un-save').addEventListener('click', function(){
-  var v = unInput.value.trim();
-  if(!v) return;
+unDisplay.addEventListener('click', ()=> showUsernameModal());
+document.getElementById('un-save').addEventListener('click', ()=>{
+  const v = unInput.value.trim(); if(!v) return;
   setUsername(v);
   unModal.classList.remove('open');
+  if(unModal._cb){ unModal._cb(); unModal._cb=null; }
 });
-document.getElementById('un-cancel').addEventListener('click', function(){
-  unModal.classList.remove('open');
-});
-unInput.addEventListener('keydown', function(e){
-  if(e.key==='Enter'){ document.getElementById('un-save').click(); }
-});
+document.getElementById('un-cancel').addEventListener('click', ()=> unModal.classList.remove('open'));
+unInput.addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('un-save').click(); });
 
-// ── NEW POST FORM ───────────────────────────────────────────────────────
-var postForm = document.getElementById('post-form');
-document.getElementById('fab') && document.getElementById('fab').addEventListener('click', function(){
-  if(!username){ showUsernameModal(); return; }
-  postForm.classList.toggle('open');
-  if(postForm.classList.contains('open')){
-    postForm.scrollIntoView({behavior:'smooth'});
-    var pa = document.getElementById('posting-as');
-    if(pa) pa.innerHTML = username ? 'posting as <strong>'+esc(username)+'</strong> · <span style="cursor:pointer;text-decoration:underline;" id="pa-change">change</span>' : '<span style="cursor:pointer;color:var(--amber);text-decoration:underline;" id="pa-change">set a name to post</span>';
-    var pac = document.getElementById('pa-change');
-    if(pac) pac.addEventListener('click', showUsernameModal);
-  }
-});
-document.getElementById('new-post-btn').addEventListener('click', function(){
-  if(!username){ showUsernameModal(); return; }
-  postForm.classList.toggle('open');
-  if(postForm.classList.contains('open')){
-    postForm.scrollIntoView({behavior:'smooth'});
-    var pa = document.getElementById('posting-as');
-    if(pa) pa.innerHTML = username ? 'posting as <strong>'+esc(username)+'</strong> · <span style="cursor:pointer;text-decoration:underline;" id="pa-change">change</span>' : '<span style="cursor:pointer;color:var(--amber);text-decoration:underline;" id="pa-change">set a name to post</span>';
-    var pac = document.getElementById('pa-change');
-    if(pac) pac.addEventListener('click', showUsernameModal);
-  }
-});
-document.getElementById('pf-cancel').addEventListener('click', function(){
-  postForm.classList.remove('open');
-  document.getElementById('pf-title').value='';
-  document.getElementById('pf-body').value='';
-});
-document.getElementById('pf-submit').addEventListener('click', function(){
-  var title = document.getElementById('pf-title').value.trim();
-  var body  = document.getElementById('pf-body').value.trim();
-  if(!body) return;
-  if(body.length > 1500){ alert('Post too long (max 1500 characters)'); return; }
-  if(!username){
-    showUsernameModal();
-    // after modal saves, re-submit
-    document.getElementById('un-save').addEventListener('click', function once(){
-      document.getElementById('un-save').removeEventListener('click', once);
-      document.getElementById('pf-submit').click();
-    });
-    return;
-  }
-  push(ref(db,'posts'), {
-    title: title,
-    body:  body,
-    author: username,
-    ts: serverTimestamp()
-  });
-  document.getElementById('pf-title').value='';
-  document.getElementById('pf-body').value='';
-  postForm.classList.remove('open');
-});
-
-// ── RENDER POSTS ────────────────────────────────────────────────────────
+// ── HELPERS ───────────────────────────────────────────────────────────────
+function esc(t){ return t?(t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')):''; }
 function timeAgo(ts){
   if(!ts) return '';
-  var diff = Date.now() - ts;
-  var m = Math.floor(diff/60000);
-  if(m<1) return 'μόλις τώρα';
-  if(m<60) return 'πριν '+m+' λ';
-  var h = Math.floor(m/60);
-  if(h<24) return 'πριν '+h+' ω';
-  var d = Math.floor(h/24);
-  if(d===1) return 'χθες';
-  if(d<7) return 'πριν '+d+' μέρες';
-  return 'πριν '+Math.floor(d/7)+' εβδ';
+  const diff=Date.now()-ts, m=Math.floor(diff/60000);
+  if(m<1) return 'just now';
+  if(m<60) return m+'m ago';
+  const h=Math.floor(m/60);
+  if(h<24) return h+'h ago';
+  const d=Math.floor(h/24);
+  if(d===1) return 'yesterday';
+  if(d<7) return d+'d ago';
+  return Math.floor(d/7)+'w ago';
 }
-
-function makeReplyForm(postId){
-  var form = document.createElement('div');
-  form.className = 'reply-form';
-  var ta = document.createElement('textarea');
-  ta.placeholder = 'reply...';
-  form.appendChild(ta);
-  var btns = document.createElement('div');
-  btns.className = 'form-btns';
-  var cancel = document.createElement('button');
-  cancel.textContent = 'cancel';
-  cancel.addEventListener('click', function(){ form.classList.remove('open'); ta.value=''; });
-  var submit = document.createElement('button');
-  submit.className = 'primary';
-  submit.textContent = 'reply';
-  submit.addEventListener('click', function(){
-    var body = ta.value.trim();
-    if(!body) return;
-    if(body.length > 800){ alert('Reply too long (max 800 characters)'); return; }
-    if(!username){
-      showUsernameModal();
-      document.getElementById('un-save').addEventListener('click', function once(){
-        document.getElementById('un-save').removeEventListener('click', once);
-        submit.click();
-      });
-      return;
-    }
-    push(ref(db,'replies/'+postId), {
-      body: body,
-      author: username,
-      ts: serverTimestamp()
-    });
-    ta.value='';
-    form.classList.remove('open');
-  });
-  btns.appendChild(cancel);
-  btns.appendChild(submit);
-  form.appendChild(btns);
-  return form;
-}
-
-
-// ── ASCII SEPARATORS ──────────────────────────────────────────────────────
-var SEP_CHARS = ['·',':','.','-','~','=','+','|','·:·','=·=','-·-','·:·.','.:.',':·:'];
 function makeSep(){
-  var chars = ['.','·',':','-','~','=','+','|','·'];
-  var patterns = ['·:·.','·:·','=·=','-·-','.:.',':·:','~·~','.:.','·.·'];
-  var out = '';
-  var len = 60 + Math.floor(Math.random()*20);
-  while(out.length < len){
-    if(Math.random() < 0.3){
-      out += patterns[Math.floor(Math.random()*patterns.length)];
-    } else {
-      out += chars[Math.floor(Math.random()*chars.length)];
-    }
-  }
+  const chars=['.','·',':','~',"'",'.','·'];
+  const pats=['·:·.','·:·','.:.','.·.'];
+  let out=''; const len=40+Math.floor(Math.random()*20);
+  while(out.length<len) out+=Math.random()<0.3?pats[Math.floor(Math.random()*pats.length)]:chars[Math.floor(Math.random()*chars.length)];
   return out.slice(0,len);
 }
 
-function renderPost(postId, post, replies){
-  var el = document.createElement('div');
-  el.className = 'post';
-  el.dataset.id = postId;
+// ── RENDER ────────────────────────────────────────────────────────────────
+let postsData={}, repliesData={};
 
-  // meta
-  var meta = document.createElement('div');
-  meta.className = 'post-meta';
-  var replyCount = replies ? Object.keys(replies).length : 0;
-  var pinnedMark = post.pinned ? '<span style="color:var(--amber);margin-right:0.4rem;">★</span>' : '';
-  meta.innerHTML = pinnedMark+'<span class="author">'+esc(post.author)+'</span> · '+timeAgo(post.ts);
-  el.appendChild(meta);
+function render(){
+  const doc = document.getElementById('doc');
+  doc.innerHTML='';
+  const ids = Object.keys(postsData);
 
-  // title
-  if(post.title){
-    var title = document.createElement('div');
-    title.className = 'post-title';
-    title.textContent = post.title;
-    el.appendChild(title);
+  if(ids.length===0){
+    const s=document.createElement('div');
+    s.id='status'; s.textContent='nothing yet. be the first.';
+    doc.appendChild(s); return;
   }
 
-  // body
-  var body = document.createElement('div');
-  body.className = 'post-body';
-  body.textContent = post.body;
-  el.appendChild(body);
+  // sort: pinned first, then newest
+  ids.sort((a,b)=>{
+    const pa=postsData[a].pinned?1:0, pb=postsData[b].pinned?1:0;
+    if(pb!==pa) return pb-pa;
+    return (postsData[b].ts||0)-(postsData[a].ts||0);
+  });
 
-  // actions
-  var actions = document.createElement('div');
-  actions.className = 'post-actions';
+  ids.forEach((id, i)=>{
+    const post = postsData[id];
+    const replies = repliesData[id] ? Object.entries(repliesData[id]).sort((a,b)=>(a[1].ts||0)-(b[1].ts||0)) : [];
 
-  var replyToggle = document.createElement('button');
-  replyToggle.className = 'reply-toggle';
-  replyToggle.textContent = 'reply';
+    // post entry
+    const entry = makeEntry(id, post, null, null);
+    doc.appendChild(entry);
 
-  var replyCountEl = document.createElement('span');
-  replyCountEl.className = 'reply-count';
-  replyCountEl.textContent = replyCount > 0 ? replyCount + (replyCount===1?' reply':' replies') : '';
+    // reply form for this post
+    const rf = makeReplyForm(id);
+    doc.appendChild(rf);
 
-  actions.appendChild(replyToggle);
-  actions.appendChild(replyCountEl);
-  if(isAdmin){
-    var pinBtn = document.createElement('button');
-    pinBtn.className = 'delete-btn';
-    pinBtn.style.color = post.pinned ? 'var(--amber)' : '#ddd';
-    pinBtn.textContent = post.pinned ? '★ unpin' : '☆ pin';
-    pinBtn.addEventListener('click', function(){
-      set(ref(db,'posts/'+postId+'/pinned'), !post.pinned);
+    // wire reply button
+    entry.querySelector('.reply-btn').addEventListener('click', e=>{
+      e.stopPropagation();
+      if(!username){ showUsernameModal(()=>{ rf.classList.add('open'); rf.querySelector('textarea').focus(); }); return; }
+      rf.classList.toggle('open');
+      if(rf.classList.contains('open')) rf.querySelector('textarea').focus();
     });
-    actions.appendChild(pinBtn);
-    var delBtn = document.createElement('button');
-    delBtn.className = 'delete-btn';
-    delBtn.textContent = '× delete';
-    delBtn.addEventListener('click', function(){
-      if(confirm('Delete this post and all its replies?')){
-        remove(ref(db,'posts/'+postId));
-        remove(ref(db,'replies/'+postId));
+
+    // replies
+    replies.forEach(([rid, r])=>{
+      const re = makeEntry(id, r, rid, id);
+      doc.appendChild(re);
+    });
+
+    // separator between posts (not after last)
+    if(i < ids.length-1){
+      const sep = document.createElement('div');
+      sep.className='sep'; sep.textContent=makeSep();
+      doc.appendChild(sep);
+    }
+  });
+
+  // admin bar
+  if(isAdmin && !document.getElementById('admin-bar')){
+    const bar=document.createElement('div');
+    bar.id='admin-bar';
+    bar.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;font-family:Courier New,monospace;font-size:0.55rem;text-align:center;padding:0.3rem;z-index:50;letter-spacing:0.1em;';
+    bar.textContent='admin mode';
+    document.body.appendChild(bar);
+  }
+}
+
+function makeEntry(postId, data, replyId, parentId){
+  const el = document.createElement('div');
+  el.className = 'entry' + (replyId ? ' reply' : '');
+  if(replyId) el.dataset.rid = replyId;
+
+  // handle line
+  const handleRow = document.createElement('div');
+  handleRow.className = 'entry-handle';
+  const hSpan = document.createElement('span');
+  hSpan.className = 'handle';
+  hSpan.textContent = '['+esc(data.author||'anon')+']';
+  handleRow.appendChild(hSpan);
+  if(replyId){
+    const ir = document.createElement('span');
+    ir.className = 'in-response';
+    ir.textContent = 'in response';
+    handleRow.appendChild(ir);
+  }
+  if(data.pinned){
+    const pin=document.createElement('span');
+    pin.style.cssText='color:#c8922a;font-size:0.65rem;';
+    pin.textContent='★';
+    handleRow.appendChild(pin);
+  }
+  const tSpan = document.createElement('span');
+  tSpan.className = 'time';
+  tSpan.textContent = timeAgo(data.ts);
+  handleRow.appendChild(tSpan);
+
+  // admin controls in handle row
+  if(isAdmin){
+    const del=document.createElement('button');
+    del.className='admin-del';
+    del.textContent='× delete';
+    del.addEventListener('click', e=>{
+      e.stopPropagation();
+      if(replyId){
+        if(confirm('Delete reply?')) remove(ref(db,'replies/'+postId+'/'+replyId));
+      } else {
+        if(confirm('Delete post and all replies?')){
+          remove(ref(db,'posts/'+postId));
+          remove(ref(db,'replies/'+postId));
+        }
       }
     });
-    actions.appendChild(delBtn);
+    if(!replyId){
+      const pin=document.createElement('button');
+      pin.className='admin-del';
+      pin.style.color=data.pinned?'#c8922a':'#eee';
+      pin.textContent=data.pinned?'★ unpin':'☆ pin';
+      pin.addEventListener('click',e=>{ e.stopPropagation(); set(ref(db,'posts/'+postId+'/pinned'),!data.pinned); });
+      handleRow.appendChild(pin);
+    }
+    handleRow.appendChild(del);
   }
-  el.appendChild(actions);
+  el.appendChild(handleRow);
 
-  // replies section
-  var repliesEl = document.createElement('div');
-  repliesEl.className = 'replies';
-  if(replies){
-    Object.entries(replies)
-      .sort(function(a,b){ return (a[1].ts||0)-(b[1].ts||0); })
-      .forEach(function(entry){
-        var r = entry[1];
-        var rdiv = document.createElement('div');
-        rdiv.className = 'reply';
-        var rmeta = document.createElement('div');
-        rmeta.className = 'reply-meta';
-        rmeta.innerHTML = '<span class="author">'+esc(r.author)+'</span> · '+timeAgo(r.ts);
-        var rbody = document.createElement('div');
-        rbody.className = 'reply-body';
-        rbody.textContent = r.body;
-        rdiv.appendChild(rmeta);
-        rdiv.appendChild(rbody);
-        if(isAdmin){
-          var rDel = document.createElement('button');
-          rDel.className = 'delete-btn';
-          rDel.textContent = '× delete';
-          rDel.style.display = 'block';
-          rDel.style.marginTop = '0.3rem';
-          rDel.addEventListener('click', (function(pid, rid){
-            return function(){
-              if(confirm('Delete this reply?')) remove(ref(db,'replies/'+pid+'/'+rid));
-            };
-          })(postId, entry[0]));
-          rdiv.appendChild(rDel);
-        }
-        repliesEl.appendChild(rdiv);
-      });
+  // body
+  const body = document.createElement('div');
+  body.className = 'entry-body';
+  body.textContent = data.body||'';
+  el.appendChild(body);
+
+  // actions (reply button — only on posts)
+  if(!replyId){
+    const actions = document.createElement('div');
+    actions.className = 'entry-actions';
+    const rb = document.createElement('button');
+    rb.className = 'reply-btn';
+    rb.textContent = 'reply ↩';
+    actions.appendChild(rb);
+    el.appendChild(actions);
   }
-
-  var replyForm = makeReplyForm(postId);
-  repliesEl.appendChild(replyForm);
-  el.appendChild(repliesEl);
-
-  // toggle replies + reply form
-  replyToggle.addEventListener('click', function(){
-    repliesEl.classList.toggle('open');
-    replyForm.classList.toggle('open');
-  });
 
   return el;
 }
 
-function esc(t){ return t ? t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
-
-// ── LIVE DATA ───────────────────────────────────────────────────────────
-var postsData = {};
-var repliesData = {};
-
-function rerender(){
-  var list = document.getElementById('posts-list');
-  var empty = document.getElementById('empty');
-  var loading = document.getElementById('loading');
-  if(loading) loading.style.display='none';
-  var ids = Object.keys(postsData);
-  if(ids.length === 0){
-    list.innerHTML=''; empty.style.display='block'; return;
-  }
-  empty.style.display='none';
-
-  // sort newest first
-  ids.sort(function(a,b){
-    return (postsData[b].ts||0)-(postsData[a].ts||0);
+function makeReplyForm(postId){
+  const rf = document.createElement('div');
+  rf.className = 'reply-form';
+  rf.dataset.post = postId;
+  const ta = document.createElement('textarea');
+  ta.placeholder='write a reply...';
+  const meta = document.createElement('div');
+  meta.className='reply-form-meta';
+  const pa = document.createElement('span');
+  pa.className='posting-as';
+  pa.textContent=username?'['+username+']':'';
+  const btns = document.createElement('div');
+  btns.className='form-btns';
+  const cancel=document.createElement('button');
+  cancel.className='cancel'; cancel.textContent='cancel';
+  cancel.addEventListener('click',()=>{ rf.classList.remove('open'); ta.value=''; });
+  const submit=document.createElement('button');
+  submit.className='submit'; submit.textContent='post ↵';
+  submit.addEventListener('click',()=>{
+    const text=ta.value.trim(); if(!text) return;
+    if(text.length>800){ alert('Reply too long (max 800 characters)'); return; }
+    if(!username){ showUsernameModal(()=>submit.click()); return; }
+    push(ref(db,'replies/'+postId),{body:text,author:username,ts:serverTimestamp()});
+    ta.value=''; rf.classList.remove('open');
   });
-
-  // preserve open reply sections
-  var openIds = {};
-  list.querySelectorAll('.post').forEach(function(el){
-    if(el.querySelector('.replies.open')) openIds[el.dataset.id]=true;
-  });
-
-  list.innerHTML='';
-  // pinned posts first
-  ids.sort(function(a,b){
-    var pa = postsData[a].pinned ? 1 : 0;
-    var pb = postsData[b].pinned ? 1 : 0;
-    if(pb !== pa) return pb - pa;
-    return (postsData[b].ts||0)-(postsData[a].ts||0);
-  });
-
-  ids.forEach(function(id, i){
-    var el = renderPost(id, postsData[id], repliesData[id]);
-    if(openIds[id]) el.querySelector('.replies').classList.add('open');
-    list.appendChild(el);
-    // ASCII separator between posts (not after last)
-    if(i < ids.length - 1){
-      var sep = document.createElement('div');
-      sep.className = 'post-sep';
-      sep.textContent = makeSep();
-      list.appendChild(sep);
-    }
-  });
+  ta.addEventListener('keydown',e=>{ if(e.key==='Enter'&&e.metaKey) submit.click(); });
+  btns.appendChild(cancel); btns.appendChild(submit);
+  meta.appendChild(pa); meta.appendChild(btns);
+  rf.appendChild(ta); rf.appendChild(meta);
+  return rf;
 }
 
-// show error if Firebase doesn't respond in 8 seconds
-var loadTimeout = setTimeout(function(){
-  var loading = document.getElementById('loading');
-  if(loading && loading.style.display !== 'none'){
-    loading.textContent = 'could not connect to database. check firebase rules.';
-    loading.style.color = '#e74c3c';
-  }
-}, 8000);
-
-var postsLoaded = false, repliesLoaded = false;
-function checkBothLoaded(){
-  if(postsLoaded && repliesLoaded){
-    clearTimeout(loadTimeout);
-    rerender();
-  }
-}
-
-onValue(ref(db,'posts'), function(snap){
-  postsData = snap.val() || {};
-  postsLoaded = true;
-  checkBothLoaded();
-  if(postsLoaded && repliesLoaded) rerender();
-}, function(err){
-  var loading = document.getElementById('loading');
-  if(loading) { loading.textContent = 'error: ' + err.message; loading.style.color='#e74c3c'; }
+// ── NEW POST ──────────────────────────────────────────────────────────────
+const postOverlay = document.getElementById('post-overlay');
+document.getElementById('new-post-btn').addEventListener('click',()=>{
+  if(!username){ showUsernameModal(()=>{ postOverlay.classList.add('open'); document.getElementById('po-body').focus(); }); return; }
+  document.getElementById('po-posting-as').textContent='['+username+']';
+  postOverlay.classList.add('open');
+  setTimeout(()=>document.getElementById('po-body').focus(),50);
 });
-
-onValue(ref(db,'replies'), function(snap){
-  repliesData = snap.val() || {};
-  repliesLoaded = true;
-  checkBothLoaded();
-  if(postsLoaded && repliesLoaded) rerender();
-}, function(err){
-  console.error('replies error', err);
+document.getElementById('po-cancel').addEventListener('click',()=>{
+  postOverlay.classList.remove('open');
+  document.getElementById('po-body').value='';
 });
-</script>
-<button id="fab" aria-label="new post">+</button>
-<div id="admin-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#111;color:#fff;font-family:'Courier New',monospace;font-size:0.58rem;text-align:center;padding:0.4rem;letter-spacing:0.08em;z-index:50;">admin mode</div>
-<script>
-if(new URLSearchParams(window.location.search).get('admin') === 'rn3B31l9jOMp346euC7flQ'){
-  document.getElementById('admin-bar').style.display='block';
+document.getElementById('po-submit').addEventListener('click',()=>{
+  const body=document.getElementById('po-body').value.trim();
+  if(!body) return;
+  if(body.length>1500){ alert('Post too long (max 1500 characters)'); return; }
+  if(!username){ showUsernameModal(()=>document.getElementById('po-submit').click()); return; }
+  push(ref(db,'posts'),{body,author:username,ts:serverTimestamp()});
+  document.getElementById('po-body').value='';
+  postOverlay.classList.remove('open');
+});
+document.getElementById('po-body').addEventListener('keydown',e=>{ if(e.key==='Escape') document.getElementById('po-cancel').click(); });
+
+// ── DATA ──────────────────────────────────────────────────────────────────
+let postsLoaded=false, repliesLoaded=false;
+const loadTimeout=setTimeout(()=>{
+  if(!postsLoaded){
+    document.getElementById('doc').innerHTML='<div id="status" style="color:#c00;">could not connect · check firebase rules</div>';
+  }
+},8000);
+
+function refresh(){
+  if(postsLoaded&&repliesLoaded){ clearTimeout(loadTimeout); render(); }
 }
+onValue(ref(db,'posts'),snap=>{ postsData=snap.val()||{}; postsLoaded=true; refresh(); },
+  err=>{ document.getElementById('doc').innerHTML='<div id="status" style="color:#c00;">'+err.message+'</div>'; });
+onValue(ref(db,'replies'),snap=>{ repliesData=snap.val()||{}; repliesLoaded=true; refresh(); });
 </script>
 </body>
 </html>

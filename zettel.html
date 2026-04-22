@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <script>if(localStorage.getItem("mantarini-dark")==="1")document.documentElement.classList.add("dark");</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>zettel · το μανταρίνι</title>
+<title>notebox · το μανταρίνι</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#fff;--text:#111;--faint:#eee;--amber:#c8922a;--mid:#888;--edge:#ddd;}
@@ -276,9 +276,9 @@ html.dark .zt-sep{color:#333;}
 html.dark .zt-id .zid{color:var(--amber);}
 html.dark .zt-translate{color:#444;border-bottom-color:#333;}
 html.dark .zt-translate:hover{color:var(--amber);border-bottom-color:var(--amber);}
-html.dark .zt-links-to a{color:#666;}
-html.dark .zt-responses a{color:#666;}
-html.dark .zt-seealso a{color:#666;}
+html.dark .zt-links-to a{color:#999;}
+html.dark .zt-responses a{color:#999;}
+html.dark .zt-seealso a{color:#999;}
 html.dark .zt-type{color:#444;}
 html.dark .zt-id{color:#444;}
 html.dark .sp-section{color:#555;}
@@ -289,6 +289,12 @@ html.dark #sp-close{color:#555;}
 html.dark .sp-type{color:#444;}
 html.dark .zt-meta{color:#444;}
 html.dark .zt-meta .author{color:#aaa;}
+html.dark .zt-id .zid{color:var(--amber);}
+html.dark .zt-meta a{color:#999;border-bottom-color:#555;}
+html.dark .zt-meta a:hover{color:var(--amber);}
+html.dark .sp-links a{color:#999;}
+html.dark .sp-section a{color:#999;}
+html.dark .sp-section a:hover{color:var(--amber);}
 html.dark #side-panel{background:#1a1a1a;border-left-color:#2a2a2a;}
 html.dark .sp-title{color:#e8e4d8;}
 html.dark .sp-body{color:#c8c0b0;}
@@ -301,6 +307,15 @@ html.dark .node-label.highlighted{fill:#e8e4d8;}
 html.dark .link-response{stroke:#6a5030;}
 html.dark .link-seealso{stroke:#3a3a3a;stroke-dasharray:4,3;}
 html.dark #web-hint{background:rgba(17,17,17,0.9);border-color:#2a2a2a;color:#555;}
+#web-hint{
+  position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);
+  font-family:'Courier New',monospace;font-size:0.6rem;color:#999;
+  letter-spacing:0.06em;pointer-events:none;white-space:nowrap;
+  background:rgba(255,255,255,0.9);padding:0.3rem 0.7rem;
+  border:1px solid #eee;z-index:5;
+}
+html.dark .web-legend rect{fill:rgba(20,20,20,0.9) !important;}
+html.dark .web-legend text{fill:#888 !important;}
 html.dark #web-svg{background:#111;}
 html.dark .kw-term{color:#555;}
 html.dark .kw-entry-link{color:#555;border-bottom-color:#2a2a2a;}
@@ -334,12 +349,12 @@ html.dark #mode-toggle:hover{border-color:#888;color:#aaa;}
     <div id="site-title">
       <a href="zettel.html">το</a> μανταρίνι <a href="ascii.html" style="text-decoration:none;color:#111;">(((◌)))</a>
     </div>
-    <span id="page-sub">zettelkasten</span>
+    <span id="page-sub">notebox</span>
   </div>
   <div id="top-right">
     <button class="nav-btn" id="btn-about">about</button>
-    <button class="nav-btn active" id="btn-transcript">transcript</button>
     <button class="nav-btn" id="btn-web">web</button>
+    <button class="nav-btn active" id="btn-transcript">transcript</button>
     <button class="nav-btn" id="btn-index">index</button>
     <a href="index.html" class="nav-btn">back</a>
   </div>
@@ -801,8 +816,11 @@ function renderCluster(){
   const usedTypes=new Set(nodes.map(n=>(n.type||'').toLowerCase().replace(/\s*\(.*?\)/g,'').trim()));
   const legendItems=Object.keys(TYPE_COLORS).filter(k=>k!=='default'&&k!=='submission'&&usedTypes.has(k));
   if(legendItems.length){
-    const legG=svg.append('g').attr('transform',`translate(12,12)`);
-    legendItems.forEach((t,i)=>{const row=legG.append('g').attr('transform',`translate(0,${i*15})`);row.append('circle').attr('r',4).attr('cx',4).attr('cy',0).attr('fill',TYPE_COLORS[t]+'44').attr('stroke',TYPE_COLORS[t]).attr('stroke-width',1);row.append('text').attr('x',12).attr('y',4).attr('font-family','Courier New,monospace').attr('font-size',9).attr('fill','#aaa').text(t);});
+    const legH=legendItems.length*16+8;
+    const legG=svg.append('g').attr('transform',`translate(${isMobile?10:16},${H-legH-(isMobile?10:16)})`);
+    const isDark=document.documentElement.classList.contains('dark');
+    legG.append('rect').attr('x',-6).attr('y',-6).attr('width',isMobile?90:100).attr('height',legH).attr('fill',isDark?'rgba(20,20,20,0.92)':'rgba(255,255,255,0.88)').attr('rx',2);
+    legendItems.forEach((t,i)=>{const row=legG.append('g').attr('transform',`translate(0,${i*16})`);row.append('circle').attr('r',4).attr('cx',4).attr('cy',4).attr('fill',TYPE_COLORS[t]+'44').attr('stroke',TYPE_COLORS[t]).attr('stroke-width',1.2);row.append('text').attr('x',14).attr('y',8).attr('font-family','Courier New,monospace').attr('font-size',isMobile?9:8).attr('fill',isDark?'#aaa':'#666').text(t);});
   }
   patchToolbar(d3nodes,node,g,linkR,linkS);
 }
@@ -884,8 +902,11 @@ function renderTree(){
   const usedTypes=new Set(nodes.map(n=>(n.type||'').toLowerCase().replace(/\s*\(.*?\)/g,'').trim()));
   const legendItems=Object.keys(TYPE_COLORS).filter(k=>k!=='default'&&k!=='submission'&&usedTypes.has(k));
   if(legendItems.length){
-    const legG=svg.append('g').attr('transform',`translate(12,12)`);
-    legendItems.forEach((t,i)=>{const row=legG.append('g').attr('transform',`translate(0,${i*15})`);row.append('circle').attr('r',4).attr('cx',4).attr('cy',0).attr('fill',TYPE_COLORS[t]+'44').attr('stroke',TYPE_COLORS[t]).attr('stroke-width',1);row.append('text').attr('x',12).attr('y',4).attr('font-family','Courier New,monospace').attr('font-size',9).attr('fill','#aaa').text(t);});
+    const legH=legendItems.length*16+8;
+    const legG=svg.append('g').attr('transform',`translate(${isMobile?10:16},${H-legH-(isMobile?10:16)})`);
+    const isDark=document.documentElement.classList.contains('dark');
+    legG.append('rect').attr('x',-6).attr('y',-6).attr('width',isMobile?90:100).attr('height',legH).attr('fill',isDark?'rgba(20,20,20,0.92)':'rgba(255,255,255,0.88)').attr('rx',2);
+    legendItems.forEach((t,i)=>{const row=legG.append('g').attr('transform',`translate(0,${i*16})`);row.append('circle').attr('r',4).attr('cx',4).attr('cy',4).attr('fill',TYPE_COLORS[t]+'44').attr('stroke',TYPE_COLORS[t]).attr('stroke-width',1.2);row.append('text').attr('x',14).attr('y',8).attr('font-family','Courier New,monospace').attr('font-size',isMobile?9:8).attr('fill',isDark?'#aaa':'#666').text(t);});
   }
 }
 

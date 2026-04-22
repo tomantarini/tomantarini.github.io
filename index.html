@@ -560,11 +560,10 @@ function openPanel(idx) {
     const idEl = document.createElement('span');
     idEl.style.cssText = "font-family:'Courier New',monospace;font-size:0.62rem;color:#aaa;letter-spacing:0.06em;cursor:pointer;user-select:all;";
     idEl.textContent = '#' + entry.id;
-    idEl.title = 'click to copy';
+    idEl.title = 'view entry page';
+    idEl.style.cursor = 'pointer';
     idEl.addEventListener('click', () => {
-      navigator.clipboard && navigator.clipboard.writeText(entry.id);
-      idEl.textContent = 'copied!';
-      setTimeout(() => idEl.textContent = '#' + entry.id, 1200);
+      window.open('zettel.html?entry=' + encodeURIComponent(entry.id), '_blank');
     });
     idRow.appendChild(idEl);
   }

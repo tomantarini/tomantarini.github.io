@@ -221,32 +221,45 @@ html.dark #draw-hint{color:#555;}
 }
 
 /* INDEX */
-#index-inner{max-width:680px;margin:0 auto;padding:2.5rem 1.4rem 6rem;}
-#index-inner h2{font-family:Georgia,"Times New Roman",serif;font-size:1.1rem;font-weight:normal;color:#111;margin-bottom:1.8rem;}
-.kw-group{margin-bottom:2.4rem;}
+#index-inner{max-width:680px;margin:0 auto;padding:2.5rem 1.4rem 6rem;overflow-y:auto;}
+#index-header{margin-bottom:3rem;border-bottom:1px solid #eee;padding-bottom:1.5rem;}
+html.dark #index-header{border-bottom-color:#222;}
+#index-title{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:2.6rem;font-weight:normal;font-style:italic;
+  color:#111;line-height:1;margin-bottom:0.4rem;
+}
+html.dark #index-title{color:#e8e4d8;}
+#index-subtitle{
+  font-family:'Courier New',monospace;font-size:0.58rem;
+  color:#ccc;letter-spacing:0.1em;text-transform:uppercase;
+}
+html.dark #index-subtitle{color:#444;}
+.kw-group{margin-bottom:1.6rem;display:flex;align-items:baseline;gap:1.5rem;flex-wrap:wrap;}
 .kw-term{
   font-family:Georgia,"Times New Roman",serif;
-  font-size:1.6rem;font-weight:normal;font-style:italic;
+  font-size:1.4rem;font-weight:normal;font-style:italic;
   color:#111;letter-spacing:-0.01em;
-  margin-bottom:0.4rem;display:block;
-  cursor:pointer;line-height:1.15;
+  cursor:pointer;line-height:1.15;flex-shrink:0;
+  min-width:160px;
 }
 .kw-count{
-  font-family:'Courier New',monospace;font-size:0.55rem;
-  color:#ccc;letter-spacing:0.08em;margin-left:0.5rem;
+  font-family:'Courier New',monospace;font-size:0.5rem;
+  color:#ccc;letter-spacing:0.08em;margin-left:0.4rem;
   vertical-align:middle;font-style:normal;
 }
 html.dark .kw-count{color:#444;}
 .kw-term:hover{color:var(--amber);}
-html.dark .kw-term{color:#e8e4d8;border-bottom-color:#2a2a2a;}
-.kw-entries{display:flex;flex-wrap:wrap;gap:0.3rem 0.8rem;margin-top:0.3rem;padding-bottom:1.4rem;border-bottom:1px solid #f0f0f0;}
-html.dark .kw-entries{border-bottom-color:#1e1e1e;}
+html.dark .kw-term{color:#e8e4d8;}
+.kw-entries{display:flex;flex-wrap:wrap;gap:0.2rem 0.6rem;flex:1;}
 .kw-entry-link{
-  font-family:Georgia,"Times New Roman",serif;font-size:0.82rem;font-style:italic;
-  color:#999;cursor:pointer;text-decoration:none;
+  font-family:'Courier New',monospace;font-size:0.6rem;
+  color:#bbb;cursor:pointer;text-decoration:none;
+  letter-spacing:0.03em;
+  border-bottom:1px dotted #eee;
 }
-.kw-entry-link:hover{color:var(--amber);}
-html.dark .kw-entry-link{color:#555;}
+.kw-entry-link:hover{color:var(--amber);border-bottom-color:var(--amber);}
+html.dark .kw-entry-link{color:#555;border-bottom-color:#2a2a2a;}
 html.dark .kw-entry-link:hover{color:var(--amber);}
 /* DARK MODE */
 html.dark body{background:#111;color:#e8e4d8;}
@@ -368,7 +381,10 @@ html.dark #mode-toggle:hover{border-color:#888;color:#aaa;}
 
 <div id="view-index">
   <div id="index-inner">
-    <p style="font-family:Georgia,'Times New Roman',serif;font-size:1.1rem;font-weight:normal;margin:0 0 1.8rem 0;color:#111;">index</p>
+    <div id="index-header">
+      <p id="index-title">index</p>
+      <p id="index-subtitle">all keywords · click to explore</p>
+    </div>
     <div id="index-list"></div>
   </div>
 </div>

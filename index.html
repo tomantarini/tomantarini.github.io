@@ -115,7 +115,13 @@ html.dark .panel-text{color:#d8d0c0;}
 html.dark .panel-text strong{color:#e8e4d8;}
 html.dark .panel-meta{border-top-color:#2a2a2a;}
 html.dark .panel-signature{color:#888;}
-html.dark .panel-keywords{color:#666;}
+html.dark .panel-keywords{color:#999;}
+html.dark .panel-keywords a{color:#999;border-bottom-color:#444;}
+html.dark .panel-keywords a:hover{color:var(--accent);border-bottom-color:var(--accent);}
+.kw-link{color:#bbb;}
+.kw-link:visited{color:#bbb;}
+html.dark .kw-link{color:#999;}
+html.dark .kw-link:visited{color:#999;}
 html.dark .panel-response{color:#555;}
 html.dark .panel-response a{color:#777;border-bottom-color:#333;}
 html.dark .panel-response a:hover{color:var(--accent);}
@@ -542,9 +548,10 @@ function openPanel(idx) {
         const a = document.createElement('a');
         a.textContent = k;
         a.href = 'zettel.html?keyword=' + encodeURIComponent(k.toLowerCase());
-        a.style.cssText = 'color:inherit;text-decoration:none;border-bottom:1px dotted #ddd;cursor:pointer;';
+        a.className = 'kw-link';
+        a.style.cssText = 'text-decoration:none;border-bottom:1px dotted #ddd;cursor:pointer;';
         a.onmouseover = () => { a.style.color = '#c8922a'; a.style.borderBottomColor = '#c8922a'; };
-        a.onmouseout  = () => { a.style.color = ''; a.style.borderBottomColor = '#ddd'; };
+        a.onmouseout  = () => { a.style.removeProperty('color'); a.style.borderBottomColor = ''; };
         kw.appendChild(a);
         if (i < arr.length - 1) kw.appendChild(document.createTextNode(', '));
       });

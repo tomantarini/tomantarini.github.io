@@ -41,9 +41,51 @@ html,body{height:100%;background:#fff;color:#111;font-family:Georgia,"Times New 
 #view-index{position:fixed;top:3.4rem;bottom:0;left:0;right:0;overflow-y:auto;display:none;-webkit-overflow-scrolling:touch;}
 
 /* TRANSCRIPT LAYOUT */
-#entries-col{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-#transcript-inner{max-width:640px;margin:0 auto;padding:2.5rem 1.6rem 6rem;}
+#entries-col{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;display:flex;flex-direction:column;}
+#sort-bar{
+  display:flex;justify-content:flex-end;align-items:center;
+  padding:0.4rem 1.6rem;border-bottom:1px solid #f5f5f5;
+  flex-shrink:0;
+}
+html.dark #sort-bar{border-bottom-color:#1e1e1e;}
+#sort-select{
+  background:none;border:none;border-bottom:1px dotted #ddd;
+  font-family:'Courier New',monospace;font-size:0.6rem;
+  color:#bbb;cursor:pointer;letter-spacing:0.04em;
+  -webkit-appearance:none;appearance:none;
+  padding:0.1rem 1.4rem 0.1rem 0;outline:none;
+  min-width:110px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath d='M0 0l4 5 4-5z' fill='%23ccc'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 0 center;
+}
+#sort-select:hover{color:#111;}
+html.dark #sort-select{color:#444;background:transparent;}
+html.dark #sort-select:hover{color:#e8e4d8;}
+html.dark #sort-select option{background:#1a1a1a;color:#e8e4d8;}
+@media(max-width:600px){#sort-bar{padding:0.4rem 1rem;}}
+html.dark #sort-select option{background:#1a1a1a;color:#e8e4d8;}
+@media(max-width:600px){#sort-bar{padding:0.4rem 1rem;}}
+#transcript-inner{max-width:640px;margin:0 auto;padding:2rem 1.6rem 6rem;flex:1;}
+@media(max-width:600px){#sort-bar{padding:0.5rem 1rem;}#transcript-inner{padding:1.5rem 1rem 6rem;}}
 #loading-inner{padding:2.5rem 1.6rem;font-style:italic;color:#ccc;font-size:0.85rem;}
+#sort-bar{
+  display:flex;align-items:center;gap:0.6rem;
+  padding:0.6rem 1.6rem 0;
+  font-family:'Courier New',monospace;font-size:0.58rem;color:#ccc;
+  letter-spacing:0.06em;
+}
+.sort-opt{
+  background:none;border:none;cursor:pointer;
+  font-family:'Courier New',monospace;font-size:0.58rem;
+  color:#ccc;letter-spacing:0.06em;padding:0;
+  transition:color 0.12s;
+}
+.sort-opt:hover{color:#888;}
+.sort-opt.active{color:#111;border-bottom:1px solid #111;}
+html.dark #sort-bar{color:#444;}
+html.dark .sort-opt{color:#444;}
+html.dark .sort-opt:hover{color:#888;}
+html.dark .sort-opt.active{color:#e8e4d8;border-bottom-color:#e8e4d8;}
 @media(max-width:600px){#transcript-inner{padding:2rem 1rem 6rem;}}
 
 /* ABOUT OVERLAY */
@@ -113,9 +155,7 @@ html.dark .node-circle.constellation{fill:#2a2218;}
   padding:0.3rem 0.6rem;border-radius:2px;
   font-family:'Courier New',monospace;font-size:0.6rem;
 }
-@media(max-width:768px){
-  .tool-btn:not(#tool-connect):not(#tool-draw):not(#tool-clear){display:none;}
-}
+
 html.dark #web-toolbar{background:rgba(20,20,20,0.95);border-color:#333;}
 .tool-btn{
   background:none;border:none;cursor:pointer;
@@ -183,11 +223,31 @@ html.dark #draw-hint{color:#555;}
 /* INDEX */
 #index-inner{max-width:680px;margin:0 auto;padding:2.5rem 1.4rem 6rem;}
 #index-inner h2{font-family:Georgia,"Times New Roman",serif;font-size:1.1rem;font-weight:normal;color:#111;margin-bottom:1.8rem;}
-.kw-group{margin-bottom:1.8rem;}
-.kw-term{font-family:'Courier New',monospace;font-size:0.68rem;color:#888;letter-spacing:0.08em;margin-bottom:0.5rem;display:block;}
-.kw-entries{display:flex;flex-wrap:wrap;gap:0.4rem 0.6rem;}
-.kw-entry-link{font-family:Georgia,"Times New Roman",serif;font-style:italic;font-size:0.82rem;color:#bbb;cursor:pointer;text-decoration:none;border-bottom:1px dotted #eee;}
-.kw-entry-link:hover{color:var(--amber);border-bottom-color:var(--amber);}
+.kw-group{margin-bottom:2.4rem;}
+.kw-term{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:1.6rem;font-weight:normal;font-style:italic;
+  color:#111;letter-spacing:-0.01em;
+  margin-bottom:0.4rem;display:block;
+  cursor:pointer;line-height:1.15;
+}
+.kw-count{
+  font-family:'Courier New',monospace;font-size:0.55rem;
+  color:#ccc;letter-spacing:0.08em;margin-left:0.5rem;
+  vertical-align:middle;font-style:normal;
+}
+html.dark .kw-count{color:#444;}
+.kw-term:hover{color:var(--amber);}
+html.dark .kw-term{color:#e8e4d8;border-bottom-color:#2a2a2a;}
+.kw-entries{display:flex;flex-wrap:wrap;gap:0.3rem 0.8rem;margin-top:0.3rem;padding-bottom:1.4rem;border-bottom:1px solid #f0f0f0;}
+html.dark .kw-entries{border-bottom-color:#1e1e1e;}
+.kw-entry-link{
+  font-family:Georgia,"Times New Roman",serif;font-size:0.82rem;font-style:italic;
+  color:#999;cursor:pointer;text-decoration:none;
+}
+.kw-entry-link:hover{color:var(--amber);}
+html.dark .kw-entry-link{color:#555;}
+html.dark .kw-entry-link:hover{color:var(--amber);}
 /* DARK MODE */
 html.dark body{background:#111;color:#e8e4d8;}
 html.dark #top{background:#111;border-bottom-color:#2a2a2a;}
@@ -274,6 +334,13 @@ html.dark #mode-toggle:hover{border-color:#888;color:#aaa;}
 
 <div id="view-transcript">
   <div id="entries-col">
+    <div id="sort-bar">
+      <select id="sort-select">
+        <option value="newest">newest first</option>
+        <option value="oldest">oldest first</option>
+        <option value="connected">most connected</option>
+      </select>
+    </div>
     <div id="transcript-inner">
       <div id="loading-inner">loading...</div>
     </div>
@@ -284,10 +351,8 @@ html.dark #mode-toggle:hover{border-color:#888;color:#aaa;}
   <svg id="web-svg"></svg>
   <canvas id="draw-canvas"></canvas>
   <div id="web-toolbar">
-    <button class="tool-btn active" id="tool-pan" title="pan & read">✦</button>
-    <button class="tool-btn" id="tool-annotate" title="annotate node">✎</button>
+    <button class="tool-btn active" id="tool-pan" title="navigate">✦</button>
     <button class="tool-btn" id="tool-connect" title="draw connection">⟷</button>
-    <button class="tool-btn" id="tool-path" title="find path">⟿</button>
     <button class="tool-btn" id="tool-constellation" title="my constellation">◈</button>
     <button class="tool-btn" id="tool-draw" title="freehand">✍</button>
     <button class="tool-btn" id="tool-clear" title="clear all">✕</button>
@@ -356,6 +421,30 @@ html.dark #mode-toggle:hover{border-color:#888;color:#aaa;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script>
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_L3BRTS15mXDYMn01jC63svihZjidfiwFuZYA1D50_1wBMcWu1th38yZgvMgzEVtDchLmAHNpVSle/pub?output=csv';
+
+// ── SORT ────────────────────────────────────────────────────────────────────
+var currentSort = 'newest';
+
+function sortNodes(s){
+  currentSort = s;
+  document.querySelectorAll('.sort-opt').forEach(b=>b.classList.toggle('active', b.dataset.sort===s));
+  if(s==='newest'){
+    nodes.sort((a,b)=>{ const ta=a.ts?new Date(a.ts).getTime():0, tb=b.ts?new Date(b.ts).getTime():0; return tb-ta; });
+  } else if(s==='oldest'){
+    nodes.sort((a,b)=>{ const ta=a.ts?new Date(a.ts).getTime():0, tb=b.ts?new Date(b.ts).getTime():0; return ta-tb; });
+  } else if(s==='connections'){
+    nodes.sort((a,b)=>{
+      const ca=edges.filter(e=>e.source===a.id||e.target===a.id).length;
+      const cb=edges.filter(e=>e.source===b.id||e.target===b.id).length;
+      return cb-ca;
+    });
+  }
+  renderTranscript();
+}
+
+document.querySelectorAll('.sort-opt').forEach(b=>{
+  b.addEventListener('click',()=>sortNodes(b.dataset.sort));
+});
 
 // ── VIEW SWITCHING ──────────────────────────────────────────────────────────
 var currentView = 'transcript';
@@ -472,13 +561,7 @@ function esc(t){ return t?(t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(
 function renderTranscript(){
   const inner=document.getElementById('transcript-inner');
   inner.innerHTML='';
-  // sort newest first — branches stay with parent
-  nodes.sort((a,b)=>{
-    // parse timestamp strings for comparison
-    const ta=a.ts?new Date(a.ts).getTime():0;
-    const tb=b.ts?new Date(b.ts).getTime():0;
-    return tb-ta;
-  });
+  // sort already applied by sortNodes()
   // response map
   const respMap={}, seeMap={};
   edges.forEach(e=>{
@@ -646,9 +729,7 @@ function setTool(t){
 }
 
 document.getElementById('tool-pan').addEventListener('click',()=>setTool('pan'));
-document.getElementById('tool-annotate').addEventListener('click',()=>setTool('annotate'));
 document.getElementById('tool-connect').addEventListener('click',()=>setTool('connect'));
-document.getElementById('tool-path').addEventListener('click',()=>setTool('path'));
 document.getElementById('tool-constellation').addEventListener('click',()=>setTool('constellation'));
 document.getElementById('tool-draw').addEventListener('click',()=>setTool('draw'));
 document.getElementById('tool-clear').addEventListener('click',()=>{
@@ -968,7 +1049,11 @@ function renderIndex(){
   nodes.forEach(n=>{ n.keywords.split(',').map(k=>k.trim().toLowerCase()).filter(Boolean).forEach(k=>{ if(!kwMap[k]) kwMap[k]=[]; kwMap[k].push(n); }); });
   Object.keys(kwMap).sort().forEach(kw=>{
     const g=document.createElement('div'); g.className='kw-group';
-    const t=document.createElement('span'); t.className='kw-term'; t.textContent=kw; t.style.cursor='pointer'; t.addEventListener('click',()=>filterByKeyword(kw)); g.appendChild(t);
+    const t=document.createElement('span'); t.className='kw-term'; t.style.cursor='pointer';
+    t.addEventListener('click',()=>filterByKeyword(kw));
+    t.appendChild(document.createTextNode(kw));
+    const cnt=document.createElement('span'); cnt.className='kw-count'; cnt.textContent=kwMap[kw].length; t.appendChild(cnt);
+    g.appendChild(t);
     const es=document.createElement('div'); es.className='kw-entries';
     kwMap[kw].forEach(n=>{ const a=document.createElement('span'); a.className='kw-entry-link'; a.textContent=(n.id?'#'+n.id+' ':'')+n.label; a.addEventListener('click',()=>{ showView('transcript'); setTimeout(()=>scrollToNode(n.id),100); }); es.appendChild(a); });
     g.appendChild(es); list.appendChild(g);
@@ -986,7 +1071,7 @@ async function init(){
     const entries=parseCSV(csv);
     if(!entries.length){ document.getElementById('loading-inner').style.display='block'; document.getElementById('loading-inner').textContent='no published entries found.'; return; }
     buildGraph(entries);
-    renderTranscript();
+    sortNodes('newest'); // sets currentSort and calls renderTranscript
     // check for keyword filter in URL
     const initKw=new URLSearchParams(window.location.search).get('keyword');
     if(initKw) filterByKeyword(initKw);
@@ -995,6 +1080,20 @@ async function init(){
   }
 }
 init();
+
+var currentSort='newest';
+function applySort(type){
+  currentSort=type;
+  if(type==='newest') nodes.sort((a,b)=>(new Date(b.ts||0))-(new Date(a.ts||0)));
+  else if(type==='oldest') nodes.sort((a,b)=>(new Date(a.ts||0))-(new Date(b.ts||0)));
+  else if(type==='connected') nodes.sort((a,b)=>{
+    const ca=edges.filter(e=>e.source===a.id||e.target===a.id).length;
+    const cb=edges.filter(e=>e.source===b.id||e.target===b.id).length;
+    return cb-ca;
+  });
+  renderTranscript();
+}
+document.getElementById('sort-select').addEventListener('change',e=>applySort(e.target.value));
 </script>
 </body>
 </html>

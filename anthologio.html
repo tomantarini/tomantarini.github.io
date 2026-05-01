@@ -570,11 +570,11 @@ var hoverConnections=new Set();
 var darkMode=localStorage.getItem('mantarini-dark')==='1';
 document.documentElement.classList.toggle('dark',darkMode);
 var modeBtn=document.getElementById('mode-toggle');
-modeBtn.textContent=darkMode?'\u263d':'\u2600';
+modeBtn.textContent=darkMode?'☽':'☀';
 modeBtn.addEventListener('click',()=>{
   darkMode=!darkMode;
   document.documentElement.classList.toggle('dark',darkMode);
-  modeBtn.textContent=darkMode?'\u263d':'\u2600';
+  modeBtn.textContent=darkMode?'☽':'☀';
   localStorage.setItem('mantarini-dark',darkMode?'1':'0');
   renderConnections();
 });
@@ -655,7 +655,7 @@ async function fetchCSV(url){
     const t=await res.text();
     if(t&&t.length>10)return t;
   }catch(e){}
-  throw new Error('could not load \u2014 check Sheet is published as CSV');
+  throw new Error('could not load — check Sheet is published as CSV');
 }
 
 // ?? LOAD ?????????????????????????????????????????????????????????????????????
@@ -704,13 +704,13 @@ function loadDemo(){
      author:'Niklas Luhmann',source:'Communicating with Slip Boxes',year:'1993',page:'',archive_id:'',x:'80',y:'80',publish:'TRUE'},
 
     {id:'a02',type:'note',
-     content:'I keep thinking about the difference between a system that files and a system that thinks. One preserves. The other generates. The distinction matters for how we understand memory itself \u2014 whether it is storage or process.',
+     content:'I keep thinking about the difference between a system that files and a system that thinks. One preserves. The other generates. The distinction matters for how we understand memory itself — whether it is storage or process.',
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'60',publish:'TRUE'},
 
     {id:'a03',type:'quote',
      content:'Every note is an address. The address generates meaning not from within the note but from its position relative to others. Place a note next to a different neighbour and it becomes a different note.',
-     citation:'Luhmann, N. (1992). Universit\u00e4t als Milieu. p. 53',
-     author:'Niklas Luhmann',source:'Universit\u00e4t als Milieu',year:'1992',page:'53',archive_id:'',x:'80',y:'290',publish:'TRUE'},
+     citation:'Luhmann, N. (1992). Universität als Milieu. p. 53',
+     author:'Niklas Luhmann',source:'Universität als Milieu',year:'1992',page:'53',archive_id:'',x:'80',y:'290',publish:'TRUE'},
 
     // ?? ATTENTION / WEIL ?????????????????????????????????????????????????????
     {id:'a04',type:'quote',
@@ -723,7 +723,7 @@ function loadDemo(){
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'310',publish:'TRUE'},
 
     {id:'a06',type:'quote',
-     content:'To attend to something \u2014 really attend \u2014 is to suspend the self entirely. The ego does not attend. It appropriates.',
+     content:'To attend to something — really attend — is to suspend the self entirely. The ego does not attend. It appropriates.',
      citation:'Weil, S. (1951). Waiting for God. p. 105',
      author:'Simone Weil',source:'Waiting for God',year:'1951',page:'105',archive_id:'',x:'700',y:'300',publish:'TRUE'},
 
@@ -738,13 +738,13 @@ function loadDemo(){
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'540',publish:'TRUE'},
 
     {id:'a09',type:'quote',
-     content:'Every technical system is also a mnemonic system. It does not merely store memory \u2014 it produces the conditions under which certain memories become possible and others do not.',
+     content:'Every technical system is also a mnemonic system. It does not merely store memory — it produces the conditions under which certain memories become possible and others do not.',
      citation:'Stiegler, B. (1998). Technics and Time, 1. p. 205',
      author:'Bernard Stiegler',source:'Technics and Time, 1',year:'1998',page:'205',archive_id:'',x:'700',y:'520',publish:'TRUE'},
 
     // ?? PSYCHOLOGY / EXPERIENCE ??????????????????????????????????????????????
     {id:'a10',type:'quote',
-     content:'The patient does not need a correct interpretation. She needs to feel that her experience has been received \u2014 that it has landed somewhere and changed the shape of the room.',
+     content:'The patient does not need a correct interpretation. She needs to feel that her experience has been received — that it has landed somewhere and changed the shape of the room.',
      citation:'Winnicott, D.W. (1971). Playing and Reality. p. 38',
      author:'D.W. Winnicott',source:'Playing and Reality',year:'1971',page:'38',archive_id:'',x:'1020',y:'80',publish:'TRUE'},
 
@@ -753,18 +753,18 @@ function loadDemo(){
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1020',y:'290',publish:'TRUE'},
 
     {id:'a12',type:'quote',
-     content:'What we cannot speak about we pass over in silence \u2014 but we do not pass over it cleanly. It accumulates in the body, in gesture, in the way we enter a room.',
+     content:'What we cannot speak about we pass over in silence — but we do not pass over it cleanly. It accumulates in the body, in gesture, in the way we enter a room.',
      citation:'Wittgenstein, L. (1922). Tractatus Logico-Philosophicus. 7',
      author:'Ludwig Wittgenstein',source:'Tractatus Logico-Philosophicus',year:'1922',page:'7',archive_id:'',x:'1020',y:'500',publish:'TRUE'},
 
     // ?? PHENOMENOLOGY ????????????????????????????????????????????????????????
     {id:'a13',type:'quote',
-     content:'Consciousness is always consciousness of something. There is no empty consciousness, no pure subject waiting to be filled. The direction of experience is not incidental \u2014 it is constitutive.',
+     content:'Consciousness is always consciousness of something. There is no empty consciousness, no pure subject waiting to be filled. The direction of experience is not incidental — it is constitutive.',
      citation:'Husserl, E. (1913). Ideas I. p. 72',
      author:'Edmund Husserl',source:'Ideas I',year:'1913',page:'72',archive_id:'',x:'1340',y:'80',publish:'TRUE'},
 
     {id:'a14',type:'note',
-     content:'IPA as a methodology does exactly this \u2014 it refuses the idea of a pure report of experience and instead follows the direction of experience, the way it reaches toward its objects. The analyst is not outside the phenomenon. She is one of its conditions.',
+     content:'IPA as a methodology does exactly this — it refuses the idea of a pure report of experience and instead follows the direction of experience, the way it reaches toward its objects. The analyst is not outside the phenomenon. She is one of its conditions.',
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1340',y:'300',publish:'TRUE'},
 
     {id:'a15',type:'quote',
@@ -784,12 +784,12 @@ function loadDemo(){
 
     {id:'a18',type:'quote',
      content:'The Situationists understood that the city is not a neutral container for life. It is a machine for producing certain kinds of subjectivity. To drift through it without purpose is to refuse that production.',
-     citation:'Debord, G. (1958). Theory of the D\u00e9rive.',
-     author:'Guy Debord',source:'Theory of the D\u00e9rive',year:'1958',page:'',archive_id:'',x:'700',y:'760',publish:'TRUE'},
+     citation:'Debord, G. (1958). Theory of the Dérive.',
+     author:'Guy Debord',source:'Theory of the Dérive',year:'1958',page:'',archive_id:'',x:'700',y:'760',publish:'TRUE'},
 
     // ?? ECOLOGY / DEMOS ??????????????????????????????????????????????????????
     {id:'a19',type:'quote',
-     content:'Climate crisis is not an environmental problem with political implications. It is a political problem that has been rendered environmental \u2014 which is to say, rendered natural, inevitable, outside the domain of collective decision.',
+     content:'Climate crisis is not an environmental problem with political implications. It is a political problem that has been rendered environmental — which is to say, rendered natural, inevitable, outside the domain of collective decision.',
      citation:'Demos, T.J. (2017). Against the Anthropocene. p. 14',
      author:'T.J. Demos',source:'Against the Anthropocene',year:'2017',page:'14',archive_id:'',x:'1020',y:'760',publish:'TRUE'},
 
@@ -799,11 +799,11 @@ function loadDemo(){
 
     // ?? AI / EMOTIONAL SUPPORT ???????????????????????????????????????????????
     {id:'a21',type:'fragment',
-     content:'People form attachments to systems that respond consistently. This is not pathology. It is attachment theory applied to a new class of objects. The question is what obligations that creates \u2014 for the designers, for the system, for the user.',
+     content:'People form attachments to systems that respond consistently. This is not pathology. It is attachment theory applied to a new class of objects. The question is what obligations that creates — for the designers, for the system, for the user.',
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'700',y:'1000',publish:'TRUE'},
 
     {id:'a22',type:'quote',
-     content:'The uncanny is not the strange. It is the familiar rendered strange \u2014 the heimlich become unheimlich. AI that speaks of its feelings is uncanny precisely because it is so fluent.',
+     content:'The uncanny is not the strange. It is the familiar rendered strange — the heimlich become unheimlich. AI that speaks of its feelings is uncanny precisely because it is so fluent.',
      citation:'Freud, S. (1919). The Uncanny. p. 241',
      author:'Sigmund Freud',source:'The Uncanny',year:'1919',page:'241',archive_id:'',x:'420',y:'1000',publish:'TRUE'},
 
@@ -814,20 +814,20 @@ function loadDemo(){
 
   connections = [
     // systems of thought
-    {from_id:'a01',to_id:'a02',label:'filing vs thinking \u2014 same question, different registers',publish:'TRUE'},
-    {from_id:'a01',to_id:'a03',label:'position generates meaning \u2014 core Luhmann claim',publish:'TRUE'},
+    {from_id:'a01',to_id:'a02',label:'filing vs thinking — same question, different registers',publish:'TRUE'},
+    {from_id:'a01',to_id:'a03',label:'position generates meaning — core Luhmann claim',publish:'TRUE'},
     {from_id:'a03',to_id:'a05',label:'placing ideas next to each other without resolving them',publish:'TRUE'},
 
     // attention
     {from_id:'a04',to_id:'a06',label:'same source, different facet of attention',publish:'TRUE'},
-    {from_id:'a04',to_id:'a11',label:'generosity vs understanding \u2014 being received',publish:'TRUE'},
+    {from_id:'a04',to_id:'a11',label:'generosity vs understanding — being received',publish:'TRUE'},
     {from_id:'a06',to_id:'a10',label:'suspension of self / the room that receives',publish:'TRUE'},
 
     // technology and memory
-    {from_id:'a07',to_id:'a09',label:'the tool as mnemonic \u2014 technics and memory are one',publish:'TRUE'},
-    {from_id:'a07',to_id:'a08',label:'Stiegler\'s technical hand \u2192 ChatGPT as prosthesis',publish:'TRUE'},
+    {from_id:'a07',to_id:'a09',label:'the tool as mnemonic — technics and memory are one',publish:'TRUE'},
+    {from_id:'a07',to_id:'a08',label:'Stiegler\'s technical hand → ChatGPT as prosthesis',publish:'TRUE'},
     {from_id:'a09',to_id:'a01',label:'the Zettelkasten as mnemonic-technical system',publish:'TRUE'},
-    {from_id:'a08',to_id:'a23',label:'prosthesis of thought \u2192 ENDON as clinical problem',publish:'TRUE'},
+    {from_id:'a08',to_id:'a23',label:'prosthesis of thought → ENDON as clinical problem',publish:'TRUE'},
 
     // psychology
     {from_id:'a10',to_id:'a11',label:'being received vs being understood',publish:'TRUE'},
@@ -835,19 +835,19 @@ function loadDemo(){
     {from_id:'a12',to_id:'a15',label:'Wittgenstein\'s silence / Merleau-Ponty\'s embodied world',publish:'TRUE'},
 
     // phenomenology
-    {from_id:'a13',to_id:'a14',label:'intentionality \u2192 IPA methodology',publish:'TRUE'},
+    {from_id:'a13',to_id:'a14',label:'intentionality → IPA methodology',publish:'TRUE'},
     {from_id:'a14',to_id:'a02',label:'the researcher is not outside the phenomenon',publish:'TRUE'},
-    {from_id:'a15',to_id:'a13',label:'no view from nowhere \u2014 same claim, different vocabulary',publish:'TRUE'},
+    {from_id:'a15',to_id:'a13',label:'no view from nowhere — same claim, different vocabulary',publish:'TRUE'},
 
     // play and politics
-    {from_id:'a16',to_id:'a17',label:'play precedes culture \u2192 three-sided football as prior logic',publish:'TRUE'},
+    {from_id:'a16',to_id:'a17',label:'play precedes culture → three-sided football as prior logic',publish:'TRUE'},
     {from_id:'a17',to_id:'a18',label:'refusing binary outcome / refusing the city\'s production',publish:'TRUE'},
-    {from_id:'a18',to_id:'a20',label:'the d\u00e9rive \u2192 strategic optimism football',publish:'TRUE'},
-    {from_id:'a19',to_id:'a20',label:'political ecology \u2192 the field as contested terrain',publish:'TRUE'},
+    {from_id:'a18',to_id:'a20',label:'the dérive → strategic optimism football',publish:'TRUE'},
+    {from_id:'a19',to_id:'a20',label:'political ecology → the field as contested terrain',publish:'TRUE'},
 
     // AI and attachment
     {from_id:'a21',to_id:'a22',label:'attachment to responsive systems / the uncanny',publish:'TRUE'},
-    {from_id:'a22',to_id:'a23',label:'fluency without failure \u2014 the ENDON problem',publish:'TRUE'},
+    {from_id:'a22',to_id:'a23',label:'fluency without failure — the ENDON problem',publish:'TRUE'},
     {from_id:'a21',to_id:'a10',label:'what obligations does consistent response create?',publish:'TRUE'},
 
     // cross-cluster
@@ -886,7 +886,7 @@ document.getElementById('filter-path-btn').addEventListener('click',()=>{
   pathMode=!pathMode;
   pathNodes=[];
   document.getElementById('filter-path-btn').classList.toggle('active',pathMode);
-  document.getElementById('filter-path-btn').textContent=pathMode?'\u00d7 path':'find path';
+  document.getElementById('filter-path-btn').textContent=pathMode?'× path':'find path';
   if(!pathMode){
     document.querySelectorAll('.entry').forEach(el=>el.classList.remove('path-highlight','dimmed'));
     document.querySelectorAll('.conn-line').forEach(l=>l.classList.remove('path-line'));
@@ -943,14 +943,14 @@ function render(){
     el.appendChild(idRow);
 
     if(e['type']==='archive'&&e['_archive_title']){
-      const b=document.createElement('div');b.className='entry-archive-badge';b.textContent='\u25cc '+e['_archive_title'].slice(0,28);el.appendChild(b);
+      const b=document.createElement('div');b.className='entry-archive-badge';b.textContent='◌ '+e['_archive_title'].slice(0,28);el.appendChild(b);
     }
 
     const c=document.createElement('div');c.className='entry-content';c.textContent=e['content']||'';el.appendChild(c);
 
     if(e['citation']){const ci=document.createElement('div');ci.className='entry-citation';ci.textContent=e['citation'];el.appendChild(ci);}
 
-    const dh=document.createElement('div');dh.className='drag-handle';dh.textContent='\u283f';el.appendChild(dh);
+    const dh=document.createElement('div');dh.className='drag-handle';dh.textContent='⠿';el.appendChild(dh);
 
     canvas.appendChild(el);
     attachEntryEvents(el,e);
@@ -1017,7 +1017,7 @@ document.getElementById('connections-svg').addEventListener('mouseover',ev=>{
   if(!mid) return;
   const label = mid.dataset.label || '';
   if(editMode){
-    tooltip.textContent = (label ? label + ' \u00b7 ' : '') + '\u00d7 delete';
+    tooltip.textContent = (label ? label + ' · ' : '') + '× delete';
     tooltip.classList.add('show');
   } else if(label){
     tooltip.textContent = label;
@@ -1663,7 +1663,7 @@ function applySearch(query, author){
 }
 
 // ?? init() ????????????????????????????????????????????????????????????????????
-\u2500\u2500\u2500\u2500
+
 init();
 </script>
 </body>

@@ -64,7 +64,7 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:Georgia
 .filter-btn:hover{color:var(--text);}
 a.filter-btn{line-height:1;display:inline-flex;align-items:center;box-sizing:border-box;}
 .filter-btn.active{color:var(--bg);background:var(--text);}
-#filter-path-btn{margin-left:auto;color:var(--muted);}
+#filter-path-btn{margin-left:auto;color:var(--muted);min-width:5.5rem;text-align:center;}
 #filter-path-btn.active{color:var(--amber);}
 
 /* ── CANVAS ─────────────────────────────────────────────────────────────── */
@@ -289,6 +289,125 @@ html.dark .about-anth-legend{color:#444;}
   #edit-toolbar{bottom:1rem;padding:0.5rem 0.8rem;gap:0.6rem;}
   .edit-btn{font-size:0.6rem;min-height:32px;}
 }
+
+/* ── GROUPS ─────────────────────────────────────────────────────────────── */
+.entry-group-tag{
+  position:absolute;top:-1.4rem;left:0;
+  font-family:"Courier New",monospace;font-size:0.48rem;
+  letter-spacing:0.08em;text-transform:uppercase;
+  padding:0.1rem 0.35rem;border-radius:2px;
+  pointer-events:none;white-space:nowrap;
+}
+.group-overlay{
+  position:absolute;border-radius:4px;pointer-events:none;z-index:0;
+  transition:opacity 0.2s;
+}
+
+/* ── RANDOM BUTTON ───────────────────────────────────────────────────────── */
+#btn-random{
+  position:fixed;bottom:1.2rem;left:1.2rem;z-index:50;
+  background:none;border:none;
+  font-family:"Courier New",monospace;font-size:0.65rem;
+  color:var(--muted);cursor:pointer;padding:0.2rem 0.4rem;
+  -webkit-tap-highlight-color:transparent;
+  transition:color 0.15s;
+}
+#btn-random:hover{color:var(--amber);}
+
+/* ── PRINT VIEW ──────────────────────────────────────────────────────────── */
+#print-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:var(--filter-bg);overflow-y:auto;
+  padding:3rem 1.5rem 5rem;
+  -webkit-overflow-scrolling:touch;
+}
+#print-overlay.open{display:block;}
+#print-inner{max-width:520px;margin:0 auto;}
+#print-close{
+  background:none;border:none;font-family:"Courier New",monospace;
+  font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;
+  color:var(--muted);cursor:pointer;padding:0;
+  display:block;text-align:right;width:100%;margin-bottom:2rem;
+}
+#print-close:hover{color:var(--text);}
+.print-entry{margin-bottom:2.5rem;padding-bottom:2.5rem;border-bottom:1px solid var(--faint);}
+.print-entry:last-child{border-bottom:none;}
+.print-entry-id{font-family:"Courier New",monospace;font-size:0.5rem;color:var(--amber);letter-spacing:0.1em;margin-bottom:0.5rem;}
+.print-entry-content{font-size:0.95rem;line-height:1.85;color:var(--text);font-style:italic;margin-bottom:0.5rem;white-space:pre-wrap;}
+.print-entry-citation{font-family:"Courier New",monospace;font-size:0.55rem;color:var(--cite);line-height:1.5;}
+.print-conn{font-family:"Courier New",monospace;font-size:0.5rem;color:var(--muted);margin-top:1rem;line-height:1.8;}
+.print-conn-label{color:var(--amber);}
+#print-actions{display:flex;gap:1rem;margin-bottom:2rem;}
+.print-action-btn{
+  background:none;border:1px solid var(--faint);
+  font-family:"Courier New",monospace;font-size:0.58rem;
+  color:var(--muted);cursor:pointer;padding:0.3rem 0.7rem;
+  transition:all 0.15s;
+}
+.print-action-btn:hover{border-color:var(--amber);color:var(--amber);}
+@media print{
+  #top,#filter-bar,#canvas-wrap,#edit-toolbar,#mode-toggle,#btn-random,#print-actions,#print-close{display:none!important;}
+  #print-overlay{position:static;padding:1rem;}
+  .print-entry{page-break-inside:avoid;}
+}
+
+/* ── EDIT LABEL INLINE ───────────────────────────────────────────────────── */
+#edit-label-bar{
+  display:none;position:fixed;bottom:4.5rem;left:50%;transform:translateX(-50%);
+  z-index:60;background:var(--surface2);border:1px solid var(--faint);
+  padding:0.8rem 1rem;font-family:"Courier New",monospace;font-size:0.58rem;
+  gap:0.6rem;align-items:center;min-width:300px;max-width:90vw;
+}
+#edit-label-bar.open{display:flex;}
+
+@media(max-width:700px){
+  #btn-random{bottom:1rem;left:1rem;}
+}
+
+/* ── SEARCH ──────────────────────────────────────────────────────────────── */
+#search-wrap{
+  display:flex;align-items:center;gap:0.2rem;
+  border-bottom:1px solid var(--faint);
+  padding:0 0.2rem;
+}
+#search-input{
+  background:none;border:none;outline:none;
+  font-family:"Courier New",monospace;font-size:0.58rem;
+  color:var(--text);width:80px;letter-spacing:0.04em;
+  transition:width 0.2s;
+}
+#search-input:focus{width:130px;}
+#search-input::placeholder{color:var(--muted);}
+#search-clear{
+  background:none;border:none;cursor:pointer;
+  font-family:"Courier New",monospace;font-size:0.6rem;
+  color:var(--muted);padding:0;line-height:1;
+}
+#search-clear:hover{color:var(--amber);}
+
+/* ── AUTHOR SELECT ───────────────────────────────────────────────────────── */
+#author-select{
+  background:var(--filter-bg);color:var(--muted);
+  border:none;border-radius:10px;
+  font-family:"Courier New",monospace;font-size:0.58rem;
+  letter-spacing:0.04em;max-width:90px;
+  cursor:pointer;outline:none;
+}
+#author-select:focus{color:var(--text);}
+#author-select option{background:var(--surface2);color:var(--text);}
+#author-select.active{color:var(--text);background:var(--text);color:var(--bg);}
+
+/* highlight on canvas search match */
+.entry.search-match{
+  border-color:var(--amber)!important;
+  box-shadow:0 0 18px rgba(200,146,42,0.2)!important;
+}
+
+@media(max-width:700px){
+  #search-input{width:60px;}
+  #search-input:focus{width:90px;}
+  #author-select{max-width:70px;font-size:0.52rem;}
+}
 </style>
 </head>
 <body>
@@ -299,6 +418,7 @@ html.dark .about-anth-legend{color:#444;}
   </div>
   <div id="top-right">
     <button id="btn-about" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);cursor:pointer;letter-spacing:0.06em;padding:0;-webkit-tap-highlight-color:transparent;">about</button>
+    <button id="btn-print-top" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);cursor:pointer;letter-spacing:0.06em;padding:0;-webkit-tap-highlight-color:transparent;">print</button>
     <a href="https://www.are.na/eleanor-rigby-zgw8ic7lewk/wurds" target="_blank" rel="noopener" style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.06em;">library</a>
     <a href="index.html" style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.06em;">back</a>
     <span id="edit-indicator">● edit</span>
@@ -312,6 +432,13 @@ html.dark .about-anth-legend{color:#444;}
   <button class="filter-btn" data-type="note">notes</button>
   <button class="filter-btn" data-type="fragment">fragments</button>
   <button class="filter-btn" data-type="archive">archive</button>
+  <select id="author-select" class="filter-btn" style="cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:0.3rem;">
+    <option value="">by author</option>
+  </select>
+  <div id="search-wrap">
+    <input id="search-input" type="text" placeholder="search" autocomplete="off" spellcheck="false">
+    <button id="search-clear" style="display:none;">×</button>
+  </div>
   <button class="filter-btn" id="filter-path-btn">find path</button>
 </div>
 
@@ -379,6 +506,12 @@ html.dark .about-anth-legend{color:#444;}
   <button class="edit-btn" id="btn-connect">⟷ connect</button>
   <span style="color:var(--faint)">|</span>
   <button class="edit-btn" id="btn-save">save ✓</button>
+  <span style="color:var(--faint)">|</span>
+  <button class="edit-btn" id="btn-group">◈ group</button>
+  <span style="color:var(--faint)">|</span>
+  <button class="edit-btn" id="btn-print-open">print</button>
+  <span style="color:var(--faint)">|</span>
+  <button class="edit-btn" id="btn-exit-edit">exit edit</button>
 </div>
 
 <div id="empty-state">
@@ -387,6 +520,24 @@ html.dark .about-anth-legend{color:#444;}
 
 <div id="conn-tooltip-el"></div>
 <button id="mode-toggle">☀</button>
+<button id="btn-random" title="open a random entry">◎ random</button>
+
+<div id="print-overlay">
+  <div id="print-inner">
+    <button id="print-close">close ×</button>
+    <div id="print-actions">
+      <button class="print-action-btn" id="print-btn">print / save as PDF</button>
+      <button class="print-action-btn" id="copy-btn">copy all text</button>
+    </div>
+    <div id="print-entries"></div>
+  </div>
+</div>
+
+<div id="edit-label-bar">
+  <input id="edit-label-input" type="text" placeholder="rename connection label" style="background:none;border:none;outline:none;flex:1;font-family:inherit;font-size:0.75rem;color:var(--text);padding:0.2rem 0;">
+  <button id="edit-label-ok" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--amber);">save</button>
+  <button id="edit-label-cancel" style="background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--muted);">×</button>
+</div>
 
 <script>
 // ── CONFIG ───────────────────────────────────────────────────────────────────
@@ -720,7 +871,7 @@ document.getElementById('filter-path-btn').addEventListener('click',()=>{
   pathMode=!pathMode;
   pathNodes=[];
   document.getElementById('filter-path-btn').classList.toggle('active',pathMode);
-  document.getElementById('filter-path-btn').textContent=pathMode?'× cancel path':'⟿ path';
+  document.getElementById('filter-path-btn').textContent=pathMode?'× path':'find path';
   if(!pathMode){
     document.querySelectorAll('.entry').forEach(el=>el.classList.remove('path-highlight','dimmed'));
     document.querySelectorAll('.conn-line').forEach(l=>l.classList.remove('path-line'));
@@ -788,13 +939,15 @@ function render(){
 
     canvas.appendChild(el);
     attachEntryEvents(el,e);
-    if(editMode)attachDrag(el,e);
+    if(editMode){attachDrag(el,e);patchGroupClick(el,e);}
   });
 
   loadSavedConnections();
   renderConnections();
   applyTransform();
   applyFilter();
+  renderGroups();
+  buildAuthorSelect();
 }
 
 // ── CONNECTIONS ───────────────────────────────────────────────────────────────
@@ -808,8 +961,8 @@ function renderConnections(){
   const midStroke=isDark?'#5a4010':'#d4a855';
 
   // size SVG
-  const maxX=Math.max(...entries.map(e=>parseFloat(e['x']||0)+280),900);
-  const maxY=Math.max(...entries.map(e=>parseFloat(e['y']||0)+280),700);
+  const maxX=Math.max.apply(null,entries.map(e=>parseFloat(e['x']||0)+280).concat([900]));
+  const maxY=Math.max.apply(null,entries.map(e=>parseFloat(e['y']||0)+280).concat([700]));
   svg.setAttribute('width',maxX);svg.setAttribute('height',maxY);
 
   connections.forEach(c=>{
@@ -847,11 +1000,14 @@ const tooltip=document.getElementById('conn-tooltip-el');
 document.getElementById('connections-svg').addEventListener('mouseover',ev=>{
   const mid=ev.target.closest('.conn-mid');
   if(!mid) return;
-  if(mid.dataset.label){
-    tooltip.textContent=mid.dataset.label;
+  const label = mid.dataset.label || '';
+  if(editMode){
+    tooltip.textContent = (label ? label + ' · ' : '') + '× delete';
+    tooltip.classList.add('show');
+  } else if(label){
+    tooltip.textContent = label;
     tooltip.classList.add('show');
   }
-  // highlight both connected entries
   const f=mid.dataset.from, t=mid.dataset.to;
   document.querySelectorAll('.entry').forEach(el=>{
     if(el.dataset.id===f||el.dataset.id===t) el.classList.add('selected');
@@ -867,6 +1023,46 @@ document.getElementById('connections-svg').addEventListener('mousemove',ev=>{
   tooltip.style.left=(ev.clientX+14)+'px';
   tooltip.style.top=(ev.clientY-10)+'px';
 });
+document.getElementById('connections-svg').addEventListener('click',ev=>{
+  if(!editMode) return;
+  const mid=ev.target.closest('.conn-mid');
+  if(!mid) return;
+  const f=mid.dataset.from, t=mid.dataset.to;
+  deleteConnection(f, t);
+});
+// touch — long press on dot to delete in edit mode
+document.getElementById('connections-svg').addEventListener('touchstart',ev=>{
+  if(!editMode) return;
+  const mid=ev.target.closest('.conn-mid');
+  if(!mid) return;
+  const f=mid.dataset.from, t=mid.dataset.to;
+  mid._deleteTimer=setTimeout(()=>{
+    deleteConnection(f, t);
+    tooltip.classList.remove('show');
+  }, 600);
+},{passive:true});
+document.getElementById('connections-svg').addEventListener('touchend',ev=>{
+  const mid=ev.target.closest('.conn-mid');
+  if(mid&&mid._deleteTimer) clearTimeout(mid._deleteTimer);
+},{passive:true});
+
+function deleteConnection(fromId, toId){
+  const conn = connections.find(c=>c.from_id===fromId&&c.to_id===toId);
+  const label = conn&&conn.label ? '"'+conn.label+'"' : 'this connection';
+  if(!confirm('delete '+label+'?')) return;
+  connections = connections.filter(c=>!(c.from_id===fromId&&c.to_id===toId));
+  // persist removal
+  const saved = JSON.parse(localStorage.getItem('anthologio-connections')||'[]');
+  const updated = saved.filter(c=>!(c.from_id===fromId&&c.to_id===toId));
+  localStorage.setItem('anthologio-connections', JSON.stringify(updated));
+  // store deletions so they aren't re-added from sheet on next load
+  const deleted = JSON.parse(localStorage.getItem('anthologio-deleted-connections')||'[]');
+  deleted.push({from_id:fromId, to_id:toId});
+  localStorage.setItem('anthologio-deleted-connections', JSON.stringify(deleted));
+  tooltip.classList.remove('show');
+  document.querySelectorAll('.entry.selected').forEach(el=>el.classList.remove('selected'));
+  renderConnections();
+}
 
 // ── ENTRY EVENTS ─────────────────────────────────────────────────────────────
 function attachEntryEvents(el,entry){
@@ -1110,10 +1306,10 @@ function handleConnectClick(entry,el){
 function showConnectBar(fromEntry,toEntry){
   document.getElementById('connect-bar')?.remove();
   const bar=document.createElement('div');bar.id='connect-bar';
-  bar.style.cssText='position:fixed;bottom:4.5rem;left:50%;transform:translateX(-50%);z-index:60;background:var(--surface2);border:1px solid var(--faint);padding:0.6rem 0.9rem;font-family:"Courier New",monospace;font-size:0.58rem;display:flex;gap:0.6rem;align-items:center;min-width:260px;max-width:88vw;';
+  bar.style.cssText='position:fixed;bottom:4.5rem;left:50%;transform:translateX(-50%);z-index:60;background:var(--surface2);border:1px solid var(--faint);padding:0.8rem 1rem;font-family:"Courier New",monospace;font-size:0.58rem;display:flex;gap:0.6rem;align-items:center;min-width:300px;max-width:90vw;';
   const input=document.createElement('input');
   input.type='text';input.placeholder='note on connection (optional)';
-  input.style.cssText='background:none;border:none;outline:none;flex:1;font-family:inherit;font-size:inherit;color:var(--text);';
+  input.style.cssText='background:none;border:none;outline:none;flex:1;font-family:inherit;font-size:0.75rem;color:var(--text);padding:0.2rem 0;';
   const ok=document.createElement('button');ok.textContent='connect';
   ok.style.cssText='background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--amber);';
   const x=document.createElement('button');x.textContent='×';
@@ -1147,6 +1343,9 @@ document.getElementById('btn-connect').addEventListener('click',()=>{
   document.getElementById('btn-pan').classList.remove('active');
   document.getElementById('edit-indicator').textContent='● tap two entries to connect';
 });
+document.getElementById('btn-exit-edit').addEventListener('click',()=>{
+  window.location.href=window.location.pathname;
+});
 document.getElementById('btn-save').addEventListener('click',()=>{
   savePositions();
   const b=document.getElementById('btn-save');b.textContent='saved ✓';
@@ -1170,12 +1369,286 @@ function saveConnection(conn){
 }
 function loadSavedConnections(){
   try{
+    const deleted=JSON.parse(localStorage.getItem('anthologio-deleted-connections')||'[]');
     const s=JSON.parse(localStorage.getItem('anthologio-connections')||'[]');
+    // filter out sheet connections that were deleted
+    connections=connections.filter(c=>!deleted.some(d=>d.from_id===c.from_id&&d.to_id===c.to_id));
+    // add locally-created connections
     s.forEach(c=>{if(!connections.find(x=>x.from_id===c.from_id&&x.to_id===c.to_id))connections.push(c);});
   }catch(e){}
 }
 
-// ── GO ────────────────────────────────────────────────────────────────────────
+// ── RANDOM ENTRY ─────────────────────────────────────────────────────────────
+document.getElementById('btn-random').addEventListener('click',()=>{
+  if(!entries.length) return;
+  const e = entries[Math.floor(Math.random()*entries.length)];
+  openOverlay(e['id']);
+  // pan canvas to that entry
+  const el = document.querySelector('.entry[data-id="'+e['id']+'"]');
+  if(el){
+    const wrap = document.getElementById('canvas-wrap');
+    const W=wrap.offsetWidth, H=wrap.offsetHeight;
+    const ex=parseFloat(el.style.left)||0, ey=parseFloat(el.style.top)||0;
+    pan.x = W/2 - (ex+el.offsetWidth/2)*scale;
+    pan.y = H/2 - (ey+el.offsetHeight/2)*scale;
+    applyTransform();
+  }
+});
+
+// ── PRINT VIEW ────────────────────────────────────────────────────────────────
+function openPrintView(){
+  const inner = document.getElementById('print-entries');
+  inner.innerHTML = '';
+  // Sort entries spatially — left to right, top to bottom
+  const sorted = entries.slice().sort(function(a,b){
+    const ay=parseFloat(a['y']||0), by=parseFloat(b['y']||0);
+    const ax=parseFloat(a['x']||0), bx=parseFloat(b['x']||0);
+    if(Math.abs(ay-by)>100) return ay-by;
+    return ax-bx;
+  });
+  sorted.forEach(e=>{
+    const div = document.createElement('div');
+    div.className = 'print-entry';
+    const id = document.createElement('div');
+    id.className = 'print-entry-id';
+    id.textContent = '#'+e['id'] + (e['type']?' - '+e['type']:'');
+    div.appendChild(id);
+    const content = document.createElement('div');
+    content.className = 'print-entry-content';
+    content.textContent = e['content']||'';
+    div.appendChild(content);
+    if(e['citation']){
+      const cite = document.createElement('div');
+      cite.className = 'print-entry-citation';
+      cite.textContent = e['citation'];
+      div.appendChild(cite);
+    }
+    // connections
+    const relConns = connections.filter(c=>c['from_id']===e['id']||c['to_id']===e['id']);
+    if(relConns.length){
+      const cd = document.createElement('div');
+      cd.className = 'print-conn';
+      relConns.forEach(c=>{
+        const otherId = c['from_id']===e['id']?c['to_id']:c['from_id'];
+        const other = entries.find(x=>x['id']===otherId);
+        if(!other) return;
+        const line = document.createElement('div');
+        if(c['label']) line.innerHTML='<span class="print-conn-label">'+c['label']+'</span> → #'+otherId;
+        else line.textContent='→ #'+otherId;
+        cd.appendChild(line);
+      });
+      div.appendChild(cd);
+    }
+    inner.appendChild(div);
+  });
+  document.getElementById('print-overlay').classList.add('open');
+}
+
+function closePrintView(){
+  document.getElementById('print-overlay').classList.remove('open');
+}
+
+document.getElementById('print-close').addEventListener('click', closePrintView);
+document.getElementById('btn-print-top').addEventListener('click', openPrintView);
+if(document.getElementById('btn-print-open')){
+  document.getElementById('btn-print-open').addEventListener('click', openPrintView);
+}
+document.getElementById('print-btn').addEventListener('click',()=>window.print());
+document.getElementById('copy-btn').addEventListener('click',()=>{
+  const text = Array.from(document.getElementById('print-entries').querySelectorAll('.print-entry')).map(function(el){return el.innerText;}).join('\n\n---\n\n');
+  navigator.clipboard&&navigator.clipboard.writeText(text);
+  document.getElementById('copy-btn').textContent='copied ✓';
+  setTimeout(()=>document.getElementById('copy-btn').textContent='copy all text',1500);
+});
+
+// ── EDIT CONNECTION LABEL ─────────────────────────────────────────────────────
+var editingConn = null;
+
+function openEditLabel(fromId, toId){
+  const conn = connections.find(c=>c.from_id===fromId&&c.to_id===toId);
+  if(!conn) return;
+  editingConn = conn;
+  const bar = document.getElementById('edit-label-bar');
+  document.getElementById('edit-label-input').value = conn.label||'';
+  bar.classList.add('open');
+  setTimeout(()=>document.getElementById('edit-label-input').focus(),50);
+}
+
+function saveEditLabel(){
+  if(!editingConn) return;
+  const newLabel = document.getElementById('edit-label-input').value.trim();
+  editingConn.label = newLabel;
+  // update in localStorage
+  const saved = JSON.parse(localStorage.getItem('anthologio-connections')||'[]');
+  const idx = saved.findIndex(c=>c.from_id===editingConn.from_id&&c.to_id===editingConn.to_id);
+  if(idx>=0){ saved[idx].label=newLabel; localStorage.setItem('anthologio-connections',JSON.stringify(saved)); }
+  editingConn=null;
+  document.getElementById('edit-label-bar').classList.remove('open');
+  renderConnections();
+}
+
+document.getElementById('edit-label-ok').addEventListener('click', saveEditLabel);
+document.getElementById('edit-label-cancel').addEventListener('click',()=>{
+  editingConn=null;
+  document.getElementById('edit-label-bar').classList.remove('open');
+});
+document.getElementById('edit-label-input').addEventListener('keydown',e=>{
+  if(e.key==='Enter') saveEditLabel();
+  if(e.key==='Escape'){editingConn=null;document.getElementById('edit-label-bar').classList.remove('open');}
+});
+
+// Wire edit-label to double-click on connection dot
+document.getElementById('connections-svg').addEventListener('dblclick',ev=>{
+  if(!editMode) return;
+  const mid=ev.target.closest('.conn-mid');
+  if(!mid) return;
+  openEditLabel(mid.dataset.from, mid.dataset.to);
+});
+
+// ── GROUPS ────────────────────────────────────────────────────────────────────
+var groups = JSON.parse(localStorage.getItem('anthologio-groups')||'[]');
+// groups: [{id, name, entryIds:[], colour}]
+var groupMode = false;
+var groupSelection = new Set();
+const GROUP_COLOURS = ['#c8922a','#6a8fa8','#7a9e7e','#b07a9e','#a09060','#888','#5a7a8a'];
+
+function saveGroups(){ localStorage.setItem('anthologio-groups', JSON.stringify(groups)); }
+
+document.getElementById('btn-group').addEventListener('click',()=>{
+  if(!groupMode){
+    groupMode=true;
+    groupSelection.clear();
+    document.getElementById('btn-group').classList.add('active');
+    document.getElementById('edit-indicator').textContent='● tap entries to group · tap ◈ again to save';
+  } else {
+    if(groupSelection.size>0){
+      const name = prompt('name this group:');
+      if(name!==null&&name.trim()){
+        const colour = GROUP_COLOURS[groups.length%GROUP_COLOURS.length];
+        groups.push({id:'g'+Date.now(),name:name.trim(),entryIds:Array.from(groupSelection),colour});
+        saveGroups();
+        renderGroups();
+      }
+    }
+    groupMode=false;
+    groupSelection.clear();
+    document.querySelectorAll('.entry.group-selecting').forEach(el=>el.classList.remove('group-selecting'));
+    document.getElementById('btn-group').classList.remove('active');
+    document.getElementById('edit-indicator').textContent='● edit';
+  }
+});
+
+function renderGroups(){
+  document.querySelectorAll('.group-overlay,.entry-group-tag').forEach(el=>el.remove());
+  const canvas = document.getElementById('canvas');
+  groups.forEach(g=>{
+    const els = g.entryIds.map(id=>document.querySelector('.entry[data-id="'+id+'"]')).filter(Boolean);
+    if(!els.length) return;
+    // Bounding box
+    const xs=els.map(el=>parseFloat(el.style.left)||0);
+    const ys=els.map(el=>parseFloat(el.style.top)||0);
+    const x2s=els.map(el=>(parseFloat(el.style.left)||0)+el.offsetWidth);
+    const y2s=els.map(el=>(parseFloat(el.style.top)||0)+el.offsetHeight);
+    const pad=20;
+    const bx=Math.min.apply(null,xs)-pad, by=Math.min.apply(null,ys)-pad-20;
+    const bw=Math.max.apply(null,x2s)-bx+pad, bh=Math.max.apply(null,y2s)-by+pad;
+    const ov=document.createElement('div');
+    ov.className='group-overlay';
+    ov.style.cssText='left:'+bx+'px;top:'+by+'px;width:'+bw+'px;height:'+bh+'px;background:'+g.colour+'10;border:1px solid '+g.colour+'40;';
+    canvas.insertBefore(ov, canvas.firstChild);
+    // Label on first entry
+    const tagEl=document.createElement('div');
+    tagEl.className='entry-group-tag';
+    tagEl.textContent=g.name;
+    tagEl.style.cssText='background:'+g.colour+';color:#fff;';
+    els[0].style.position='relative';
+    els[0].appendChild(tagEl);
+  });
+}
+
+// Wire group selection to entry click in group mode
+function patchGroupClick(el, entry){
+  el.addEventListener('click',ev=>{
+    if(!groupMode) return;
+    ev.stopPropagation();
+    if(groupSelection.has(entry['id'])){
+      groupSelection.delete(entry['id']);
+      el.classList.remove('group-selecting');
+      el.style.outline='';
+    } else {
+      groupSelection.add(entry['id']);
+      el.classList.add('group-selecting');
+      el.style.outline='2px solid var(--amber)';
+    }
+  });
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────────────
+var searchQuery = '';
+
+function buildAuthorSelect(){
+  const select = document.getElementById('author-select');
+  // collect unique authors
+  const authors = Array.from(new Set(
+    entries.map(function(e){return (e['author']||'').trim();}).filter(Boolean).sort()
+  ));
+  // rebuild options
+  select.innerHTML = '<option value="">by author</option>';
+  authors.forEach(a=>{
+    const opt = document.createElement('option');
+    opt.value = a; opt.textContent = a.split(' ').pop(); // last name only
+    select.appendChild(opt);
+  });
+}
+
+document.getElementById('author-select').addEventListener('change', e=>{
+  const val = e.target.value;
+  e.target.classList.toggle('active', !!val);
+  applySearch(searchQuery, val);
+});
+
+document.getElementById('search-input').addEventListener('input', e=>{
+  searchQuery = e.target.value.trim().toLowerCase();
+  document.getElementById('search-clear').style.display = searchQuery ? 'inline' : 'none';
+  applySearch(searchQuery, document.getElementById('author-select').value);
+});
+
+document.getElementById('search-clear').addEventListener('click',()=>{
+  searchQuery = '';
+  document.getElementById('search-input').value = '';
+  document.getElementById('search-clear').style.display = 'none';
+  applySearch('', document.getElementById('author-select').value);
+});
+
+function applySearch(query, author){
+  const hasFilter = query || author;
+  document.querySelectorAll('.entry').forEach(el=>{
+    const id = el.dataset.id;
+    const e = entries.find(x=>x['id']===id);
+    if(!e){ el.classList.remove('search-match','dimmed'); return; }
+    if(!hasFilter){
+      el.classList.remove('search-match','dimmed');
+      // restore type filter
+      const show = filterType==='all' || e['type']===filterType;
+      el.classList.toggle('dimmed', !show);
+      return;
+    }
+    const matchAuthor = !author || (e['author']||'').includes(author);
+    const matchQuery = !query || (
+      (e['content']||'').toLowerCase().includes(query) ||
+      (e['author']||'').toLowerCase().includes(query) ||
+      (e['source']||'').toLowerCase().includes(query) ||
+      (e['citation']||'').toLowerCase().includes(query) ||
+      (e['id']||'').toLowerCase().includes(query)
+    );
+    const match = matchAuthor && matchQuery;
+    el.classList.toggle('search-match', match);
+    el.classList.toggle('dimmed', !match);
+  });
+}
+
+// ── init() ────────────────────────────────────────────────────────────────────
+────
 init();
 </script>
 </body>

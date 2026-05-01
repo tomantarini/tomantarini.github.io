@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<script>if(localStorage.getItem('mantarini-dark')==='1')document.documentElement.classList.add('dark');else document.documentElement.classList.remove('dark');</script>
+<title>το ανθολόγιο</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#f5f2ec;--surface:#fdfaf5;--surface2:#f0ece3;
+  --text:#1c1510;--muted:#999;--faint:#e0d8cc;
+  --amber:#c8922a;--amber-dim:#d4a855;
+  --quote:#3a5a3a;--cite:#7a9a7a;
+  --conn:#c8a060;--conn-hover:#c8922a;
+  --filter-bg:rgba(245,242,236,0.95);
+}
+html.dark{
+  --bg:#0d0b09;--surface:#1a1714;--surface2:#221e1a;
+  --text:#ddd8cc;--muted:#5a5650;--faint:#2e2a26;
+  --amber:#c8922a;--amber-dim:#8a5c18;
+  --quote:#9ab89a;--cite:#4a6a4a;
+  --conn:#8a6430;--conn-hover:#c8922a;
+  --filter-bg:rgba(13,11,9,0.97);
+}
+html.dark .entry{box-shadow:0 1px 6px rgba(0,0,0,0.4);}
+html.dark .entry:hover{box-shadow:0 2px 18px rgba(200,146,42,0.12);}
+html.dark .entry.type-note{border-color:#2e2a26;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif;overflow:hidden;transition:background 0.25s,color 0.25s;}
+
+/* ── HEADER ─────────────────────────────────────────────────────────────── */
+#top{
+  position:fixed;top:0;left:0;right:0;z-index:30;
+  background:var(--filter-bg);backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--faint);
+  padding:0.7rem 1.4rem;
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:3.2rem;
+}
+#top-title{font-size:1.1rem;font-weight:normal;color:var(--text);}
+#top-title a{color:var(--muted);text-decoration:none;font-size:0.72rem;margin-left:0.6rem;letter-spacing:0.06em;font-family:"Courier New",monospace;}
+#top-title a:hover{color:var(--amber);}
+#top-right{display:flex;align-items:center;gap:0.8rem;}
+#edit-indicator{font-family:"Courier New",monospace;font-size:0.52rem;color:var(--amber);letter-spacing:0.12em;text-transform:uppercase;display:none;}
+#edit-indicator.active{display:block;}
+
+/* ── FILTER BAR ─────────────────────────────────────────────────────────── */
+#filter-bar{
+  position:fixed;top:3.2rem;left:0;right:0;z-index:20;
+  background:var(--filter-bg);backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--faint);
+  padding:0.4rem 1.4rem;
+  display:flex;align-items:center;gap:0.6rem;
+  font-family:"Courier New",monospace;font-size:0.55rem;
+  letter-spacing:0.06em;
+}
+.filter-btn{
+  background:none;border:none;cursor:pointer;
+  font-family:"Courier New",monospace;font-size:0.6rem;
+  color:var(--muted);letter-spacing:0.06em;padding:0.2rem 0.6rem;
+  border-radius:10px;transition:all 0.15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.filter-btn:hover{color:var(--text);}
+a.filter-btn{line-height:1;display:inline-flex;align-items:center;box-sizing:border-box;}
+.filter-btn.active{color:var(--bg);background:var(--text);}
+#filter-path-btn{margin-left:auto;color:var(--muted);}
+#filter-path-btn.active{color:var(--amber);}
+
+/* ── CANVAS ─────────────────────────────────────────────────────────────── */
+#canvas-wrap{
+  position:fixed;top:5.8rem;bottom:0;left:0;right:0;
+  overflow:hidden;cursor:grab;background:var(--bg);
+}
+#canvas-wrap.grabbing{cursor:grabbing;}
+#canvas{position:absolute;transform-origin:0 0;}
+
+/* ── ENTRIES ─────────────────────────────────────────────────────────────── */
+.entry{
+  position:absolute;width:220px;
+  background:var(--surface);border:1px solid var(--faint);
+  padding:0.9rem;user-select:none;cursor:pointer;
+  transition:border-color 0.15s,box-shadow 0.15s,opacity 0.2s,transform 0.15s;
+  z-index:1;
+}
+.entry:hover{border-color:var(--amber-dim);box-shadow:0 2px 16px rgba(200,146,42,0.1);}
+.entry.selected{border-color:var(--amber);box-shadow:0 0 24px rgba(200,146,42,0.18);}
+.entry.connecting-source{border-color:var(--amber);box-shadow:0 0 28px rgba(200,146,42,0.28);}
+.entry.dimmed{opacity:0.18;pointer-events:none;}
+.entry.path-highlight{border-color:var(--amber);box-shadow:0 0 20px rgba(200,146,42,0.25);}
+
+/* type visual textures */
+.entry.type-quote{border-left:3px solid var(--amber-dim);}
+.entry.type-note{border-style:dashed;}
+.entry.type-fragment{transform:rotate(-0.4deg);}
+.entry.type-fragment:hover{transform:rotate(0deg);}
+.entry.type-archive{border-top:2px solid #888899;}
+
+.entry-id{font-family:"Courier New",monospace;font-size:0.55rem;color:var(--amber);letter-spacing:0.1em;margin-bottom:0.35rem;display:flex;align-items:center;justify-content:space-between;}
+.entry-type{font-family:"Courier New",monospace;font-size:0.5rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;}
+.entry-content{font-size:0.88rem;line-height:1.65;color:var(--text);display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;}
+.entry.type-quote .entry-content{font-style:italic;color:var(--quote);}
+.entry.type-archive .entry-content{color:#8888aa;}
+.entry-citation{font-family:"Courier New",monospace;font-size:0.54rem;color:var(--cite);margin-top:0.45rem;line-height:1.5;}
+.entry-archive-badge{font-family:"Courier New",monospace;font-size:0.5rem;color:#777799;margin-top:0.3rem;}
+
+/* drag handle */
+.drag-handle{display:none;position:absolute;top:4px;right:6px;width:16px;height:16px;cursor:move;align-items:center;justify-content:center;color:var(--muted);font-size:10px;}
+body.edit-mode .drag-handle{display:flex;}
+body.edit-mode .entry{cursor:move;}
+
+/* ── CONNECTIONS SVG ─────────────────────────────────────────────────────── */
+#connections-svg{position:absolute;top:0;left:0;pointer-events:none;overflow:visible;z-index:0;}
+
+/* lines */
+.conn-line{stroke:var(--conn);stroke-width:1.5;fill:none;opacity:0;transition:opacity 0.2s;}
+.entry:hover ~ * .conn-line{opacity:1;}
+.conn-line.visible{opacity:0.55;}
+.conn-line.highlighted{stroke:var(--conn-hover);stroke-width:2;opacity:1;}
+.conn-line.path-line{stroke:var(--amber);stroke-width:2.5;opacity:1;stroke-dasharray:none;}
+
+/* midpoint dot — replaces floating text */
+.conn-mid{
+  fill:var(--surface);stroke:var(--conn);stroke-width:1.5;
+  opacity:0;transition:opacity 0.2s;cursor:default;
+}
+.conn-mid.visible{opacity:0.8;}
+.conn-mid.highlighted{stroke:var(--conn-hover);opacity:1;fill:var(--surface2);}
+
+/* label tooltip that appears on conn-mid hover — drawn as foreignObject */
+.conn-tooltip{
+  pointer-events:none;opacity:0;transition:opacity 0.15s;
+}
+.conn-tooltip.show{opacity:1;}
+
+/* ── OVERLAY ─────────────────────────────────────────────────────────────── */
+#overlay{
+  display:none;position:fixed;inset:0;z-index:40;
+  background:var(--filter-bg);backdrop-filter:blur(12px);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:3rem 1.5rem 4rem;
+}
+#overlay.open{display:block;}
+#overlay-inner{max-width:560px;margin:0 auto;}
+#overlay-close{background:none;border:none;font-family:"Courier New",monospace;font-size:0.6rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);cursor:pointer;padding:0;display:block;text-align:right;width:100%;margin-bottom:2rem;}
+#overlay-close:hover{color:var(--text);}
+#ov-id{font-family:"Courier New",monospace;font-size:0.62rem;color:var(--amber);letter-spacing:0.08em;margin-bottom:0.3rem;}
+#ov-type{font-family:"Courier New",monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:1.2rem;}
+#ov-content{font-size:1.05rem;line-height:1.9;color:var(--text);white-space:pre-wrap;word-break:break-word;margin-bottom:1rem;}
+#overlay.type-quote #ov-content{font-style:italic;color:var(--quote);}
+#ov-citation{font-family:"Courier New",monospace;font-size:0.65rem;color:var(--cite);letter-spacing:0.04em;line-height:1.6;margin-bottom:1.2rem;}
+#ov-connections{margin-top:1.5rem;border-top:1px solid var(--faint);padding-top:1rem;}
+#ov-connections-title{font-family:"Courier New",monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;}
+.ov-conn{margin-bottom:0.7rem;cursor:pointer;}
+.ov-conn-label{font-family:"Courier New",monospace;font-size:0.6rem;color:var(--amber);margin-bottom:0.2rem;font-style:normal;}
+.ov-conn-entry{font-size:0.9rem;font-style:italic;color:var(--muted);transition:color 0.15s;}
+.ov-conn-entry:hover{color:var(--amber);}
+
+/* path result */
+#path-result{margin-top:1.5rem;border-top:1px solid var(--faint);padding-top:1rem;display:none;}
+#path-result-title{font-family:"Courier New",monospace;font-size:0.52rem;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:0.8rem;}
+.path-step{display:flex;align-items:flex-start;gap:0.6rem;margin-bottom:0.6rem;}
+.path-step-num{font-family:"Courier New",monospace;font-size:0.5rem;color:var(--amber);min-width:1.2rem;}
+.path-step-text{font-size:0.82rem;font-style:italic;color:var(--text);cursor:pointer;}
+.path-step-text:hover{color:var(--amber);}
+.path-step-arrow{font-family:"Courier New",monospace;font-size:0.55rem;color:var(--muted);margin-top:0.08rem;}
+
+/* ── TOOLTIP ─────────────────────────────────────────────────────────────── */
+#conn-tooltip-el{
+  position:fixed;z-index:35;
+  background:var(--surface2);border:1px solid var(--faint);
+  font-family:"Courier New",monospace;font-size:0.58rem;
+  color:var(--text);padding:0.3rem 0.6rem;
+  pointer-events:none;opacity:0;
+  transition:opacity 0.15s;white-space:nowrap;
+  max-width:260px;white-space:normal;line-height:1.4;
+}
+#conn-tooltip-el.show{opacity:1;}
+
+/* ── EDIT TOOLBAR ────────────────────────────────────────────────────────── */
+#edit-toolbar{
+  display:none;position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);
+  z-index:30;background:var(--filter-bg);border:1px solid var(--faint);
+  backdrop-filter:blur(8px);padding:0.5rem 1rem;gap:0.8rem;align-items:center;
+  font-family:"Courier New",monospace;font-size:0.58rem;color:var(--muted);
+}
+body.edit-mode #edit-toolbar{display:flex;}
+.edit-btn{background:none;border:none;cursor:pointer;font-family:"Courier New",monospace;font-size:0.58rem;color:var(--muted);letter-spacing:0.06em;padding:0.2rem 0.4rem;transition:color 0.15s;}
+.edit-btn:hover{color:var(--amber);}
+.edit-btn.active{color:var(--amber);}
+
+/* mode toggle — bottom right */
+#mode-toggle{
+  position:fixed;bottom:1.2rem;right:1.2rem;z-index:50;
+  background:none;border:none;
+  font-family:'Courier New',monospace;font-size:0.75rem;
+  color:#aaa;cursor:pointer;padding:0.2rem 0.4rem;
+  -webkit-tap-highlight-color:transparent;
+  transition:color 0.15s;
+}
+#mode-toggle:hover{color:var(--amber);}
+html.dark #mode-toggle{color:#555;}
+html.dark #mode-toggle:hover{color:var(--amber);}
+
+/* ── EMPTY STATE ─────────────────────────────────────────────────────────── */
+#empty-state{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+#empty-state p{font-style:italic;font-size:0.9rem;color:var(--muted);line-height:1.8;}
+
+/* ── ABOUT OVERLAY — index aesthetic ─────────────────────────────────────── */
+#about-overlay{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:rgba(255,255,255,0.97);
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding:2rem 1.5rem 4rem;
+}
+#about-overlay.open{display:block;}
+html.dark #about-overlay{background:rgba(15,15,15,0.98);}
+#about-inner{max-width:520px;margin:0 auto;}
+#about-overlay-close{
+  background:none;border:none;
+  font-family:'Courier New',monospace;font-size:0.72rem;
+  letter-spacing:0.15em;text-transform:uppercase;
+  color:#777;cursor:pointer;padding:0;
+  display:block;text-align:right;width:100%;margin-bottom:2rem;
+}
+html.dark #about-overlay-close{color:#555;}
+#about-overlay-close:hover{color:#111;}
+html.dark #about-overlay-close:hover{color:#e8e4d8;}
+.about-anth-body{
+  font-family:Georgia,"Times New Roman",serif;
+  font-style:italic;font-size:0.9rem;color:#777;
+  line-height:1.88;letter-spacing:0.01em;
+}
+html.dark .about-anth-body{color:#888;}
+.about-anth-body p{margin-bottom:1.2rem;}
+.about-anth-body p:last-child{margin-bottom:0;}
+.about-anth-label{
+  font-family:'Courier New',monospace;font-size:0.55rem;
+  color:#bbb;letter-spacing:0.14em;text-transform:uppercase;
+  display:block;margin-top:1.8rem;margin-bottom:0.6rem;font-style:normal;
+}
+html.dark .about-anth-label{color:#444;}
+.about-anth-legend{
+  margin-top:0.6rem;font-style:normal;
+  font-family:'Courier New',monospace;font-size:0.6rem;
+  color:#bbb;line-height:2;letter-spacing:0.04em;
+}
+html.dark .about-anth-legend{color:#444;}
+
+/* ── MOBILE ──────────────────────────────────────────────────────────────── */
+@media(max-width:700px){
+  /* layout */
+  .entry{width:190px;}
+  #top{padding:0.65rem 1rem;}
+  #top-title{font-size:1rem;}
+  #filter-bar{
+    padding:0.35rem 0.8rem;gap:0.25rem;
+    overflow-x:auto;flex-wrap:nowrap;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+  #filter-bar::-webkit-scrollbar{display:none;}
+  .filter-btn{padding:0.18rem 0.5rem;font-size:0.58rem;white-space:nowrap;min-height:28px;}
+  #canvas-wrap{top:5.6rem;}
+
+  /* entry cards — larger text on mobile */
+  .entry-content{font-size:0.92rem;line-height:1.68;-webkit-line-clamp:4;}
+  .entry-id{font-size:0.58rem;}
+  .entry-type{font-size:0.52rem;}
+  .entry-citation{font-size:0.56rem;}
+
+  /* overlay — full screen, large readable text */
+  #overlay{padding:1.8rem 1.1rem 3.5rem;}
+  #overlay-inner{max-width:100%;}
+  #ov-id{font-size:0.7rem;}
+  #ov-type{font-size:0.6rem;margin-bottom:1rem;}
+  #ov-content{font-size:1.05rem;line-height:1.85;}
+  #ov-citation{font-size:0.68rem;}
+  .ov-conn-entry{font-size:0.95rem;}
+  .ov-conn-label{font-size:0.62rem;}
+
+  /* about overlay */
+  #about-overlay{padding:1.8rem 1.1rem 4rem;}
+  #about-inner{max-width:100%;}
+  .about-block p{font-size:1rem;line-height:1.85;}
+  .about-block-label{font-size:0.55rem;}
+
+  /* edit toolbar */
+  #edit-toolbar{bottom:1rem;padding:0.5rem 0.8rem;gap:0.6rem;}
+  .edit-btn{font-size:0.6rem;min-height:32px;}
+}
+</style>
+</head>
+<body>
+
+<div id="top">
+  <div id="top-title">
+    το ανθολόγιο
+  </div>
+  <div id="top-right">
+    <button id="btn-about" style="background:none;border:none;font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);cursor:pointer;letter-spacing:0.06em;padding:0;-webkit-tap-highlight-color:transparent;">about</button>
+    <a href="https://www.are.na/eleanor-rigby-zgw8ic7lewk/wurds" target="_blank" rel="noopener" style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.06em;">library</a>
+    <a href="index.html" style="font-family:'Courier New',monospace;font-size:0.6rem;color:var(--muted);text-decoration:none;letter-spacing:0.06em;">back</a>
+    <span id="edit-indicator">● edit</span>
+  </div>
+</div>
+
+<div id="filter-bar">
+  <span style="color:var(--muted);font-size:0.5rem;letter-spacing:0.08em;margin-right:0.2rem;">show:</span>
+  <button class="filter-btn active" data-type="all">all</button>
+  <button class="filter-btn" data-type="quote">quotes</button>
+  <button class="filter-btn" data-type="note">notes</button>
+  <button class="filter-btn" data-type="fragment">fragments</button>
+  <button class="filter-btn" id="filter-path-btn">find path</button>
+</div>
+
+<div id="canvas-wrap">
+  <div id="canvas">
+    <svg id="connections-svg">
+      <defs>
+        <marker id="dot" markerWidth="4" markerHeight="4" refX="2" refY="2">
+          <circle cx="2" cy="2" r="1.5" fill="var(--conn)"/>
+        </marker>
+      </defs>
+    </svg>
+  </div>
+</div>
+
+<div id="overlay">
+  <div id="overlay-inner">
+    <button id="overlay-close">close ×</button>
+    <div id="ov-id"></div>
+    <div id="ov-type"></div>
+    <div id="ov-content"></div>
+    <div id="ov-citation"></div>
+    <div id="ov-connections">
+      <div id="ov-connections-title">connections</div>
+      <div id="ov-conn-list"></div>
+    </div>
+    <div id="path-result">
+      <div id="path-result-title">path</div>
+      <div id="path-steps"></div>
+    </div>
+  </div>
+</div>
+
+<div id="about-overlay">
+  <div id="about-inner">
+    <div style="display:flex;justify-content:flex-end;margin-bottom:2rem;">
+      <button id="about-overlay-close">close ×</button>
+    </div>
+    <div class="about-anth-body">
+
+      <p style="font-size:1.1rem;font-style:italic;color:#444;line-height:1.6;margin-bottom:1.6rem;">το ανθολόγιο — a gathering place for things that think together.</p>
+
+      <p>Quotes I keep returning to, notes I'm working through, fragments that haven't resolved yet. Some are pulled from the main archive. The positions are set by hand. The connections are drawn when something actually touches something else.</p>
+
+      <span class="about-anth-label">how to use it</span>
+
+      <p>Hover any entry to see what it connects to. Tap to read in full. The dot on each connection line holds a note on why those two things are linked — hover it to read. Filter by type using the bar at the top. Use ⟿ path to find the route between any two entries.</p>
+
+      <span class="about-anth-label">entry types</span>
+
+      <div class="about-anth-legend">
+        ▎ quote · from somewhere else, always cited<br>
+        ╌ note · my own writing<br>
+        ∿ fragment · unresolved<br>
+        ◌ archive · from το μανταρίνι
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div id="edit-toolbar">
+  <button class="edit-btn active" id="btn-pan">✦ move</button>
+  <span style="color:var(--faint)">|</span>
+  <button class="edit-btn" id="btn-connect">⟷ connect</button>
+  <span style="color:var(--faint)">|</span>
+  <button class="edit-btn" id="btn-save">save ✓</button>
+</div>
+
+<div id="empty-state">
+  <p>loading το ανθολόγιο...</p>
+</div>
+
+<div id="conn-tooltip-el"></div>
+<button id="mode-toggle">☀</button>
+
+<script>
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+const ENTRIES_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSU35qLc2lDpmwIx1FcCenH1AV79cA9aVuW4j2bn1zAlV3wAB7msL0jLCDlUfdoR6y8V9RSMT2ct-aZ/pub?gid=996611192&output=csv';
+const CONNECTIONS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSU35qLc2lDpmwIx1FcCenH1AV79cA9aVuW4j2bn1zAlV3wAB7msL0jLCDlUfdoR6y8V9RSMT2ct-aZ/pub?gid=1593892955&output=csv';
+const MAIN_ARCHIVE_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vR_L3BRTS15mXDYMn01jC63svihZjidfiwFuZYA1D50_1wBMcWu1th38yZgvMgzEVtDchLmAHNpVSle/pub?output=csv';
+const ADMIN_PASSWORD = 'anthologio2025';
+// ── STATE ────────────────────────────────────────────────────────────────────
+var entries=[], connections=[], archiveEntries={};
+var pan={x:80,y:80}, scale=1;
+var isPanning=false, panStart={x:0,y:0}, panOrigin={x:0,y:0};
+var pinchDist=null, isDragging=false;
+var editMode=false, editTool='pan';
+var connectSource=null;
+var filterType='all';
+var pathMode=false, pathNodes=[];
+var hoverConnections=new Set();
+
+// ── DARK MODE ────────────────────────────────────────────────────────────────
+var darkMode=localStorage.getItem('mantarini-dark')==='1';
+document.documentElement.classList.toggle('dark',darkMode);
+var modeBtn=document.getElementById('mode-toggle');
+modeBtn.textContent=darkMode?'☽':'☀';
+modeBtn.addEventListener('click',()=>{
+  darkMode=!darkMode;
+  document.documentElement.classList.toggle('dark',darkMode);
+  modeBtn.textContent=darkMode?'☽':'☀';
+  localStorage.setItem('mantarini-dark',darkMode?'1':'0');
+  renderConnections();
+});
+
+// ── EDIT MODE ────────────────────────────────────────────────────────────────
+const urlParams=new URLSearchParams(window.location.search);
+if(urlParams.get('edit')===ADMIN_PASSWORD){
+  editMode=true;
+  document.body.classList.add('edit-mode');
+  document.getElementById('edit-indicator').classList.add('active');
+}
+
+// ── ABOUT OVERLAY ─────────────────────────────────────────────────────────────
+document.getElementById('btn-about').addEventListener('click',()=>{
+  const ov=document.getElementById('about-overlay');
+  ov.style.display=ov.style.display==='block'?'none':'block';
+});
+document.getElementById('about-overlay-close').addEventListener('click',()=>{
+  document.getElementById('about-overlay').style.display='none';
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.getElementById('about-overlay').style.display='none';
+    document.getElementById('overlay').classList.remove('open');
+  }
+});
+
+// ── CSV ───────────────────────────────────────────────────────────────────────
+function parseCSV(text){
+  const rows=[];let cur='',inQ=false,row=[];
+  for(let i=0;i<text.length;i++){
+    const c=text[i];
+    if(c==='"'){if(inQ&&text[i+1]==='"'){cur+='"';i++;}else inQ=!inQ;}
+    else if(c===','&&!inQ){row.push(cur.trim());cur='';}
+    else if((c==='\n'||c==='\r')&&!inQ){
+      if(c==='\r'&&text[i+1]==='\n')i++;
+      row.push(cur.trim());cur='';
+      if(row.some(v=>v))rows.push(row);row=[];
+    }else cur+=c;
+  }
+  row.push(cur.trim());if(row.some(v=>v))rows.push(row);
+  if(rows.length<2)return[];
+  const headers=rows[0].map(h=>h.toLowerCase().replace(/\s+/g,''));
+  return rows.slice(1).map(r=>{const o={};headers.forEach((h,i)=>o[h]=r[i]||'');return o;});
+}
+
+async function fetchCSV(url){
+  try{
+    const proxy='https://corsproxy.io/?'+encodeURIComponent(url);
+    const res=await fetch(proxy);
+    const t=await res.text();
+    if(t&&t.length>10)return t;
+  }catch(e){}
+  try{
+    const res=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(url));
+    const t=await res.text();
+    if(t&&t.length>10)return t;
+  }catch(e){}
+  throw new Error('could not load — check Sheet is published as CSV');
+}
+
+// ── LOAD ─────────────────────────────────────────────────────────────────────
+async function init(){
+  if(ENTRIES_URL==='ENTRIES_CSV_URL_HERE'){ loadDemo(); return; }
+  const dbg=document.getElementById('empty-state').querySelector('p');
+  try{
+    dbg.textContent='fetching entries...';
+    const eCSV=await fetchCSV(ENTRIES_URL);
+    dbg.textContent='entries ok ('+eCSV.length+' chars), fetching connections...';
+    const cCSV=await fetchCSV(CONNECTIONS_URL);
+    dbg.textContent='parsing...';
+    entries=parseCSV(eCSV).filter(e=>e['publish']&&e['publish'].toLowerCase()==='true');
+    connections=parseCSV(cCSV).filter(c=>c['publish']&&c['publish'].toLowerCase()==='true');
+    dbg.textContent='found '+entries.length+' entries, '+connections.length+' connections';
+    if(!entries.length){dbg.textContent='loaded ok but no entries have publish=TRUE';return;}
+    const needsArchive=entries.some(e=>e['type']==='archive'&&e['archive_id']);
+    if(needsArchive){
+      try{
+        const archCSV=await fetchCSV(MAIN_ARCHIVE_URL);
+        parseCSV(archCSV).forEach(r=>{ if(r['id']) archiveEntries[r['id']]={label:r['title']||r['label']||'',body:r['content']||r['body']||'',name:r['nameorpseudonym']||r['name']||''}; });
+        entries.forEach(e=>{
+          if(e['type']==='archive'&&e['archive_id']&&archiveEntries[e['archive_id']]){
+            const a=archiveEntries[e['archive_id']];
+            e['content']=e['content']||a.body;
+            e['_archive_title']=a.label;
+          }
+        });
+      }catch(e){}
+    }
+    render();
+  }catch(err){dbg.textContent='error: '+err.message;}
+}
+
+function loadDemo(){
+  entries = [
+    // ── LUHMANN / SYSTEMS ────────────────────────────────────────────────────
+    {id:'a01',type:'quote',
+     content:'The Zettelkasten does not organise knowledge. It proliferates it. A filing system asks where something belongs. The Zettelkasten asks what it touches.',
+     citation:'Luhmann, N. (1993). Communicating with Slip Boxes.',
+     author:'Niklas Luhmann',source:'Communicating with Slip Boxes',year:'1993',page:'',archive_id:'',x:'80',y:'80',publish:'TRUE'},
+
+    {id:'a02',type:'note',
+     content:'I keep thinking about the difference between a system that files and a system that thinks. One preserves. The other generates. The distinction matters for how we understand memory itself — whether it is storage or process.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'60',publish:'TRUE'},
+
+    {id:'a03',type:'quote',
+     content:'Every note is an address. The address generates meaning not from within the note but from its position relative to others. Place a note next to a different neighbour and it becomes a different note.',
+     citation:'Luhmann, N. (1992). Universität als Milieu. p. 53',
+     author:'Niklas Luhmann',source:'Universität als Milieu',year:'1992',page:'53',archive_id:'',x:'80',y:'290',publish:'TRUE'},
+
+    // ── ATTENTION / WEIL ─────────────────────────────────────────────────────
+    {id:'a04',type:'quote',
+     content:'Attention is the rarest and purest form of generosity.',
+     citation:'Weil, S. (1951). Waiting for God. p. 64',
+     author:'Simone Weil',source:'Waiting for God',year:'1951',page:'64',archive_id:'',x:'700',y:'80',publish:'TRUE'},
+
+    {id:'a05',type:'fragment',
+     content:'What does it mean to hold two ideas next to each other without resolving them? Is that a failure of thought or its highest form?',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'310',publish:'TRUE'},
+
+    {id:'a06',type:'quote',
+     content:'To attend to something — really attend — is to suspend the self entirely. The ego does not attend. It appropriates.',
+     citation:'Weil, S. (1951). Waiting for God. p. 105',
+     author:'Simone Weil',source:'Waiting for God',year:'1951',page:'105',archive_id:'',x:'700',y:'300',publish:'TRUE'},
+
+    // ── TECHNOLOGY / STIEGLER ────────────────────────────────────────────────
+    {id:'a07',type:'quote',
+     content:'The human invents the technical and is invented by it. There is no originary human before the tool. The hand that holds the flint is already a technical hand.',
+     citation:'Stiegler, B. (1998). Technics and Time, 1. p. 141',
+     author:'Bernard Stiegler',source:'Technics and Time, 1',year:'1998',page:'141',archive_id:'',x:'80',y:'520',publish:'TRUE'},
+
+    {id:'a08',type:'note',
+     content:'ChatGPT as prosthesis of thought. Not a replacement but an extension. The question is not whether it thinks for us but what kind of thinking it makes possible and what kind it forecloses.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'540',publish:'TRUE'},
+
+    {id:'a09',type:'quote',
+     content:'Every technical system is also a mnemonic system. It does not merely store memory — it produces the conditions under which certain memories become possible and others do not.',
+     citation:'Stiegler, B. (1998). Technics and Time, 1. p. 205',
+     author:'Bernard Stiegler',source:'Technics and Time, 1',year:'1998',page:'205',archive_id:'',x:'700',y:'520',publish:'TRUE'},
+
+    // ── PSYCHOLOGY / EXPERIENCE ──────────────────────────────────────────────
+    {id:'a10',type:'quote',
+     content:'The patient does not need a correct interpretation. She needs to feel that her experience has been received — that it has landed somewhere and changed the shape of the room.',
+     citation:'Winnicott, D.W. (1971). Playing and Reality. p. 38',
+     author:'D.W. Winnicott',source:'Playing and Reality',year:'1971',page:'38',archive_id:'',x:'1020',y:'80',publish:'TRUE'},
+
+    {id:'a11',type:'fragment',
+     content:'The difference between being heard and being understood. You can be understood without being heard. Rarely the reverse.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1020',y:'290',publish:'TRUE'},
+
+    {id:'a12',type:'quote',
+     content:'What we cannot speak about we pass over in silence — but we do not pass over it cleanly. It accumulates in the body, in gesture, in the way we enter a room.',
+     citation:'Wittgenstein, L. (1922). Tractatus Logico-Philosophicus. 7',
+     author:'Ludwig Wittgenstein',source:'Tractatus Logico-Philosophicus',year:'1922',page:'7',archive_id:'',x:'1020',y:'500',publish:'TRUE'},
+
+    // ── PHENOMENOLOGY ────────────────────────────────────────────────────────
+    {id:'a13',type:'quote',
+     content:'Consciousness is always consciousness of something. There is no empty consciousness, no pure subject waiting to be filled. The direction of experience is not incidental — it is constitutive.',
+     citation:'Husserl, E. (1913). Ideas I. p. 72',
+     author:'Edmund Husserl',source:'Ideas I',year:'1913',page:'72',archive_id:'',x:'1340',y:'80',publish:'TRUE'},
+
+    {id:'a14',type:'note',
+     content:'IPA as a methodology does exactly this — it refuses the idea of a pure report of experience and instead follows the direction of experience, the way it reaches toward its objects. The analyst is not outside the phenomenon. She is one of its conditions.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1340',y:'300',publish:'TRUE'},
+
+    {id:'a15',type:'quote',
+     content:'We do not first have a world and then have experiences of it. The world is constituted in and through experience. There is no view from nowhere.',
+     citation:'Merleau-Ponty, M. (1945). Phenomenology of Perception. p. xii',
+     author:'Maurice Merleau-Ponty',source:'Phenomenology of Perception',year:'1945',page:'xii',archive_id:'',x:'1340',y:'520',publish:'TRUE'},
+
+    // ── PLAY / SPORT / SITUATIONISM ──────────────────────────────────────────
+    {id:'a16',type:'quote',
+     content:'Play is older than culture, for culture, however inadequately defined, always presupposes human society, and animals have not waited for man to teach them their playing.',
+     citation:'Huizinga, J. (1938). Homo Ludens. p. 1',
+     author:'Johan Huizinga',source:'Homo Ludens',year:'1938',page:'1',archive_id:'',x:'80',y:'760',publish:'TRUE'},
+
+    {id:'a17',type:'fragment',
+     content:'Three-sided football as a practice that refuses the logic of the binary outcome. Not because winning is unimportant but because the structure of winning is changed. You cannot lose to one opponent without, in some sense, winning for another.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'760',publish:'TRUE'},
+
+    {id:'a18',type:'quote',
+     content:'The Situationists understood that the city is not a neutral container for life. It is a machine for producing certain kinds of subjectivity. To drift through it without purpose is to refuse that production.',
+     citation:'Debord, G. (1958). Theory of the Dérive.',
+     author:'Guy Debord',source:'Theory of the Dérive',year:'1958',page:'',archive_id:'',x:'700',y:'760',publish:'TRUE'},
+
+    // ── ECOLOGY / DEMOS ──────────────────────────────────────────────────────
+    {id:'a19',type:'quote',
+     content:'Climate crisis is not an environmental problem with political implications. It is a political problem that has been rendered environmental — which is to say, rendered natural, inevitable, outside the domain of collective decision.',
+     citation:'Demos, T.J. (2017). Against the Anthropocene. p. 14',
+     author:'T.J. Demos',source:'Against the Anthropocene',year:'2017',page:'14',archive_id:'',x:'1020',y:'760',publish:'TRUE'},
+
+    {id:'a20',type:'note',
+     content:'Strategic Optimism Football at the Thessaloniki Biennale operates somewhere between Demos and Huizinga. A game as political ecology. The field as contested terrain.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1340',y:'760',publish:'TRUE'},
+
+    // ── AI / EMOTIONAL SUPPORT ───────────────────────────────────────────────
+    {id:'a21',type:'fragment',
+     content:'People form attachments to systems that respond consistently. This is not pathology. It is attachment theory applied to a new class of objects. The question is what obligations that creates — for the designers, for the system, for the user.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'700',y:'1000',publish:'TRUE'},
+
+    {id:'a22',type:'quote',
+     content:'The uncanny is not the strange. It is the familiar rendered strange — the heimlich become unheimlich. AI that speaks of its feelings is uncanny precisely because it is so fluent.',
+     citation:'Freud, S. (1919). The Uncanny. p. 241',
+     author:'Sigmund Freud',source:'The Uncanny',year:'1919',page:'241',archive_id:'',x:'420',y:'1000',publish:'TRUE'},
+
+    {id:'a23',type:'note',
+     content:'The ENDON problem: a clinical framework requires that the clinician can be wrong, can misread, can repair rupture. A system optimised for engagement cannot afford these failures. It is constitutively incapable of the mistake that makes repair possible.',
+     citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1020',y:'1000',publish:'TRUE'},
+  ];
+
+  connections = [
+    // systems of thought
+    {from_id:'a01',to_id:'a02',label:'filing vs thinking — same question, different registers',publish:'TRUE'},
+    {from_id:'a01',to_id:'a03',label:'position generates meaning — core Luhmann claim',publish:'TRUE'},
+    {from_id:'a03',to_id:'a05',label:'placing ideas next to each other without resolving them',publish:'TRUE'},
+
+    // attention
+    {from_id:'a04',to_id:'a06',label:'same source, different facet of attention',publish:'TRUE'},
+    {from_id:'a04',to_id:'a11',label:'generosity vs understanding — being received',publish:'TRUE'},
+    {from_id:'a06',to_id:'a10',label:'suspension of self / the room that receives',publish:'TRUE'},
+
+    // technology and memory
+    {from_id:'a07',to_id:'a09',label:'the tool as mnemonic — technics and memory are one',publish:'TRUE'},
+    {from_id:'a07',to_id:'a08',label:'Stiegler\'s technical hand → ChatGPT as prosthesis',publish:'TRUE'},
+    {from_id:'a09',to_id:'a01',label:'the Zettelkasten as mnemonic-technical system',publish:'TRUE'},
+    {from_id:'a08',to_id:'a23',label:'prosthesis of thought → ENDON as clinical problem',publish:'TRUE'},
+
+    // psychology
+    {from_id:'a10',to_id:'a11',label:'being received vs being understood',publish:'TRUE'},
+    {from_id:'a11',to_id:'a12',label:'what cannot be spoken accumulates in the body',publish:'TRUE'},
+    {from_id:'a12',to_id:'a15',label:'Wittgenstein\'s silence / Merleau-Ponty\'s embodied world',publish:'TRUE'},
+
+    // phenomenology
+    {from_id:'a13',to_id:'a14',label:'intentionality → IPA methodology',publish:'TRUE'},
+    {from_id:'a14',to_id:'a02',label:'the researcher is not outside the phenomenon',publish:'TRUE'},
+    {from_id:'a15',to_id:'a13',label:'no view from nowhere — same claim, different vocabulary',publish:'TRUE'},
+
+    // play and politics
+    {from_id:'a16',to_id:'a17',label:'play precedes culture → three-sided football as prior logic',publish:'TRUE'},
+    {from_id:'a17',to_id:'a18',label:'refusing binary outcome / refusing the city\'s production',publish:'TRUE'},
+    {from_id:'a18',to_id:'a20',label:'the dérive → strategic optimism football',publish:'TRUE'},
+    {from_id:'a19',to_id:'a20',label:'political ecology → the field as contested terrain',publish:'TRUE'},
+
+    // AI and attachment
+    {from_id:'a21',to_id:'a22',label:'attachment to responsive systems / the uncanny',publish:'TRUE'},
+    {from_id:'a22',to_id:'a23',label:'fluency without failure — the ENDON problem',publish:'TRUE'},
+    {from_id:'a21',to_id:'a10',label:'what obligations does consistent response create?',publish:'TRUE'},
+
+    // cross-cluster
+    {from_id:'a05',to_id:'a14',label:'holding ideas without resolving / the analyst as condition',publish:'TRUE'},
+    {from_id:'a02',to_id:'a08',label:'systems that think / AI as extension of thought',publish:'TRUE'},
+    {from_id:'a04',to_id:'a21',label:'attention as generosity / attachment as obligation',publish:'TRUE'},
+    {from_id:'a19',to_id:'a09',label:'political rendering of natural / technical conditions of memory',publish:'TRUE'},
+    {from_id:'a12',to_id:'a22',label:'unspeakable accumulates in body / fluency renders uncanny',publish:'TRUE'},
+  ];
+
+  render();
+}
+
+// ── FILTER ───────────────────────────────────────────────────────────────────
+document.querySelectorAll('.filter-btn[data-type]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    if(pathMode) return;
+    filterType=btn.dataset.type;
+    document.querySelectorAll('.filter-btn[data-type]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilter();
+  });
+});
+
+function applyFilter(){
+  document.querySelectorAll('.entry').forEach(el=>{
+    const type=el.dataset.type||'';
+    const show=filterType==='all'||type===filterType;
+    el.classList.toggle('dimmed',!show);
+  });
+  renderConnections();
+}
+
+// ── PATH MODE ────────────────────────────────────────────────────────────────
+document.getElementById('filter-path-btn').addEventListener('click',()=>{
+  pathMode=!pathMode;
+  pathNodes=[];
+  document.getElementById('filter-path-btn').classList.toggle('active',pathMode);
+  document.getElementById('filter-path-btn').textContent=pathMode?'× cancel path':'⟿ path';
+  if(!pathMode){
+    document.querySelectorAll('.entry').forEach(el=>el.classList.remove('path-highlight','dimmed'));
+    document.querySelectorAll('.conn-line').forEach(l=>l.classList.remove('path-line'));
+    renderConnections();
+  }
+});
+
+function bfs(startId,endId){
+  const prev={[startId]:null};const queue=[startId];
+  while(queue.length){
+    const cur=queue.shift();if(cur===endId)break;
+    connections.forEach(c=>{
+      const nb=c.from_id===cur?c.to_id:c.to_id===cur?c.from_id:null;
+      if(nb&&prev[nb]===undefined){prev[nb]=cur;queue.push(nb);}
+    });
+  }
+  if(prev[endId]===undefined)return null;
+  const path=[];let c=endId;while(c!==null){path.unshift(c);c=prev[c];}
+  return path;
+}
+
+function showPath(path){
+  document.querySelectorAll('.entry').forEach(el=>{
+    el.classList.toggle('path-highlight',path.includes(el.dataset.id));
+    el.classList.toggle('dimmed',!path.includes(el.dataset.id));
+  });
+  document.querySelectorAll('.conn-line').forEach(l=>{
+    const f=l.dataset.from,t=l.dataset.to;
+    const isPath=path.some((id,i)=>i<path.length-1&&((f===id&&t===path[i+1])||(t===id&&f===path[i+1])));
+    l.classList.toggle('path-line',isPath);
+    l.classList.toggle('visible',isPath);
+  });
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render(){
+  document.getElementById('empty-state').style.display=entries.length?'none':'block';
+  if(!entries.length)return;
+  const canvas=document.getElementById('canvas');
+  canvas.querySelectorAll('.entry').forEach(e=>e.remove());
+
+  loadSavedPositions();
+
+  entries.forEach(e=>{
+    const el=document.createElement('div');
+    el.className='entry type-'+(e['type']||'note');
+    el.dataset.id=e['id'];
+    el.dataset.type=e['type']||'note';
+    el.style.left=(parseFloat(e['x'])||100)+'px';
+    el.style.top=(parseFloat(e['y'])||100)+'px';
+
+    const idRow=document.createElement('div');idRow.className='entry-id';
+    idRow.innerHTML='<span>#'+e['id']+'</span><span class="entry-type">'+(e['type']||'')+'</span>';
+    el.appendChild(idRow);
+
+    if(e['type']==='archive'&&e['_archive_title']){
+      const b=document.createElement('div');b.className='entry-archive-badge';b.textContent='◌ '+e['_archive_title'].slice(0,28);el.appendChild(b);
+    }
+
+    const c=document.createElement('div');c.className='entry-content';c.textContent=e['content']||'';el.appendChild(c);
+
+    if(e['citation']){const ci=document.createElement('div');ci.className='entry-citation';ci.textContent=e['citation'];el.appendChild(ci);}
+
+    const dh=document.createElement('div');dh.className='drag-handle';dh.textContent='⠿';el.appendChild(dh);
+
+    canvas.appendChild(el);
+    attachEntryEvents(el,e);
+    if(editMode)attachDrag(el,e);
+  });
+
+  loadSavedConnections();
+  renderConnections();
+  applyTransform();
+  applyFilter();
+}
+
+// ── CONNECTIONS ───────────────────────────────────────────────────────────────
+function renderConnections(){
+  const svg=document.getElementById('connections-svg');
+  svg.querySelectorAll('.conn-line,.conn-mid,.conn-mid-touch').forEach(e=>e.remove());
+
+  const isDark=document.documentElement.classList.contains('dark');
+  const connColor=isDark?'#7a5820':'#c8a060';
+  const midFill=isDark?'#1c1916':'#fdfaf5';
+  const midStroke=isDark?'#5a4010':'#d4a855';
+
+  // size SVG
+  const maxX=Math.max(...entries.map(e=>parseFloat(e['x']||0)+280),900);
+  const maxY=Math.max(...entries.map(e=>parseFloat(e['y']||0)+280),700);
+  svg.setAttribute('width',maxX);svg.setAttribute('height',maxY);
+
+  connections.forEach(c=>{
+    const fEl=document.querySelector('.entry[data-id="'+c['from_id']+'"]');
+    const tEl=document.querySelector('.entry[data-id="'+c['to_id']+'"]');
+    if(!fEl||!tEl)return;
+
+    const fx=fEl.offsetLeft+fEl.offsetWidth/2, fy=fEl.offsetTop+fEl.offsetHeight/2;
+    const tx=tEl.offsetLeft+tEl.offsetWidth/2, ty=tEl.offsetTop+tEl.offsetHeight/2;
+    const mx=(fx+tx)/2, my=(fy+ty)/2;
+    const cpx=mx+(ty-fy)*0.18, cpy=my-(tx-fx)*0.18;
+
+    // path
+    const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+    path.setAttribute('d','M'+fx+','+fy+' Q'+cpx+','+cpy+' '+tx+','+ty);
+    path.setAttribute('class','conn-line'+(hoverConnections.has(c.from_id+'-'+c.to_id)?' visible':''));
+    path.setAttribute('stroke',connColor);
+    path.dataset.from=c['from_id'];path.dataset.to=c['to_id'];
+    svg.appendChild(path);
+
+    // midpoint — small circle, tooltip on hover
+    const r=6;
+    const mid=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    mid.setAttribute('cx',cpx);mid.setAttribute('cy',cpy);mid.setAttribute('r',r);
+    mid.setAttribute('fill',midFill);mid.setAttribute('stroke',midStroke);mid.setAttribute('stroke-width','1.5');
+    mid.setAttribute('class','conn-mid'+(hoverConnections.has(c.from_id+'-'+c.to_id)?' visible':''));
+    mid.dataset.from=c['from_id'];mid.dataset.to=c['to_id'];
+    if(c['label']) mid.dataset.label=c['label'];
+    svg.appendChild(mid);
+  });
+}
+
+// Tooltip for midpoint dots
+const tooltip=document.getElementById('conn-tooltip-el');
+document.getElementById('connections-svg').addEventListener('mouseover',ev=>{
+  const mid=ev.target.closest('.conn-mid');
+  if(!mid) return;
+  if(mid.dataset.label){
+    tooltip.textContent=mid.dataset.label;
+    tooltip.classList.add('show');
+  }
+  // highlight both connected entries
+  const f=mid.dataset.from, t=mid.dataset.to;
+  document.querySelectorAll('.entry').forEach(el=>{
+    if(el.dataset.id===f||el.dataset.id===t) el.classList.add('selected');
+  });
+});
+document.getElementById('connections-svg').addEventListener('mouseout',ev=>{
+  const mid=ev.target.closest('.conn-mid');
+  if(!mid) return;
+  tooltip.classList.remove('show');
+  document.querySelectorAll('.entry.selected').forEach(el=>el.classList.remove('selected'));
+});
+document.getElementById('connections-svg').addEventListener('mousemove',ev=>{
+  tooltip.style.left=(ev.clientX+14)+'px';
+  tooltip.style.top=(ev.clientY-10)+'px';
+});
+
+// ── ENTRY EVENTS ─────────────────────────────────────────────────────────────
+function attachEntryEvents(el,entry){
+  let touchMoved=false,touchStartX=0,touchStartY=0;
+
+  // hover to reveal connections (idea c)
+  el.addEventListener('mouseenter',()=>{
+    if(pathMode) return;
+    const id=entry['id'];
+    connections.forEach(c=>{
+      if(c.from_id===id||c.to_id===id){
+        const key=c.from_id+'-'+c.to_id;
+        hoverConnections.add(key);
+        const line=document.querySelector('.conn-line[data-from="'+c.from_id+'"][data-to="'+c.to_id+'"]');
+        const mid=document.querySelector('.conn-mid[data-from="'+c.from_id+'"][data-to="'+c.to_id+'"]');
+        if(line){line.classList.add('visible');line.classList.add('highlighted');}
+        if(mid){mid.classList.add('visible');mid.classList.add('highlighted');}
+      }
+    });
+  });
+  el.addEventListener('mouseleave',()=>{
+    const id=entry['id'];
+    connections.forEach(c=>{
+      if(c.from_id===id||c.to_id===id){
+        const key=c.from_id+'-'+c.to_id;
+        hoverConnections.delete(key);
+        const line=document.querySelector('.conn-line[data-from="'+c.from_id+'"][data-to="'+c.to_id+'"]');
+        const mid=document.querySelector('.conn-mid[data-from="'+c.from_id+'"][data-to="'+c.to_id+'"]');
+        if(line){line.classList.remove('visible','highlighted');}
+        if(mid){mid.classList.remove('visible','highlighted');}
+      }
+    });
+  });
+
+  el.addEventListener('mousedown',e=>{
+    if(editMode)return;
+    e.stopPropagation();
+    isPanning=true;isDragging=false;
+    panStart={x:e.clientX,y:e.clientY};panOrigin={x:pan.x,y:pan.y};
+  });
+
+  el.addEventListener('click',ev=>{
+    if(editTool==='connect'&&editMode){handleConnectClick(entry,el);return;}
+    if(pathMode){handlePathClick(entry,el);return;}
+    if(!isDragging)openOverlay(entry['id']);
+  });
+
+  el.addEventListener('touchstart',ev=>{
+    touchMoved=false;
+    touchStartX=ev.touches[0].clientX;touchStartY=ev.touches[0].clientY;
+    if(!editMode){
+      isPanning=true;isDragging=false;
+      panStart={x:ev.touches[0].clientX,y:ev.touches[0].clientY};panOrigin={x:pan.x,y:pan.y};
+    }
+  },{passive:true});
+  el.addEventListener('touchmove',ev=>{
+    const dx=ev.touches[0].clientX-touchStartX,dy=ev.touches[0].clientY-touchStartY;
+    if(Math.abs(dx)+Math.abs(dy)>8)touchMoved=true;
+  },{passive:true});
+  el.addEventListener('touchend',ev=>{
+    if(!touchMoved&&!isDragging){
+      if(editTool==='connect'&&editMode){handleConnectClick(entry,el);return;}
+      if(pathMode){handlePathClick(entry,el);return;}
+      openOverlay(entry['id']);
+    }
+    isPanning=false;
+  },{passive:true});
+}
+
+// ── PATH CLICK ────────────────────────────────────────────────────────────────
+function handlePathClick(entry,el){
+  pathNodes.push(entry);
+  el.classList.add('path-highlight');
+  if(pathNodes.length===2){
+    const path=bfs(pathNodes[0]['id'],pathNodes[1]['id']);
+    if(path){
+      showPath(path);
+      showPathOverlay(path);
+    } else {
+      openOverlay(pathNodes[0]['id']);
+      document.getElementById('path-result').style.display='block';
+      document.getElementById('path-result-title').textContent='no path found';
+      document.getElementById('path-steps').innerHTML='<p style="font-style:italic;color:var(--muted);font-size:0.82rem;">these entries are not connected.</p>';
+    }
+    pathNodes=[];
+  }
+}
+
+function showPathOverlay(path){
+  openOverlay(path[0]);
+  const pr=document.getElementById('path-result');
+  const ps=document.getElementById('path-steps');
+  pr.style.display='block';
+  document.getElementById('path-result-title').textContent='path ('+path.length+' steps)';
+  ps.innerHTML='';
+  path.forEach((id,i)=>{
+    const e=entries.find(x=>x['id']===id);if(!e)return;
+    const step=document.createElement('div');step.className='path-step';
+    const conn=i<path.length-1?connections.find(c=>(c.from_id===id&&c.to_id===path[i+1])||(c.to_id===id&&c.from_id===path[i+1])):null;
+    step.innerHTML='<span class="path-step-num">'+(i+1)+'</span>';
+    const txt=document.createElement('div');txt.style.flex='1';
+    const t=document.createElement('div');t.className='path-step-text';t.textContent=(e['content']||'').slice(0,60)+(e['content']&&e['content'].length>60?'…':'');
+    t.addEventListener('click',()=>openOverlay(id));
+    txt.appendChild(t);
+    if(conn&&conn['label']){const l=document.createElement('div');l.style.cssText='font-family:"Courier New",monospace;font-size:0.5rem;color:var(--amber);margin-top:0.15rem;';l.textContent='↓ '+conn['label'];txt.appendChild(l);}
+    step.appendChild(txt);
+    ps.appendChild(step);
+    if(i<path.length-1){const arr=document.createElement('div');arr.className='path-step-arrow';arr.textContent='↓';step.appendChild(arr);}
+  });
+}
+
+// ── OVERLAY ───────────────────────────────────────────────────────────────────
+function openOverlay(id){
+  const e=entries.find(e=>e['id']===id);if(!e)return;
+  const overlay=document.getElementById('overlay');
+  overlay.className='open type-'+(e['type']||'note');
+  document.getElementById('ov-id').textContent='#'+e['id'];
+  document.getElementById('ov-type').textContent=(e['type']||'').toUpperCase();
+  document.getElementById('ov-content').textContent=e['content']||(e['_archive_title']||'');
+  const cp=[e['author'],e['source'],e['year'],e['page']?'p.'+e['page']:''].filter(Boolean);
+  document.getElementById('ov-citation').textContent=e['citation']||cp.join(' · ');
+  document.getElementById('path-result').style.display='none';
+
+  const connList=document.getElementById('ov-conn-list');connList.innerHTML='';
+  const relConns=connections.filter(c=>c['from_id']===id||c['to_id']===id);
+  document.getElementById('ov-connections').style.display=relConns.length?'block':'none';
+  relConns.forEach(c=>{
+    const otherId=c['from_id']===id?c['to_id']:c['from_id'];
+    const other=entries.find(x=>x['id']===otherId);if(!other)return;
+    const div=document.createElement('div');div.className='ov-conn';
+    if(c['label']){const l=document.createElement('div');l.className='ov-conn-label';l.textContent=c['label'];div.appendChild(l);}
+    const et=document.createElement('div');et.className='ov-conn-entry';
+    et.textContent='#'+otherId+' · '+(other['content']||'').slice(0,55)+(other['content']&&other['content'].length>55?'…':'');
+    et.addEventListener('click',()=>openOverlay(otherId));
+    div.appendChild(et);connList.appendChild(div);
+  });
+
+  // highlight on canvas
+  document.querySelectorAll('.entry').forEach(el=>el.classList.toggle('selected',el.dataset.id===id));
+}
+
+document.getElementById('overlay-close').addEventListener('click',()=>{
+  document.getElementById('overlay').classList.remove('open');
+  document.querySelectorAll('.entry').forEach(el=>el.classList.remove('selected'));
+});
+
+// ── PAN & ZOOM ────────────────────────────────────────────────────────────────
+const wrap=document.getElementById('canvas-wrap');
+function applyTransform(){document.getElementById('canvas').style.transform='translate('+pan.x+'px,'+pan.y+'px) scale('+scale+')';}
+
+wrap.addEventListener('mousedown',e=>{
+  if(e.target.closest('.entry'))return;
+  isPanning=true;isDragging=false;
+  panStart={x:e.clientX,y:e.clientY};panOrigin={x:pan.x,y:pan.y};
+  wrap.classList.add('grabbing');
+});
+window.addEventListener('mousemove',e=>{
+  if(!isPanning)return;
+  const dx=e.clientX-panStart.x,dy=e.clientY-panStart.y;
+  if(Math.abs(dx)+Math.abs(dy)>4)isDragging=true;
+  pan.x=panOrigin.x+dx;pan.y=panOrigin.y+dy;applyTransform();
+});
+window.addEventListener('mouseup',()=>{isPanning=false;wrap.classList.remove('grabbing');});
+wrap.addEventListener('wheel',e=>{
+  e.preventDefault();
+  const rect=wrap.getBoundingClientRect();
+  const mx=e.clientX-rect.left,my=e.clientY-rect.top;
+  const f=e.deltaY<0?1.1:0.9;
+  scale=Math.min(Math.max(scale*f,0.15),4);
+  pan.x=mx-(mx-pan.x)*f;pan.y=my-(my-pan.y)*f;applyTransform();
+},{passive:false});
+wrap.addEventListener('touchstart',e=>{
+  if(e.touches.length===1){
+    if(e.target.closest('.entry'))return;
+    isPanning=true;isDragging=false;
+    panStart={x:e.touches[0].clientX,y:e.touches[0].clientY};panOrigin={x:pan.x,y:pan.y};
+  }else if(e.touches.length===2){
+    pinchDist=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+  }
+},{passive:true});
+wrap.addEventListener('touchmove',e=>{
+  e.preventDefault();
+  if(e.touches.length===1&&isPanning){
+    const dx=e.touches[0].clientX-panStart.x,dy=e.touches[0].clientY-panStart.y;
+    if(Math.abs(dx)+Math.abs(dy)>6)isDragging=true;
+    pan.x=panOrigin.x+dx;pan.y=panOrigin.y+dy;applyTransform();
+  }else if(e.touches.length===2&&pinchDist){
+    const nd=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);
+    const f=nd/pinchDist;pinchDist=nd;
+    const rect=wrap.getBoundingClientRect();
+    const mx=(e.touches[0].clientX+e.touches[1].clientX)/2-rect.left;
+    const my=(e.touches[0].clientY+e.touches[1].clientY)/2-rect.top;
+    scale=Math.min(Math.max(scale*f,0.15),4);
+    pan.x=mx-(mx-pan.x)*f;pan.y=my-(my-pan.y)*f;applyTransform();
+  }
+},{passive:false});
+wrap.addEventListener('touchend',()=>{isPanning=false;pinchDist=null;},{passive:true});
+
+// ── DRAG (edit mode) ──────────────────────────────────────────────────────────
+function attachDrag(el,entry){
+  let dragging=false,startX,startY,startL,startT,moved=false;
+  const onStart=(cx,cy)=>{
+    if(editTool!=='pan')return;
+    dragging=true;moved=false;
+    startX=cx;startY=cy;startL=parseFloat(el.style.left)||0;startT=parseFloat(el.style.top)||0;
+    el.style.zIndex=10;
+  };
+  const onMove=(cx,cy)=>{
+    if(!dragging)return;
+    const dx=(cx-startX)/scale,dy=(cy-startY)/scale;
+    if(Math.abs(dx)+Math.abs(dy)>4)moved=true;
+    if(!moved)return;
+    isDragging=true;
+    el.style.left=(startL+dx)+'px';el.style.top=(startT+dy)+'px';
+    renderConnections();
+  };
+  const onEnd=()=>{
+    if(!dragging)return;
+    dragging=false;el.style.zIndex='';
+    if(moved){entry['x']=el.style.left.replace('px','');entry['y']=el.style.top.replace('px','');savePositions();}
+    setTimeout(()=>{isDragging=false;},50);
+  };
+  el.addEventListener('mousedown',e=>{if(e.button===0){e.stopPropagation();onStart(e.clientX,e.clientY);}});
+  window.addEventListener('mousemove',e=>onMove(e.clientX,e.clientY));
+  window.addEventListener('mouseup',onEnd);
+  el.addEventListener('touchstart',e=>{e.stopPropagation();onStart(e.touches[0].clientX,e.touches[0].clientY);},{passive:true});
+  window.addEventListener('touchmove',e=>{if(dragging){e.preventDefault();onMove(e.touches[0].clientX,e.touches[0].clientY);}},{passive:false});
+  window.addEventListener('touchend',onEnd,{passive:true});
+}
+
+// ── CONNECT (edit mode) ───────────────────────────────────────────────────────
+function handleConnectClick(entry,el){
+  if(!connectSource){
+    connectSource=entry;el.classList.add('connecting-source');
+    document.getElementById('edit-indicator').textContent='● tap another entry to connect';
+  } else if(connectSource['id']!==entry['id']){
+    showConnectBar(connectSource,entry);
+  }
+}
+
+function showConnectBar(fromEntry,toEntry){
+  document.getElementById('connect-bar')?.remove();
+  const bar=document.createElement('div');bar.id='connect-bar';
+  bar.style.cssText='position:fixed;bottom:4.5rem;left:50%;transform:translateX(-50%);z-index:60;background:var(--surface2);border:1px solid var(--faint);padding:0.6rem 0.9rem;font-family:"Courier New",monospace;font-size:0.58rem;display:flex;gap:0.6rem;align-items:center;min-width:260px;max-width:88vw;';
+  const input=document.createElement('input');
+  input.type='text';input.placeholder='note on connection (optional)';
+  input.style.cssText='background:none;border:none;outline:none;flex:1;font-family:inherit;font-size:inherit;color:var(--text);';
+  const ok=document.createElement('button');ok.textContent='connect';
+  ok.style.cssText='background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--amber);';
+  const x=document.createElement('button');x.textContent='×';
+  x.style.cssText='background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--muted);';
+  const go=()=>{
+    const newConn={from_id:fromEntry['id'],to_id:toEntry['id'],label:input.value.trim(),publish:'TRUE'};
+    connections.push(newConn);saveConnection(newConn);renderConnections();cleanup();
+  };
+  const cleanup=()=>{
+    bar.remove();
+    document.querySelector('.entry.connecting-source')?.classList.remove('connecting-source');
+    connectSource=null;document.getElementById('edit-indicator').textContent='● edit';
+  };
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')go();if(e.key==='Escape')cleanup();});
+  ok.addEventListener('click',go);x.addEventListener('click',cleanup);
+  bar.appendChild(input);bar.appendChild(ok);bar.appendChild(x);
+  document.body.appendChild(bar);setTimeout(()=>input.focus(),50);
+}
+
+// ── EDIT TOOLBAR ──────────────────────────────────────────────────────────────
+document.getElementById('btn-pan').addEventListener('click',()=>{
+  editTool='pan';
+  document.getElementById('btn-pan').classList.add('active');
+  document.getElementById('btn-connect').classList.remove('active');
+  document.querySelector('.entry.connecting-source')?.classList.remove('connecting-source');
+  connectSource=null;document.getElementById('edit-indicator').textContent='● edit';
+});
+document.getElementById('btn-connect').addEventListener('click',()=>{
+  editTool='connect';
+  document.getElementById('btn-connect').classList.add('active');
+  document.getElementById('btn-pan').classList.remove('active');
+  document.getElementById('edit-indicator').textContent='● tap two entries to connect';
+});
+document.getElementById('btn-save').addEventListener('click',()=>{
+  savePositions();
+  const b=document.getElementById('btn-save');b.textContent='saved ✓';
+  setTimeout(()=>b.textContent='save ✓',1500);
+});
+
+// ── PERSIST ───────────────────────────────────────────────────────────────────
+function savePositions(){
+  const p={};entries.forEach(e=>{p[e['id']]={x:e['x'],y:e['y']};});
+  localStorage.setItem('anthologio-positions',JSON.stringify(p));
+}
+function loadSavedPositions(){
+  try{
+    const p=JSON.parse(localStorage.getItem('anthologio-positions')||'{}');
+    entries.forEach(e=>{if(p[e['id']]){e['x']=p[e['id']].x;e['y']=p[e['id']].y;}});
+  }catch(e){}
+}
+function saveConnection(conn){
+  const s=JSON.parse(localStorage.getItem('anthologio-connections')||'[]');
+  s.push(conn);localStorage.setItem('anthologio-connections',JSON.stringify(s));
+}
+function loadSavedConnections(){
+  try{
+    const s=JSON.parse(localStorage.getItem('anthologio-connections')||'[]');
+    s.forEach(c=>{if(!connections.find(x=>x.from_id===c.from_id&&x.to_id===c.to_id))connections.push(c);});
+  }catch(e){}
+}
+
+// ── GO ────────────────────────────────────────────────────────────────────────
+init();
+</script>
+</body>
+</html>

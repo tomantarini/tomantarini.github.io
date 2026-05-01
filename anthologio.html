@@ -426,6 +426,28 @@ if(urlParams.get('edit')===ADMIN_PASSWORD){
   document.getElementById('edit-indicator').classList.add('active');
 }
 
+// ── SECRET EDIT ACCESS ───────────────────────────────────────────────────────
+// Desktop: type "eva" anywhere
+// Mobile: long press the title for 1.5s
+(()=>{
+  const seq='eva'; let buf='';
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA') return;
+    buf=(buf+e.key.toLowerCase()).slice(-seq.length);
+    if(buf===seq) window.location.href=window.location.pathname+'?edit='+ADMIN_PASSWORD;
+  });
+  let pressTimer=null;
+  const title=document.getElementById('top-title');
+  const startPress=()=>{ pressTimer=setTimeout(()=>{ window.location.href=window.location.pathname+'?edit='+ADMIN_PASSWORD; },1500); };
+  const cancelPress=()=>{ clearTimeout(pressTimer); };
+  title.addEventListener('mousedown',startPress);
+  title.addEventListener('mouseup',cancelPress);
+  title.addEventListener('mouseleave',cancelPress);
+  title.addEventListener('touchstart',startPress,{passive:true});
+  title.addEventListener('touchend',cancelPress,{passive:true});
+  title.addEventListener('touchcancel',cancelPress,{passive:true});
+})();
+
 // ── ABOUT OVERLAY ─────────────────────────────────────────────────────────────
 document.getElementById('btn-about').addEventListener('click',()=>{
   const ov=document.getElementById('about-overlay');

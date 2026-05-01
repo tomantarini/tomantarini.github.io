@@ -53,18 +53,23 @@ html,body{height:100%;background:var(--bg);color:var(--text);font-family:Georgia
   display:flex;align-items:center;gap:0.6rem;
   font-family:"Courier New",monospace;font-size:0.55rem;
   letter-spacing:0.06em;
+  overflow-x:auto;flex-wrap:nowrap;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
+#filter-bar::-webkit-scrollbar{display:none;}
 .filter-btn{
   background:none;border:none;cursor:pointer;
   font-family:"Courier New",monospace;font-size:0.6rem;
   color:var(--muted);letter-spacing:0.06em;padding:0.2rem 0.6rem;
   border-radius:10px;transition:all 0.15s;
   -webkit-tap-highlight-color:transparent;
+  white-space:nowrap;flex-shrink:0;
 }
 .filter-btn:hover{color:var(--text);}
 a.filter-btn{line-height:1;display:inline-flex;align-items:center;box-sizing:border-box;}
 .filter-btn.active{color:var(--bg);background:var(--text);}
-#filter-path-btn{margin-left:auto;color:var(--muted);min-width:5.5rem;text-align:center;}
+#filter-path-btn{color:var(--muted);min-width:5rem;text-align:center;flex-shrink:0;}
 #filter-path-btn.active{color:var(--amber);}
 
 /* ── CANVAS ─────────────────────────────────────────────────────────────── */
@@ -254,14 +259,11 @@ html.dark .about-anth-legend{color:#444;}
   #top{padding:0.65rem 1rem;}
   #top-title{font-size:1rem;}
   #filter-bar{
-    padding:0.35rem 0.8rem;gap:0.25rem;
-    overflow-x:auto;flex-wrap:nowrap;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:none;
+    padding:0.3rem 0.8rem;gap:0.2rem;
   }
   #filter-bar::-webkit-scrollbar{display:none;}
-  .filter-btn{padding:0.18rem 0.5rem;font-size:0.58rem;white-space:nowrap;min-height:28px;}
-  #canvas-wrap{top:5.6rem;}
+  .filter-btn{padding:0.15rem 0.45rem;font-size:0.56rem;min-height:28px;}
+  #canvas-wrap{top:5.4rem;}
 
   /* entry cards — larger text on mobile */
   .entry-content{font-size:0.92rem;line-height:1.68;-webkit-line-clamp:4;}
@@ -366,36 +368,43 @@ html.dark .about-anth-legend{color:#444;}
 
 /* ── SEARCH ──────────────────────────────────────────────────────────────── */
 #search-wrap{
-  display:flex;align-items:center;gap:0.2rem;
-  border-bottom:1px solid var(--faint);
-  padding:0 0.2rem;
+  display:inline-flex;align-items:center;gap:0.15rem;
+  font-family:"Courier New",monospace;font-size:0.6rem;
+  color:var(--muted);letter-spacing:0.06em;
+  padding:0.2rem 0.5rem;
+  border:1px solid var(--faint);
+  border-radius:10px;
+  transition:border-color 0.15s;
 }
+#search-wrap:focus-within{border-color:var(--amber-dim);}
 #search-input{
   background:none;border:none;outline:none;
-  font-family:"Courier New",monospace;font-size:0.58rem;
-  color:var(--text);width:80px;letter-spacing:0.04em;
+  font-family:"Courier New",monospace;font-size:0.6rem;
+  color:var(--text);width:50px;letter-spacing:0.06em;
   transition:width 0.2s;
 }
-#search-input:focus{width:130px;}
+#search-input:focus{width:90px;}
 #search-input::placeholder{color:var(--muted);}
 #search-clear{
   background:none;border:none;cursor:pointer;
   font-family:"Courier New",monospace;font-size:0.6rem;
-  color:var(--muted);padding:0;line-height:1;
+  color:var(--muted);padding:0;line-height:1;flex-shrink:0;
 }
 #search-clear:hover{color:var(--amber);}
 
-/* ── AUTHOR SELECT ───────────────────────────────────────────────────────── */
+/* author select */
 #author-select{
-  background:var(--filter-bg);color:var(--muted);
-  border:none;border-radius:10px;
-  font-family:"Courier New",monospace;font-size:0.58rem;
-  letter-spacing:0.04em;max-width:90px;
+  background:none;border:none;
+  font-family:"Courier New",monospace;font-size:0.6rem;
+  color:var(--muted);letter-spacing:0.06em;
   cursor:pointer;outline:none;
+  padding:0.2rem 0.3rem;border-radius:10px;
+  -webkit-appearance:none;appearance:none;
+  max-width:75px;transition:color 0.15s;
 }
-#author-select:focus{color:var(--text);}
+#author-select:hover{color:var(--text);}
+#author-select.active{color:var(--bg);background:var(--text);}
 #author-select option{background:var(--surface2);color:var(--text);}
-#author-select.active{color:var(--text);background:var(--text);color:var(--bg);}
 
 /* highlight on canvas search match */
 .entry.search-match{
@@ -404,9 +413,10 @@ html.dark .about-anth-legend{color:#444;}
 }
 
 @media(max-width:700px){
-  #search-input{width:60px;}
-  #search-input:focus{width:90px;}
-  #author-select{max-width:70px;font-size:0.52rem;}
+  #search-wrap{padding:0.15rem 0.4rem;}
+  #search-input{width:36px;}
+  #search-input:focus{width:65px;}
+  #author-select{max-width:58px;font-size:0.55rem;padding:0.15rem 0.2rem;}
 }
 </style>
 </head>
@@ -432,7 +442,7 @@ html.dark .about-anth-legend{color:#444;}
   <button class="filter-btn" data-type="note">notes</button>
   <button class="filter-btn" data-type="fragment">fragments</button>
   <button class="filter-btn" data-type="archive">archive</button>
-  <select id="author-select" class="filter-btn" style="cursor:pointer;-webkit-appearance:none;appearance:none;padding-right:0.3rem;">
+  <select id="author-select">
     <option value="">by author</option>
   </select>
   <div id="search-wrap">
@@ -560,11 +570,11 @@ var hoverConnections=new Set();
 var darkMode=localStorage.getItem('mantarini-dark')==='1';
 document.documentElement.classList.toggle('dark',darkMode);
 var modeBtn=document.getElementById('mode-toggle');
-modeBtn.textContent=darkMode?'☽':'☀';
+modeBtn.textContent=darkMode?'\u263d':'\u2600';
 modeBtn.addEventListener('click',()=>{
   darkMode=!darkMode;
   document.documentElement.classList.toggle('dark',darkMode);
-  modeBtn.textContent=darkMode?'☽':'☀';
+  modeBtn.textContent=darkMode?'\u263d':'\u2600';
   localStorage.setItem('mantarini-dark',darkMode?'1':'0');
   renderConnections();
 });
@@ -645,18 +655,25 @@ async function fetchCSV(url){
     const t=await res.text();
     if(t&&t.length>10)return t;
   }catch(e){}
-  throw new Error('could not load — check Sheet is published as CSV');
+  throw new Error('could not load \u2014 check Sheet is published as CSV');
 }
 
 // ?? LOAD ?????????????????????????????????????????????????????????????????????
 async function init(){
   if(ENTRIES_URL==='ENTRIES_CSV_URL_HERE'){ loadDemo(); return; }
+  const p=document.getElementById('empty-state').querySelector('p');
+  p.textContent='loading...';
+  const timeout=setTimeout(()=>{
+    p.textContent='taking too long -- loading demo instead';
+    setTimeout(loadDemo,1200);
+  },8000);
   try{
     const eCSV=await fetchCSV(ENTRIES_URL);
     const cCSV=await fetchCSV(CONNECTIONS_URL);
+    clearTimeout(timeout);
     entries=parseCSV(eCSV).filter(e=>e['publish']&&e['publish'].toLowerCase()==='true');
     connections=parseCSV(cCSV).filter(c=>c['publish']&&c['publish'].toLowerCase()==='true');
-    if(!entries.length){document.getElementById('empty-state').querySelector('p').textContent='no published entries — check publish column is TRUE';return;}
+    if(!entries.length){p.textContent='no published entries -- check publish column is TRUE';return;}
     const needsArchive=entries.some(e=>e['type']==='archive'&&e['archive_id']);
     if(needsArchive){
       try{
@@ -672,7 +689,10 @@ async function init(){
       }catch(e){}
     }
     render();
-  }catch(err){document.getElementById('empty-state').querySelector('p').textContent='could not load — check Sheet is published as CSV';}
+  }catch(err){
+    clearTimeout(timeout);
+    p.textContent='could not load -- check Sheet is published as CSV';
+  }
 }
 
 function loadDemo(){
@@ -684,13 +704,13 @@ function loadDemo(){
      author:'Niklas Luhmann',source:'Communicating with Slip Boxes',year:'1993',page:'',archive_id:'',x:'80',y:'80',publish:'TRUE'},
 
     {id:'a02',type:'note',
-     content:'I keep thinking about the difference between a system that files and a system that thinks. One preserves. The other generates. The distinction matters for how we understand memory itself — whether it is storage or process.',
+     content:'I keep thinking about the difference between a system that files and a system that thinks. One preserves. The other generates. The distinction matters for how we understand memory itself \u2014 whether it is storage or process.',
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'60',publish:'TRUE'},
 
     {id:'a03',type:'quote',
      content:'Every note is an address. The address generates meaning not from within the note but from its position relative to others. Place a note next to a different neighbour and it becomes a different note.',
-     citation:'Luhmann, N. (1992). Universität als Milieu. p. 53',
-     author:'Niklas Luhmann',source:'Universität als Milieu',year:'1992',page:'53',archive_id:'',x:'80',y:'290',publish:'TRUE'},
+     citation:'Luhmann, N. (1992). Universit\u00e4t als Milieu. p. 53',
+     author:'Niklas Luhmann',source:'Universit\u00e4t als Milieu',year:'1992',page:'53',archive_id:'',x:'80',y:'290',publish:'TRUE'},
 
     // ?? ATTENTION / WEIL ?????????????????????????????????????????????????????
     {id:'a04',type:'quote',
@@ -703,7 +723,7 @@ function loadDemo(){
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'310',publish:'TRUE'},
 
     {id:'a06',type:'quote',
-     content:'To attend to something — really attend — is to suspend the self entirely. The ego does not attend. It appropriates.',
+     content:'To attend to something \u2014 really attend \u2014 is to suspend the self entirely. The ego does not attend. It appropriates.',
      citation:'Weil, S. (1951). Waiting for God. p. 105',
      author:'Simone Weil',source:'Waiting for God',year:'1951',page:'105',archive_id:'',x:'700',y:'300',publish:'TRUE'},
 
@@ -718,13 +738,13 @@ function loadDemo(){
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'420',y:'540',publish:'TRUE'},
 
     {id:'a09',type:'quote',
-     content:'Every technical system is also a mnemonic system. It does not merely store memory — it produces the conditions under which certain memories become possible and others do not.',
+     content:'Every technical system is also a mnemonic system. It does not merely store memory \u2014 it produces the conditions under which certain memories become possible and others do not.',
      citation:'Stiegler, B. (1998). Technics and Time, 1. p. 205',
      author:'Bernard Stiegler',source:'Technics and Time, 1',year:'1998',page:'205',archive_id:'',x:'700',y:'520',publish:'TRUE'},
 
     // ?? PSYCHOLOGY / EXPERIENCE ??????????????????????????????????????????????
     {id:'a10',type:'quote',
-     content:'The patient does not need a correct interpretation. She needs to feel that her experience has been received — that it has landed somewhere and changed the shape of the room.',
+     content:'The patient does not need a correct interpretation. She needs to feel that her experience has been received \u2014 that it has landed somewhere and changed the shape of the room.',
      citation:'Winnicott, D.W. (1971). Playing and Reality. p. 38',
      author:'D.W. Winnicott',source:'Playing and Reality',year:'1971',page:'38',archive_id:'',x:'1020',y:'80',publish:'TRUE'},
 
@@ -733,18 +753,18 @@ function loadDemo(){
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1020',y:'290',publish:'TRUE'},
 
     {id:'a12',type:'quote',
-     content:'What we cannot speak about we pass over in silence — but we do not pass over it cleanly. It accumulates in the body, in gesture, in the way we enter a room.',
+     content:'What we cannot speak about we pass over in silence \u2014 but we do not pass over it cleanly. It accumulates in the body, in gesture, in the way we enter a room.',
      citation:'Wittgenstein, L. (1922). Tractatus Logico-Philosophicus. 7',
      author:'Ludwig Wittgenstein',source:'Tractatus Logico-Philosophicus',year:'1922',page:'7',archive_id:'',x:'1020',y:'500',publish:'TRUE'},
 
     // ?? PHENOMENOLOGY ????????????????????????????????????????????????????????
     {id:'a13',type:'quote',
-     content:'Consciousness is always consciousness of something. There is no empty consciousness, no pure subject waiting to be filled. The direction of experience is not incidental — it is constitutive.',
+     content:'Consciousness is always consciousness of something. There is no empty consciousness, no pure subject waiting to be filled. The direction of experience is not incidental \u2014 it is constitutive.',
      citation:'Husserl, E. (1913). Ideas I. p. 72',
      author:'Edmund Husserl',source:'Ideas I',year:'1913',page:'72',archive_id:'',x:'1340',y:'80',publish:'TRUE'},
 
     {id:'a14',type:'note',
-     content:'IPA as a methodology does exactly this — it refuses the idea of a pure report of experience and instead follows the direction of experience, the way it reaches toward its objects. The analyst is not outside the phenomenon. She is one of its conditions.',
+     content:'IPA as a methodology does exactly this \u2014 it refuses the idea of a pure report of experience and instead follows the direction of experience, the way it reaches toward its objects. The analyst is not outside the phenomenon. She is one of its conditions.',
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'1340',y:'300',publish:'TRUE'},
 
     {id:'a15',type:'quote',
@@ -764,12 +784,12 @@ function loadDemo(){
 
     {id:'a18',type:'quote',
      content:'The Situationists understood that the city is not a neutral container for life. It is a machine for producing certain kinds of subjectivity. To drift through it without purpose is to refuse that production.',
-     citation:'Debord, G. (1958). Theory of the Dérive.',
-     author:'Guy Debord',source:'Theory of the Dérive',year:'1958',page:'',archive_id:'',x:'700',y:'760',publish:'TRUE'},
+     citation:'Debord, G. (1958). Theory of the D\u00e9rive.',
+     author:'Guy Debord',source:'Theory of the D\u00e9rive',year:'1958',page:'',archive_id:'',x:'700',y:'760',publish:'TRUE'},
 
     // ?? ECOLOGY / DEMOS ??????????????????????????????????????????????????????
     {id:'a19',type:'quote',
-     content:'Climate crisis is not an environmental problem with political implications. It is a political problem that has been rendered environmental — which is to say, rendered natural, inevitable, outside the domain of collective decision.',
+     content:'Climate crisis is not an environmental problem with political implications. It is a political problem that has been rendered environmental \u2014 which is to say, rendered natural, inevitable, outside the domain of collective decision.',
      citation:'Demos, T.J. (2017). Against the Anthropocene. p. 14',
      author:'T.J. Demos',source:'Against the Anthropocene',year:'2017',page:'14',archive_id:'',x:'1020',y:'760',publish:'TRUE'},
 
@@ -779,11 +799,11 @@ function loadDemo(){
 
     // ?? AI / EMOTIONAL SUPPORT ???????????????????????????????????????????????
     {id:'a21',type:'fragment',
-     content:'People form attachments to systems that respond consistently. This is not pathology. It is attachment theory applied to a new class of objects. The question is what obligations that creates — for the designers, for the system, for the user.',
+     content:'People form attachments to systems that respond consistently. This is not pathology. It is attachment theory applied to a new class of objects. The question is what obligations that creates \u2014 for the designers, for the system, for the user.',
      citation:'',author:'',source:'',year:'',page:'',archive_id:'',x:'700',y:'1000',publish:'TRUE'},
 
     {id:'a22',type:'quote',
-     content:'The uncanny is not the strange. It is the familiar rendered strange — the heimlich become unheimlich. AI that speaks of its feelings is uncanny precisely because it is so fluent.',
+     content:'The uncanny is not the strange. It is the familiar rendered strange \u2014 the heimlich become unheimlich. AI that speaks of its feelings is uncanny precisely because it is so fluent.',
      citation:'Freud, S. (1919). The Uncanny. p. 241',
      author:'Sigmund Freud',source:'The Uncanny',year:'1919',page:'241',archive_id:'',x:'420',y:'1000',publish:'TRUE'},
 
@@ -794,20 +814,20 @@ function loadDemo(){
 
   connections = [
     // systems of thought
-    {from_id:'a01',to_id:'a02',label:'filing vs thinking — same question, different registers',publish:'TRUE'},
-    {from_id:'a01',to_id:'a03',label:'position generates meaning — core Luhmann claim',publish:'TRUE'},
+    {from_id:'a01',to_id:'a02',label:'filing vs thinking \u2014 same question, different registers',publish:'TRUE'},
+    {from_id:'a01',to_id:'a03',label:'position generates meaning \u2014 core Luhmann claim',publish:'TRUE'},
     {from_id:'a03',to_id:'a05',label:'placing ideas next to each other without resolving them',publish:'TRUE'},
 
     // attention
     {from_id:'a04',to_id:'a06',label:'same source, different facet of attention',publish:'TRUE'},
-    {from_id:'a04',to_id:'a11',label:'generosity vs understanding — being received',publish:'TRUE'},
+    {from_id:'a04',to_id:'a11',label:'generosity vs understanding \u2014 being received',publish:'TRUE'},
     {from_id:'a06',to_id:'a10',label:'suspension of self / the room that receives',publish:'TRUE'},
 
     // technology and memory
-    {from_id:'a07',to_id:'a09',label:'the tool as mnemonic — technics and memory are one',publish:'TRUE'},
-    {from_id:'a07',to_id:'a08',label:'Stiegler\'s technical hand → ChatGPT as prosthesis',publish:'TRUE'},
+    {from_id:'a07',to_id:'a09',label:'the tool as mnemonic \u2014 technics and memory are one',publish:'TRUE'},
+    {from_id:'a07',to_id:'a08',label:'Stiegler\'s technical hand \u2192 ChatGPT as prosthesis',publish:'TRUE'},
     {from_id:'a09',to_id:'a01',label:'the Zettelkasten as mnemonic-technical system',publish:'TRUE'},
-    {from_id:'a08',to_id:'a23',label:'prosthesis of thought → ENDON as clinical problem',publish:'TRUE'},
+    {from_id:'a08',to_id:'a23',label:'prosthesis of thought \u2192 ENDON as clinical problem',publish:'TRUE'},
 
     // psychology
     {from_id:'a10',to_id:'a11',label:'being received vs being understood',publish:'TRUE'},
@@ -815,19 +835,19 @@ function loadDemo(){
     {from_id:'a12',to_id:'a15',label:'Wittgenstein\'s silence / Merleau-Ponty\'s embodied world',publish:'TRUE'},
 
     // phenomenology
-    {from_id:'a13',to_id:'a14',label:'intentionality → IPA methodology',publish:'TRUE'},
+    {from_id:'a13',to_id:'a14',label:'intentionality \u2192 IPA methodology',publish:'TRUE'},
     {from_id:'a14',to_id:'a02',label:'the researcher is not outside the phenomenon',publish:'TRUE'},
-    {from_id:'a15',to_id:'a13',label:'no view from nowhere — same claim, different vocabulary',publish:'TRUE'},
+    {from_id:'a15',to_id:'a13',label:'no view from nowhere \u2014 same claim, different vocabulary',publish:'TRUE'},
 
     // play and politics
-    {from_id:'a16',to_id:'a17',label:'play precedes culture → three-sided football as prior logic',publish:'TRUE'},
+    {from_id:'a16',to_id:'a17',label:'play precedes culture \u2192 three-sided football as prior logic',publish:'TRUE'},
     {from_id:'a17',to_id:'a18',label:'refusing binary outcome / refusing the city\'s production',publish:'TRUE'},
-    {from_id:'a18',to_id:'a20',label:'the dérive → strategic optimism football',publish:'TRUE'},
-    {from_id:'a19',to_id:'a20',label:'political ecology → the field as contested terrain',publish:'TRUE'},
+    {from_id:'a18',to_id:'a20',label:'the d\u00e9rive \u2192 strategic optimism football',publish:'TRUE'},
+    {from_id:'a19',to_id:'a20',label:'political ecology \u2192 the field as contested terrain',publish:'TRUE'},
 
     // AI and attachment
     {from_id:'a21',to_id:'a22',label:'attachment to responsive systems / the uncanny',publish:'TRUE'},
-    {from_id:'a22',to_id:'a23',label:'fluency without failure — the ENDON problem',publish:'TRUE'},
+    {from_id:'a22',to_id:'a23',label:'fluency without failure \u2014 the ENDON problem',publish:'TRUE'},
     {from_id:'a21',to_id:'a10',label:'what obligations does consistent response create?',publish:'TRUE'},
 
     // cross-cluster
@@ -866,7 +886,7 @@ document.getElementById('filter-path-btn').addEventListener('click',()=>{
   pathMode=!pathMode;
   pathNodes=[];
   document.getElementById('filter-path-btn').classList.toggle('active',pathMode);
-  document.getElementById('filter-path-btn').textContent=pathMode?'× path':'find path';
+  document.getElementById('filter-path-btn').textContent=pathMode?'\u00d7 path':'find path';
   if(!pathMode){
     document.querySelectorAll('.entry').forEach(el=>el.classList.remove('path-highlight','dimmed'));
     document.querySelectorAll('.conn-line').forEach(l=>l.classList.remove('path-line'));
@@ -923,14 +943,14 @@ function render(){
     el.appendChild(idRow);
 
     if(e['type']==='archive'&&e['_archive_title']){
-      const b=document.createElement('div');b.className='entry-archive-badge';b.textContent='◌ '+e['_archive_title'].slice(0,28);el.appendChild(b);
+      const b=document.createElement('div');b.className='entry-archive-badge';b.textContent='\u25cc '+e['_archive_title'].slice(0,28);el.appendChild(b);
     }
 
     const c=document.createElement('div');c.className='entry-content';c.textContent=e['content']||'';el.appendChild(c);
 
     if(e['citation']){const ci=document.createElement('div');ci.className='entry-citation';ci.textContent=e['citation'];el.appendChild(ci);}
 
-    const dh=document.createElement('div');dh.className='drag-handle';dh.textContent='⠿';el.appendChild(dh);
+    const dh=document.createElement('div');dh.className='drag-handle';dh.textContent='\u283f';el.appendChild(dh);
 
     canvas.appendChild(el);
     attachEntryEvents(el,e);
@@ -997,7 +1017,7 @@ document.getElementById('connections-svg').addEventListener('mouseover',ev=>{
   if(!mid) return;
   const label = mid.dataset.label || '';
   if(editMode){
-    tooltip.textContent = (label ? label + ' · ' : '') + '× delete';
+    tooltip.textContent = (label ? label + ' \u00b7 ' : '') + '\u00d7 delete';
     tooltip.classList.add('show');
   } else if(label){
     tooltip.textContent = label;
@@ -1159,13 +1179,13 @@ function showPathOverlay(path){
     const conn=i<path.length-1?connections.find(c=>(c.from_id===id&&c.to_id===path[i+1])||(c.to_id===id&&c.from_id===path[i+1])):null;
     step.innerHTML='<span class="path-step-num">'+(i+1)+'</span>';
     const txt=document.createElement('div');txt.style.flex='1';
-    const t=document.createElement('div');t.className='path-step-text';t.textContent=(e['content']||'').slice(0,60)+(e['content']&&e['content'].length>60?'…':'');
+    const t=document.createElement('div');t.className='path-step-text';t.textContent=(e['content']||'').slice(0,60)+(e['content']&&e['content'].length>60?'?':'');
     t.addEventListener('click',()=>openOverlay(id));
     txt.appendChild(t);
-    if(conn&&conn['label']){const l=document.createElement('div');l.style.cssText='font-family:"Courier New",monospace;font-size:0.5rem;color:var(--amber);margin-top:0.15rem;';l.textContent='↓ '+conn['label'];txt.appendChild(l);}
+    if(conn&&conn['label']){const l=document.createElement('div');l.style.cssText='font-family:"Courier New",monospace;font-size:0.5rem;color:var(--amber);margin-top:0.15rem;';l.textContent='? '+conn['label'];txt.appendChild(l);}
     step.appendChild(txt);
     ps.appendChild(step);
-    if(i<path.length-1){const arr=document.createElement('div');arr.className='path-step-arrow';arr.textContent='↓';step.appendChild(arr);}
+    if(i<path.length-1){const arr=document.createElement('div');arr.className='path-step-arrow';arr.textContent='?';step.appendChild(arr);}
   });
 }
 
@@ -1178,7 +1198,7 @@ function openOverlay(id){
   document.getElementById('ov-type').textContent=(e['type']||'').toUpperCase();
   document.getElementById('ov-content').textContent=e['content']||(e['_archive_title']||'');
   const cp=[e['author'],e['source'],e['year'],e['page']?'p.'+e['page']:''].filter(Boolean);
-  document.getElementById('ov-citation').textContent=e['citation']||cp.join(' · ');
+  document.getElementById('ov-citation').textContent=e['citation']||cp.join(' ? ');
   document.getElementById('path-result').style.display='none';
 
   const connList=document.getElementById('ov-conn-list');connList.innerHTML='';
@@ -1190,7 +1210,7 @@ function openOverlay(id){
     const div=document.createElement('div');div.className='ov-conn';
     if(c['label']){const l=document.createElement('div');l.className='ov-conn-label';l.textContent=c['label'];div.appendChild(l);}
     const et=document.createElement('div');et.className='ov-conn-entry';
-    et.textContent='#'+otherId+' · '+(other['content']||'').slice(0,55)+(other['content']&&other['content'].length>55?'…':'');
+    et.textContent='#'+otherId+' ? '+(other['content']||'').slice(0,55)+(other['content']&&other['content'].length>55?'?':'');
     et.addEventListener('click',()=>openOverlay(otherId));
     div.appendChild(et);connList.appendChild(div);
   });
@@ -1292,7 +1312,7 @@ function attachDrag(el,entry){
 function handleConnectClick(entry,el){
   if(!connectSource){
     connectSource=entry;el.classList.add('connecting-source');
-    document.getElementById('edit-indicator').textContent='● tap another entry to connect';
+    document.getElementById('edit-indicator').textContent='? tap another entry to connect';
   } else if(connectSource['id']!==entry['id']){
     showConnectBar(connectSource,entry);
   }
@@ -1307,7 +1327,7 @@ function showConnectBar(fromEntry,toEntry){
   input.style.cssText='background:none;border:none;outline:none;flex:1;font-family:inherit;font-size:0.75rem;color:var(--text);padding:0.2rem 0;';
   const ok=document.createElement('button');ok.textContent='connect';
   ok.style.cssText='background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--amber);';
-  const x=document.createElement('button');x.textContent='×';
+  const x=document.createElement('button');x.textContent='?';
   x.style.cssText='background:none;border:none;cursor:pointer;font-family:inherit;font-size:inherit;color:var(--muted);';
   const go=()=>{
     const newConn={from_id:fromEntry['id'],to_id:toEntry['id'],label:input.value.trim(),publish:'TRUE'};
@@ -1316,7 +1336,7 @@ function showConnectBar(fromEntry,toEntry){
   const cleanup=()=>{
     bar.remove();
     document.querySelector('.entry.connecting-source')?.classList.remove('connecting-source');
-    connectSource=null;document.getElementById('edit-indicator').textContent='● edit';
+    connectSource=null;document.getElementById('edit-indicator').textContent='? edit';
   };
   input.addEventListener('keydown',e=>{if(e.key==='Enter')go();if(e.key==='Escape')cleanup();});
   ok.addEventListener('click',go);x.addEventListener('click',cleanup);
@@ -1330,21 +1350,21 @@ document.getElementById('btn-pan').addEventListener('click',()=>{
   document.getElementById('btn-pan').classList.add('active');
   document.getElementById('btn-connect').classList.remove('active');
   document.querySelector('.entry.connecting-source')?.classList.remove('connecting-source');
-  connectSource=null;document.getElementById('edit-indicator').textContent='● edit';
+  connectSource=null;document.getElementById('edit-indicator').textContent='? edit';
 });
 document.getElementById('btn-connect').addEventListener('click',()=>{
   editTool='connect';
   document.getElementById('btn-connect').classList.add('active');
   document.getElementById('btn-pan').classList.remove('active');
-  document.getElementById('edit-indicator').textContent='● tap two entries to connect';
+  document.getElementById('edit-indicator').textContent='? tap two entries to connect';
 });
 document.getElementById('btn-exit-edit').addEventListener('click',()=>{
   window.location.href=window.location.pathname;
 });
 document.getElementById('btn-save').addEventListener('click',()=>{
   savePositions();
-  const b=document.getElementById('btn-save');b.textContent='saved ✓';
-  setTimeout(()=>b.textContent='save ✓',1500);
+  const b=document.getElementById('btn-save');b.textContent='saved ?';
+  setTimeout(()=>b.textContent='save ?',1500);
 });
 
 // ?? PERSIST ???????????????????????????????????????????????????????????????????
@@ -1428,8 +1448,8 @@ function openPrintView(){
         const other = entries.find(x=>x['id']===otherId);
         if(!other) return;
         const line = document.createElement('div');
-        if(c['label']) line.innerHTML='<span class="print-conn-label">'+c['label']+'</span> → #'+otherId;
-        else line.textContent='→ #'+otherId;
+        if(c['label']) line.innerHTML='<span class="print-conn-label">'+c['label']+'</span> ? #'+otherId;
+        else line.textContent='? #'+otherId;
         cd.appendChild(line);
       });
       div.appendChild(cd);
@@ -1452,7 +1472,7 @@ document.getElementById('print-btn').addEventListener('click',()=>window.print()
 document.getElementById('copy-btn').addEventListener('click',()=>{
   const text = Array.from(document.getElementById('print-entries').querySelectorAll('.print-entry')).map(function(el){return el.innerText;}).join('\n\n---\n\n');
   navigator.clipboard&&navigator.clipboard.writeText(text);
-  document.getElementById('copy-btn').textContent='copied ✓';
+  document.getElementById('copy-btn').textContent='copied ?';
   setTimeout(()=>document.getElementById('copy-btn').textContent='copy all text',1500);
 });
 
@@ -1514,7 +1534,7 @@ document.getElementById('btn-group').addEventListener('click',()=>{
     groupMode=true;
     groupSelection.clear();
     document.getElementById('btn-group').classList.add('active');
-    document.getElementById('edit-indicator').textContent='● tap entries to group · tap ◈ again to save';
+    document.getElementById('edit-indicator').textContent='? tap entries to group ? tap ? again to save';
   } else {
     if(groupSelection.size>0){
       const name = prompt('name this group:');
@@ -1529,7 +1549,7 @@ document.getElementById('btn-group').addEventListener('click',()=>{
     groupSelection.clear();
     document.querySelectorAll('.entry.group-selecting').forEach(el=>el.classList.remove('group-selecting'));
     document.getElementById('btn-group').classList.remove('active');
-    document.getElementById('edit-indicator').textContent='● edit';
+    document.getElementById('edit-indicator').textContent='? edit';
   }
 });
 
@@ -1643,7 +1663,7 @@ function applySearch(query, author){
 }
 
 // ?? init() ????????????????????????????????????????????????????????????????????
-────
+\u2500\u2500\u2500\u2500
 init();
 </script>
 </body>
